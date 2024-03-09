@@ -3,8 +3,22 @@ import HomePage from "./pages/HomePage";
 import Header from "./components/Header";
 import SignUpModal from "./components/SignUp/SignUpModal";
 import SignInModal from "./components/SignIn/SignInModal";
+import { useEffect } from "react";
+import instance from "./axios";
 
 const App = () => {
+  console.log("App rendered");
+
+  useEffect(() => {
+    const fetch = async () => {
+      const response = await instance.get("/");
+
+      console.log(response);
+    };
+
+    fetch();
+  }, []);
+
   return (
     <div className="max-w-screen-xl mx-auto px-4">
       <Header />

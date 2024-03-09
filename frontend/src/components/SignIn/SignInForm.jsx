@@ -5,10 +5,14 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "../ui/Button";
 import { fetchAuth } from "../../redux/slices/authSlice";
+import { passwordRegex } from "../../constants";
 
 const schema = z.object({
   email: z.string().email("Invalid email."),
-  password: z.string().min(8, "Password must be at least 8 characters long."),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters.")
+    .regex(passwordRegex, "Invalid password."),
 });
 
 const SignInForm = () => {
@@ -29,16 +33,15 @@ const SignInForm = () => {
 
       const localToken = window.localStorage.getItem("ACCESS_TOKEN");
 
+      if (data.email !== "test@test.com") {
+        setError("root", { message: "User not found." });
+        return;
+      }
+
       if (data.email === payload.email && localToken === payload.token) {
         navigate("/");
         return;
       }
-
-      if (payload.email === "error@test.com") {
-        throw new Error();
-      }
-
-      setError("root", { message: "User not found." });
     } catch (error) {
       setError("root", { message: "Error from backend." });
     }
@@ -55,7 +58,9 @@ const SignInForm = () => {
           className="w-full py-2 px-3 border border-neutral-500 rounded-md"
           placeholder="Email..."
         />
-        {errors.email && <p className="text-red-500">{errors.email.message}</p>}
+        {errors.email && (
+          <p className="px-1 text-red-500">{errors.email.message}</p>
+        )}
       </div>
 
       <div className="w-[300px]">
@@ -66,7 +71,7 @@ const SignInForm = () => {
           placeholder="Password..."
         />
         {errors.password && (
-          <p className="text-red-500">{errors.password.message}</p>
+          <p className="px-1 text-red-500">{errors.password.message}</p>
         )}
       </div>
 
@@ -81,7 +86,7 @@ const SignInForm = () => {
       </Button>
 
       {errors.root && (
-        <p className="self-start text-red-500">{errors.root.message}</p>
+        <p className="self-start px-1 text-red-500">{errors.root.message}</p>
       )}
     </form>
   );
