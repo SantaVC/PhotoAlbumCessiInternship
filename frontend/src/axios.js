@@ -1,12 +1,15 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: `${import.meta.env.ViTE_API_BASE_URL}/api`
+  baseURL: `http://localhost:8000/api`,
 });
 
 instance.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
+
   config.headers.Authorization = `Bearer ${token}`;
+
+  return config;
 });
 
 instance.interceptors.response.use(
@@ -16,7 +19,9 @@ instance.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 401) {
       localStorage.removeItem("token");
+
       window.location.href = "/login";
+
       return error;
     }
     return Promise.reject(error);

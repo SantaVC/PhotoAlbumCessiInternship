@@ -5,11 +5,18 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "../ui/Button";
 import { fetchAuth } from "../../redux/slices/authSlice";
+import { passwordRegex } from "../../constants";
 
 const schema = z
   .object({
     email: z.string().email("Invalid email."),
-    password: z.string().min(8, "Password must be at least 8 characters long."),
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters long.")
+      .regex(
+        passwordRegex,
+        "Password must contain one uppercase, one lowercase, one number and no special characters."
+      ),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -54,7 +61,9 @@ const SignUpForm = () => {
           className="w-full py-2 px-3 border border-neutral-500 rounded-md"
           placeholder="Email..."
         />
-        {errors.email && <p className="text-red-500">{errors.email.message}</p>}
+        {errors.email && (
+          <p className="px-1 text-red-500">{errors.email.message}</p>
+        )}
       </div>
 
       <div className="w-[300px]">
@@ -65,7 +74,7 @@ const SignUpForm = () => {
           placeholder="Password..."
         />
         {errors.password && (
-          <p className="text-red-500">{errors.password.message}</p>
+          <p className="px-1 text-red-500">{errors.password.message}</p>
         )}
       </div>
 
@@ -77,7 +86,7 @@ const SignUpForm = () => {
           placeholder="Confirm password..."
         />
         {errors.confirmPassword && (
-          <p className="text-red-500">{errors.confirmPassword.message}</p>
+          <p className="px-1 text-red-500">{errors.confirmPassword.message}</p>
         )}
       </div>
 
@@ -92,7 +101,7 @@ const SignUpForm = () => {
       </Button>
 
       {errors.root && (
-        <p className="self-start text-red-500">{errors.root.message}</p>
+        <p className="self-start px-1 text-red-500">{errors.root.message}</p>
       )}
     </form>
   );
