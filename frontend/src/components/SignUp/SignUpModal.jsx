@@ -2,7 +2,7 @@ import "../../scss/LoginModal.scss";
 import { Link } from "react-router-dom";
 import { CgCloseR } from "react-icons/cg";
 import Modal from "../ui/Modal";
-import SignUpForm from "./SignUpFrom";
+import SignUpForm from "./SignUpForm";
 
 const SignUpModal = () => {
   return (
