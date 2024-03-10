@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "../ui/Button";
 import { fetchAuth } from "../../redux/slices/authSlice";
 import { passwordRegex } from "../../constants";
+import instance from "../../axios";
 
 const schema = z
   .object({
@@ -17,11 +18,11 @@ const schema = z
         passwordRegex,
         "Password must contain one uppercase, one lowercase, one number and no special characters."
       ),
-    confirmPassword: z.string(),
+    password_confirmation: z.string(),
   })
-  .refine((data) => data.password === data.confirmPassword, {
+  .refine((data) => data.password === data.password_confirmation, {
     message: "Passwords must match.",
-    path: ["confirmPassword"],
+    path: ["password_confirmation"],
   });
 
 const SignUpForm = () => {
@@ -37,15 +38,23 @@ const SignUpForm = () => {
   } = useForm({ resolver: zodResolver(schema) });
 
   const onSubmit = async (data) => {
+    console.log(data);
     try {
-      const { payload } = await dispatch(fetchAuth(data));
+      const response = await instance.post("/signup", {
+        email: data.email,
+        password: data.password,
+        password_confirmation: data.password_confirmation
+      });
 
-      if (payload.email === "test@test.com") {
-        window.localStorage.setItem("ACCESS_TOKEN", payload.token);
-        navigate("/");
-        return;
-      }
+      // const { payload } = await dispatch(fetchAuth(data));
+      //
+      // if (payload.email === "test@test.com") {
+      //   window.localStorage.setItem("ACCESS_TOKEN", payload.token);
+      //   navigate("/");
+      //   return;
+      // }
     } catch (error) {
+      console.log(error);
       setError("root", { message: "Error from backend." });
     }
   };
@@ -80,13 +89,13 @@ const SignUpForm = () => {
 
       <div className="w-[300px]">
         <input
-          {...register("confirmPassword")}
+          {...register("password_confirmation")}
           type="password"
           className="w-full py-2 px-3 border border-neutral-500 rounded-md"
           placeholder="Confirm password..."
         />
-        {errors.confirmPassword && (
-          <p className="px-1 text-red-500">{errors.confirmPassword.message}</p>
+        {errors.password_confirmation && (
+          <p className="px-1 text-red-500">{errors.password_confirmation.message}</p>
         )}
       </div>
 
