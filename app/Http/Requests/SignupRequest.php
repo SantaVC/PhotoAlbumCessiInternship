@@ -20,12 +20,11 @@ class SignupRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    public function rules()
     {
-        return [
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users',
-            'password' => ['required', 'string', 'confirmed', Password::min(8)->numbers()],
-        ];
+      return [
+        'email' => 'required|email|unique:users',
+        'password' => 'required|min:8|confirmed',
+      ];
     }
 }
