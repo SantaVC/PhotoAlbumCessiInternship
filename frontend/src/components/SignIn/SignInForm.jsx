@@ -1,10 +1,10 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "../ui/Button";
-import { fetchAuth } from "../../redux/slices/authSlice";
+import { userLogin } from "../../redux/slices/userSlice";
 import { passwordRegex } from "../../constants";
 
 const schema = z.object({
@@ -18,6 +18,7 @@ const schema = z.object({
 const SignInForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { data: user, error, loading } = useSelector((state) => state.user);
 
   const {
     register,
@@ -27,29 +28,23 @@ const SignInForm = () => {
     formState: { errors, isSubmitting },
   } = useForm({ resolver: zodResolver(schema) });
 
-  const onSubmit = async (data) => {
-    try {
-      const { payload } = await dispatch(fetchAuth(data));
+  const onSubmitLogin = async (data) => {
+    await dispatch(userLogin(data));
 
-      const localToken = window.localStorage.getItem("ACCESS_TOKEN");
-
-      if (data.email !== "test@test.com") {
-        setError("root", { message: "User not found." });
+    if (!user) {
+      if (error) {
+        setError("root", { message: error });
         return;
       }
-
-      if (data.email === payload.email && localToken === payload.token) {
-        navigate("/");
-        return;
-      }
-    } catch (error) {
-      setError("root", { message: "Error from backend." });
     }
+
+    navigate("/");
+    reset();
   };
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(onSubmitLogin)}
       className="flex flex-col items-center gap-4 f-regular"
     >
       <div className="w-[300px]">
@@ -82,7 +77,7 @@ const SignInForm = () => {
         }`}
         disabled={isSubmitting}
       >
-        {isSubmitting ? "Loading..." : "Sign in"}
+        {loading ? "Loading..." : "Sign in"}
       </Button>
 
       {errors.root && (

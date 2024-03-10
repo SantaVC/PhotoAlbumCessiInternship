@@ -3,8 +3,6 @@ import HomePage from "./pages/HomePage";
 import Header from "./components/Header";
 import SignUpModal from "./components/SignUp/SignUpModal";
 import SignInModal from "./components/SignIn/SignInModal";
-import { useEffect } from "react";
-import instance from "./axios";
 
 const App = () => {
   console.log("App rendered");

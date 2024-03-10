@@ -1,12 +1,11 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "../ui/Button";
-import { fetchAuth } from "../../redux/slices/authSlice";
+import { userRegister } from "../../redux/slices/userSlice";
 import { passwordRegex } from "../../constants";
-import instance from "../../axios";
 
 const schema = z
   .object({
@@ -26,8 +25,10 @@ const schema = z
   });
 
 const SignUpForm = () => {
+  console.log("Sign up from rendered");
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { data: user, error } = useSelector((state) => state.user);
 
   const {
     register,
@@ -37,31 +38,27 @@ const SignUpForm = () => {
     formState: { errors, isSubmitting },
   } = useForm({ resolver: zodResolver(schema) });
 
-  const onSubmit = async (data) => {
-    console.log(data);
-    try {
-      const response = await instance.post("/signup", {
-        email: data.email,
-        password: data.password,
-        password_confirmation: data.password_confirmation
-      });
+  const onSubmitRegister = async (data) => {
+    console.log(user, error);
 
-      // const { payload } = await dispatch(fetchAuth(data));
-      //
-      // if (payload.email === "test@test.com") {
-      //   window.localStorage.setItem("ACCESS_TOKEN", payload.token);
-      //   navigate("/");
-      //   return;
-      // }
-    } catch (error) {
-      console.log(error);
-      setError("root", { message: "Error from backend." });
+    await dispatch(userRegister(data));
+
+    console.log(user, error);
+
+    if (!user) {
+      if (error) {
+        setError("root", { message: error });
+      }
+      return;
     }
+
+    reset();
+    navigate("/");
   };
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(onSubmitRegister)}
       className="flex flex-col items-center gap-4 f-regular"
     >
       <div className="w-[300px]">
@@ -95,7 +92,9 @@ const SignUpForm = () => {
           placeholder="Confirm password..."
         />
         {errors.password_confirmation && (
-          <p className="px-1 text-red-500">{errors.password_confirmation.message}</p>
+          <p className="px-1 text-red-500">
+            {errors.password_confirmation.message}
+          </p>
         )}
       </div>
 
