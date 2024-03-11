@@ -4,15 +4,27 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "../ui/Button";
-import { passwordRegex } from "../../constants";
+import { passwordRegex, nicknameRegex } from "../../constants";
 import { registerUser } from "../../redux/thunks/authThunks";
 
 const schema = z
   .object({
-    email: z.string().email("Invalid email."),
+    nickname: z
+      .string()
+      .min(4, "Nickname must be at least 4 characters.")
+      .max(20, "Nickname must be maximum 20 characters.")
+      .regex(
+        nicknameRegex,
+        "Nickname must contain only english letters or numbers."
+      ),
+    email: z
+      .string()
+      .email("Invalid email.")
+      .max(255, "Email must me maximum 255 characters."),
     password: z
       .string()
       .min(8, "Password must be at least 8 characters long.")
+      .max(20, "Password must be maximum 20 characters long.")
       .regex(
         passwordRegex,
         "Password must contain one uppercase, one lowercase, one number and no special characters."
@@ -44,7 +56,7 @@ const SignUpForm = () => {
       navigate("/");
       reset();
     } catch (error) {
-      console.log("Register failed");
+      console.log("Register failed", error);
 
       setError("root", { message: error.message });
     }
@@ -55,6 +67,18 @@ const SignUpForm = () => {
       onSubmit={handleSubmit(onSubmitRegister)}
       className="flex flex-col items-center gap-4 f-regular"
     >
+      <div className="w-[300px]">
+        <input
+          {...register("nickname")}
+          type="text"
+          className="w-full py-2 px-3 border border-neutral-500 rounded-md"
+          placeholder="Nickname..."
+        />
+        {errors.nickname && (
+          <p className="px-1 text-red-500">{errors.nickname.message}</p>
+        )}
+      </div>
+
       <div className="w-[300px]">
         <input
           {...register("email")}

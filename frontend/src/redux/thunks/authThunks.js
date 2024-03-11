@@ -13,12 +13,18 @@ export const registerUser = createAsyncThunk(
 
       dispatch(setUser(user));
     } catch (error) {
+      console.log(error);
+
+      if (!error.request.status || error.response.status === 500) {
+        dispatch(setError(error.message));
+        throw error.message;
+      }
+
       window.localStorage.removeItem("ACCESS_TOKEN");
+      // error.response.data.errors <- errors object
+      dispatch(setError(error.response.data.errors));
 
-      // error.response.data.message <- actual error
-      dispatch(setError(error.response.data.message));
-
-      throw error.response.data.message;
+      throw error.response.data;
     }
   }
 );
@@ -35,9 +41,18 @@ export const loginUser = createAsyncThunk(
 
       dispatch(setUser(user));
     } catch (error) {
-      dispatch(setError(error.response.data.message));
+      console.log(error);
 
-      throw error.message;
+      if (!error.request.status || error.response.status === 500) {
+        dispatch(setError(error.message));
+        throw error.message;
+      }
+
+      window.localStorage.removeItem("ACCESS_TOKEN");
+      // error.response.data.errors <- errors object
+      dispatch(setError(error.response.data.errors));
+
+      throw error.response.data;
     }
   }
 );
