@@ -1,9 +1,14 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import { CiMenuKebab } from "react-icons/ci";
 import { IoNotifications } from "react-icons/io5";
 import { FaUserCircle } from "react-icons/fa";
 import Button from "./ui/Button";
+import Menu from "./Menu";
 
 const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   return (
     <header className="flex justify-between py-4">
       <div className="flex gap-6">
@@ -25,9 +30,20 @@ const Header = () => {
           <div className="block w-3 h-3 absolute top-1 right-1 bg-red-500 rounded-full"></div>
         </Button>
 
-        <Link to={"/login"} className="p-1">
+        <Button className="p-1">
           <FaUserCircle size={30} />
-        </Link>
+        </Button>
+
+        <div className="relative">
+          <Button
+            onClick={() => setIsMenuOpen((current) => !current)}
+            className="p-1"
+          >
+            <CiMenuKebab size={30} />
+          </Button>
+
+          {isMenuOpen && <Menu setIsOpen={setIsMenuOpen} />}
+        </div>
       </div>
     </header>
   );
