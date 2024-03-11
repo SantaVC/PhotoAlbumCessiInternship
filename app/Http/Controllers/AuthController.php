@@ -17,10 +17,11 @@ class AuthController extends Controller
     try {
       $data = $request->validated();
 
-      /** @var \App\Models\User $user */
+      /*@var \App\Models\User $user */
       $user = User::create([
         'email' => $data['email'],
-        'password' => bcrypt($data['password'])
+        'password' => bcrypt($data['password']),
+        'nickname' => $data['nickname']
       ]);
       $token = $user->createToken('main')->plainTextToken;
 
@@ -60,7 +61,7 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        /** @var User $user */
+        /* @var User $user */
         $user = Auth::user();
 
         $user->currentAccessToken()->delete();
