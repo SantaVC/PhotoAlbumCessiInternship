@@ -20,6 +20,12 @@ class User extends Authenticatable
     protected $fillable = [
         'email',
         'password',
+        'nickname',
+    ];
+    protected $rules = [
+        'email' => 'required|email|unique:users|max:40',
+        'password' => 'required|min:8|',
+        'nickname' => 'required|string|min:4|max:20|unique:users',
     ];
 
     /**

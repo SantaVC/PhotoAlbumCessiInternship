@@ -20,7 +20,8 @@ class AuthController extends Controller
       /** @var \App\Models\User $user */
       $user = User::create([
         'email' => $data['email'],
-        'password' => bcrypt($data['password'])
+        'password' => bcrypt($data['password']),
+        'nickname' => $data['nickname'],
       ]);
       $token = $user->createToken('main')->plainTextToken;
 
