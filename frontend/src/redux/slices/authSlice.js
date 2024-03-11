@@ -1,32 +1,35 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
-export const fetchAuth = createAsyncThunk("auth/fetchAuth", async (data) => {
-  await new Promise((resolve) => setTimeout(() => resolve(), 1000));
-  return { ...data, token: "123" };
-});
-
-const authSlice = createSlice({
+export const authSlice = createSlice({
   name: "auth",
   initialState: {
-    data: null,
+    user: null,
+    isAuthenticated: false,
     loading: false,
+    error: null,
   },
-  extraReducers: (builder) => {
-    builder.addCase(fetchAuth.pending, (state, { payload }) => {
-      state.data = null;
-      state.loading = true;
-    });
-
-    builder.addCase(fetchAuth.fulfilled, (state, { payload }) => {
-      state.data = payload;
+  reducers: {
+    setUser: (state, action) => {
+      state.user = action.payload;
+      state.isAuthenticated = !!action.payload;
       state.loading = false;
-    });
-
-    builder.addCase(fetchAuth.rejected, (state, { payload }) => {
-      state.data = null;
+      state.error = null;
+    },
+    setLoading: (state, action) => {
+      state.loading = action.payload;
+    },
+    setError: (state, action) => {
+      state.error = action.payload;
       state.loading = false;
-    });
+    },
   },
 });
+
+export const { setUser, setLoading, setError } = authSlice.actions;
+
+export const selectUser = (state) => state.auth.user;
+export const selectIsAuthenticated = (state) => state.auth.isAuthenticated;
+export const selectLoading = (state) => state.auth.loading;
+export const selectError = (state) => state.auth.error;
 
 export default authSlice.reducer;
