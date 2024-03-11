@@ -1,11 +1,11 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "../ui/Button";
-import { userRegister } from "../../redux/slices/userSlice";
 import { passwordRegex } from "../../constants";
+import { registerUser } from "../../redux/thunks/authThunks";
 
 const schema = z
   .object({
@@ -25,10 +25,8 @@ const schema = z
   });
 
 const SignUpForm = () => {
-  console.log("Sign up from rendered");
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { data: user, error } = useSelector((state) => state.user);
 
   const {
     register,
@@ -39,21 +37,17 @@ const SignUpForm = () => {
   } = useForm({ resolver: zodResolver(schema) });
 
   const onSubmitRegister = async (data) => {
-    console.log(user, error);
+    try {
+      await dispatch(registerUser(data)).unwrap();
 
-    await dispatch(userRegister(data));
+      console.log("Register success");
+      navigate("/");
+      reset();
+    } catch (error) {
+      console.log("Register failed");
 
-    console.log(user, error);
-
-    if (!user) {
-      if (error) {
-        setError("root", { message: error });
-      }
-      return;
+      setError("root", { message: error.message });
     }
-
-    reset();
-    navigate("/");
   };
 
   return (

@@ -1,11 +1,11 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "../ui/Button";
-import { userLogin } from "../../redux/slices/userSlice";
 import { passwordRegex } from "../../constants";
+import { loginUser } from "../../redux/thunks/authThunks";
 
 const schema = z.object({
   email: z.string().email("Invalid email."),
@@ -18,7 +18,6 @@ const schema = z.object({
 const SignInForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { data: user, error, loading } = useSelector((state) => state.user);
 
   const {
     register,
@@ -29,17 +28,17 @@ const SignInForm = () => {
   } = useForm({ resolver: zodResolver(schema) });
 
   const onSubmitLogin = async (data) => {
-    await dispatch(userLogin(data));
+    try {
+      await dispatch(loginUser(data)).unwrap();
 
-    if (!user) {
-      if (error) {
-        setError("root", { message: error });
-        return;
-      }
+      console.log("Login success");
+      navigate("/");
+      reset();
+    } catch (error) {
+      console.log("Login failed");
+      // setError("root", { message: error.message }) (backend error);
+      setError("root", { message: "Wrong email or password." });
     }
-
-    navigate("/");
-    reset();
   };
 
   return (
@@ -77,7 +76,7 @@ const SignInForm = () => {
         }`}
         disabled={isSubmitting}
       >
-        {loading ? "Loading..." : "Sign in"}
+        {isSubmitting ? "Loading..." : "Sign in"}
       </Button>
 
       {errors.root && (
