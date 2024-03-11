@@ -14,5 +14,5 @@ Route::get('/test', function () {
 
 Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::get('/logout', [AuthController::class, 'logout']);
+Route::post('/logout', [AuthController::class, 'logout']);
 Route::get('/testAPI', [AuthController::class, 'testAPI']);

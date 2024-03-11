@@ -5,16 +5,15 @@ import SignUpModal from "./components/SignUp/SignUpModal";
 import SignInModal from "./components/SignIn/SignInModal";
 
 const App = () => {
-  console.log("App rendered");
-
   return (
     <div className="max-w-screen-xl mx-auto px-4">
       <Header />
 
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<SignInModal />} />
-        <Route path="/signup" element={<SignUpModal />} />
+        <Route path="/" element={<HomePage />}>
+          <Route path="/login" element={<SignInModal />} />
+          <Route path="/signup" element={<SignUpModal />} />
+        </Route>
       </Routes>
     </div>
   );

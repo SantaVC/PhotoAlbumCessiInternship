@@ -56,3 +56,30 @@ export const loginUser = createAsyncThunk(
     }
   }
 );
+
+export const logoutUser = createAsyncThunk(
+  "auth/logoutUser",
+  async (_, { dispatch }) => {
+    try {
+      dispatch(setLoading(true));
+      const response = await authService.logout();
+      console.log(response);
+      window.localStorage.removeItem("ACCESS_TOKEN");
+
+      dispatch(setUser(null));
+    } catch (error) {
+      console.log(error);
+
+      if (!error.request.status || error.response.status === 500) {
+        dispatch(setError(error.message));
+        throw error.message;
+      }
+
+      window.localStorage.removeItem("ACCESS_TOKEN");
+      // error.response.data.errors <- errors object
+      dispatch(setError(error.response.data.errors));
+
+      throw error.response.data;
+    }
+  }
+);
