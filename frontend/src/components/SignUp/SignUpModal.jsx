@@ -1,10 +1,17 @@
 import "../../scss/LoginModal.scss";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { CgCloseR } from "react-icons/cg";
+import { getAuthToken } from "../../services/authService";
 import Modal from "../ui/Modal";
 import SignUpForm from "./SignUpForm";
 
 const SignUpModal = () => {
+  const authToken = getAuthToken();
+
+  if (authToken) {
+    return <Navigate to={"/"} />;
+  }
+
   return (
     <Modal>
       <div className="SignInModal fixed top-1/2 left-1/2 max-w-96 bg-white rounded-xl onModalOpen">

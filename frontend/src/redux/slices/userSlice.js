@@ -1,11 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import instance from "../../axios";
+import axiosClient from "../../axios";
 
 export const userRegister = createAsyncThunk(
   "user/userRegister",
   async (data) => {
     try {
-      const response = await instance.post("/signup", {
+      const response = await axiosClient.post("/signup", {
         email: data.email,
         password: data.password,
         password_confirmation: data.password_confirmation,
@@ -19,7 +19,7 @@ export const userRegister = createAsyncThunk(
 );
 
 export const userLogin = createAsyncThunk("user/userLogin", async (data) => {
-  const response = await instance.post("/login", {
+  const response = await axiosClient.post("/login", {
     email: data.email,
     password: data.password,
   });

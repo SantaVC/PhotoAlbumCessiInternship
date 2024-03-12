@@ -26,3 +26,16 @@
     transform: translate(-50%, -50%);
   }
 }
+
+.animate-opacity {
+  animation: animate-opacity 500ms forwards;
+}
+
+@keyframes animate-opacity {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

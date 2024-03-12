@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { CiMenuKebab } from "react-icons/ci";
@@ -8,6 +9,25 @@ import Menu from "./Menu";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef();
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (!menuRef.current) {
+        return;
+      }
+
+      if (!menuRef.current.contains(e.target)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("click", handler, true);
+
+    return () => {
+      window.removeEventListener("click", handler);
+    };
+  }, []);
 
   return (
     <header className="flex justify-between py-4">
@@ -24,6 +44,7 @@ const Header = () => {
           type="text"
         />
       </div>
+
       <div className="flex items-center gap-3">
         <Button className="relative p-1">
           <IoNotifications size={30} />
@@ -34,7 +55,7 @@ const Header = () => {
           <FaUserCircle size={30} />
         </Button>
 
-        <div className="relative">
+        <div ref={menuRef} className="relative">
           <Button
             onClick={() => setIsMenuOpen((current) => !current)}
             className="p-1"
