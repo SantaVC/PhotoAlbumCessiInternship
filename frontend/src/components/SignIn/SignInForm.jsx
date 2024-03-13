@@ -4,8 +4,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "../ui/Button";
-import { fetchAuth } from "../../redux/slices/authSlice";
 import { passwordRegex } from "../../constants";
+import { loginUser } from "../../redux/thunks/authThunks";
 
 const schema = z.object({
   email: z.string().email("Invalid email."),
@@ -27,29 +27,23 @@ const SignInForm = () => {
     formState: { errors, isSubmitting },
   } = useForm({ resolver: zodResolver(schema) });
 
-  const onSubmit = async (data) => {
+  const onSubmitLogin = async (data) => {
     try {
-      const { payload } = await dispatch(fetchAuth(data));
+      await dispatch(loginUser(data)).unwrap();
 
-      const localToken = window.localStorage.getItem("ACCESS_TOKEN");
-
-      if (data.email !== "test@test.com") {
-        setError("root", { message: "User not found." });
-        return;
-      }
-
-      if (data.email === payload.email && localToken === payload.token) {
-        navigate("/");
-        return;
-      }
+      console.log("Login success");
+      navigate("/");
+      reset();
     } catch (error) {
-      setError("root", { message: "Error from backend." });
+      console.log("Login failed");
+      // setError("root", { message: error.message }) (backend error);
+      setError("root", { message: "Wrong email or password." });
     }
   };
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(onSubmitLogin)}
       className="flex flex-col items-center gap-4 f-regular"
     >
       <div className="w-[300px]">

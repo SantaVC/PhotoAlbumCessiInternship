@@ -2,7 +2,7 @@ import "../../scss/LoginModal.scss";
 import { Link } from "react-router-dom";
 import { CgCloseR } from "react-icons/cg";
 import Modal from "../ui/Modal";
-import SignUpForm from "./SignUpFrom";
+import SignUpForm from "./SignUpForm";
 
 const SignUpModal = () => {
   return (
@@ -25,7 +25,7 @@ const SignUpModal = () => {
 
           <Link
             to={"/"}
-            className="absolute top-[-32px] right-[-32px] p-1 hover:rotate-90 transition-[transform] duration-300"
+            className="absolute top-[-32px] right-[-32px] p-1 opacity-60 hover:opacity-100 hover:rotate-90 transition-[transform] duration-300"
           >
             <CgCloseR size={30} />
           </Link>

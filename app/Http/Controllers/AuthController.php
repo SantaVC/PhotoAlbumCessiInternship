@@ -17,7 +17,7 @@ class AuthController extends Controller
     try {
       $data = $request->validated();
 
-      /** @var \App\Models\User $user */
+      /*@var \App\Models\User $user */
       $user = User::create([
         'email' => $data['email'],
         'password' => bcrypt($data['password']),
@@ -59,15 +59,10 @@ class AuthController extends Controller
         return response()->json(['message' => 'Hello World!']);
     }
 
-    public function logout(Request $request)
+    public function logout()
     {
-        /** @var User $user */
-        $user = Auth::user();
+      Auth::logout();
 
-        $user->currentAccessToken()->delete();
-
-        return response([
-            'success' => true
-        ]);
+      return response()->json(['message' => 'Logged out successfully']);
     }
 }
