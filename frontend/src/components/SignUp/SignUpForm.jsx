@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "../ui/Button";
 import { passwordRegex, nicknameRegex } from "../../constants";
 import { registerUser } from "../../redux/thunks/authThunks";
-
+import axios from "../../axios";
 const schema = z
   .object({
     nickname: z
@@ -50,14 +50,12 @@ const SignUpForm = () => {
 
   const onSubmitRegister = async (data) => {
     try {
-      await dispatch(registerUser(data)).unwrap();
-
-      console.log("Register success");
-      navigate("/");
-      reset();
+      const response = await axios.post('/signup', data);
+      console.log(response.data); // Вывод данных из ответа
+      navigate("/"); // Перенаправление после успешной регистрации
+      reset(); // Сброс формы
     } catch (error) {
       console.log("Register failed", error);
-
       setError("root", { message: error.message });
     }
   };
