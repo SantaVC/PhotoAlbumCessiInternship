@@ -2,11 +2,11 @@ import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import { setUser } from "./redux/slices/authSlice";
+import { getLocalUser } from "./services/authService";
 import HomePage from "./pages/HomePage";
 import Header from "./components/Header";
 import SignUpModal from "./components/SignUp/SignUpModal";
 import SignInModal from "./components/SignIn/SignInModal";
-import { getLocalUser } from "./services/authService";
 
 const App = () => {
   const dispatch = useDispatch();

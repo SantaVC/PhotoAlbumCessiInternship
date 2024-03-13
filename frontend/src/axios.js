@@ -13,4 +13,14 @@ axiosClient.interceptors.request.use((config) => {
   return config;
 });
 
+// axiosClient.interceptors.response.use((config) => {
+//   const token = getAuthToken();
+
+//   config.headers.Authorization = `Bearer ${token}`;
+
+//   return config;
+// });
+
+// race condition access refresh tokens
+
 export default axiosClient;
