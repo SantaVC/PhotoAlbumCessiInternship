@@ -1,31 +1,26 @@
 import axios from "axios";
+import { getAuthToken } from "./services/authService";
 
-const instance = axios.create({
+const axiosClient = axios.create({
   baseURL: `http://localhost:8000/api`,
 });
 
-// instance.interceptors.request.use((config) => {
-//   const token = localStorage.getItem("token");
+axiosClient.interceptors.request.use((config) => {
+  const token = getAuthToken();
+
+  config.headers.Authorization = `Bearer ${token}`;
+
+  return config;
+});
+
+// axiosClient.interceptors.response.use((config) => {
+//   const token = getAuthToken();
 
 //   config.headers.Authorization = `Bearer ${token}`;
 
 //   return config;
 // });
 
-// instance.interceptors.response.use(
-//   (response) => {
-//     return response;
-//   },
-//   (error) => {
-//     if (error.response && error.response.status === 401) {
-//       localStorage.removeItem("token");
+// race condition access refresh tokens
 
-//       window.location.href = "/login";
-
-//       return error;
-//     }
-//     return Promise.reject(error);
-//   }
-// );
-
-export default instance;
+export default axiosClient;

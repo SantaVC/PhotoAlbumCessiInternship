@@ -1,6 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { setUser, setLoading, setError } from "../slices/authSlice";
-import authService from "../../services/authService";
+import authService, {
+  removeAuthToken,
+  removeLocalUser,
+  setAuthToken,
+  setLocalUser,
+} from "../../services/authService";
 
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
@@ -9,7 +14,8 @@ export const registerUser = createAsyncThunk(
       dispatch(setLoading(true));
       const { user, token } = await authService.register(userData);
 
-      window.localStorage.setItem("ACCESS_TOKEN", token);
+      setAuthToken(token);
+      setLocalUser(user);
 
       dispatch(setUser(user));
     } catch (error) {
@@ -20,7 +26,8 @@ export const registerUser = createAsyncThunk(
         throw error.message;
       }
 
-      window.localStorage.removeItem("ACCESS_TOKEN");
+      removeAuthToken();
+      removeLocalUser();
       // error.response.data.errors <- errors object
       dispatch(setError(error.response.data.errors));
 
@@ -37,7 +44,8 @@ export const loginUser = createAsyncThunk(
 
       const { user, token } = await authService.login(userData);
 
-      window.localStorage.setItem("ACCESS_TOKEN", token);
+      setLocalUser(user);
+      setAuthToken(token);
 
       dispatch(setUser(user));
     } catch (error) {
@@ -48,10 +56,10 @@ export const loginUser = createAsyncThunk(
         throw error.message;
       }
 
-      window.localStorage.removeItem("ACCESS_TOKEN");
+      removeAuthToken();
+      removeLocalUser();
       // error.response.data.errors <- errors object
       dispatch(setError(error.response.data.errors));
-
       throw error.response.data;
     }
   }
@@ -64,7 +72,9 @@ export const logoutUser = createAsyncThunk(
       dispatch(setLoading(true));
       const response = await authService.logout();
       console.log(response);
-      window.localStorage.removeItem("ACCESS_TOKEN");
+
+      removeAuthToken();
+      removeLocalUser();
 
       dispatch(setUser(null));
     } catch (error) {
@@ -75,7 +85,6 @@ export const logoutUser = createAsyncThunk(
         throw error.message;
       }
 
-      window.localStorage.removeItem("ACCESS_TOKEN");
       // error.response.data.errors <- errors object
       dispatch(setError(error.response.data.errors));
 

@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { getLocalUser, removeLocalUser } from "../../services/authService";
 
 export const authSlice = createSlice({
   name: "auth",
@@ -10,7 +11,14 @@ export const authSlice = createSlice({
   },
   reducers: {
     setUser: (state, action) => {
-      state.user = action.payload;
+      const localUser = getLocalUser();
+
+      if (localUser) {
+        state.user = JSON.parse(localUser);
+      } else {
+        state.user = action.payload;
+      }
+
       state.isAuthenticated = !!action.payload;
       state.loading = false;
       state.error = null;
@@ -21,6 +29,7 @@ export const authSlice = createSlice({
     setError: (state, action) => {
       state.error = action.payload;
       state.loading = false;
+      removeLocalUser();
     },
   },
 });

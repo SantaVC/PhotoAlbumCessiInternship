@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Button from "../ui/Button";
 import { passwordRegex } from "../../constants";
 import { loginUser } from "../../redux/thunks/authThunks";
+import Button from "../ui/Button";
 
 const schema = z.object({
   email: z.string().email("Invalid email."),
@@ -36,8 +36,7 @@ const SignInForm = () => {
       reset();
     } catch (error) {
       console.log("Login failed");
-      // setError("root", { message: error.message }) (backend error);
-      setError("root", { message: "Wrong email or password." });
+      setError("root", { message: error.message });
     }
   };
 
@@ -71,9 +70,7 @@ const SignInForm = () => {
 
       <Button
         type="submit"
-        className={`border border-neutral-500 px-5 py-2 f-bold hover:bg-sky-300 ${
-          isSubmitting && "hover:bg-neutral-300 cursor-not-allowed"
-        }`}
+        className="border border-neutral-500 px-5 py-2 f-bold hover:bg-sky-300 disabled:cursor-not-allowed"
         disabled={isSubmitting}
       >
         {isSubmitting ? "Loading..." : "Sign in"}
