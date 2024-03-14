@@ -4,8 +4,7 @@ import { Link } from "react-router-dom";
 import { CiMenuKebab } from "react-icons/ci";
 import { IoNotifications } from "react-icons/io5";
 import { FaUserCircle } from "react-icons/fa";
-import Button from "./ui/Button";
-import Menu from "./Menu";
+import { Button, Menu } from "./index";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -51,9 +50,9 @@ const Header = () => {
           <div className="block w-3 h-3 absolute top-1 right-1 bg-red-500 rounded-full"></div>
         </Button>
 
-        <Button className="p-1">
+        <Link to={"/profile"} className="flex items-center justify-center p-1">
           <FaUserCircle size={30} />
-        </Button>
+        </Link>
 
         <div ref={menuRef} className="relative">
           <Button

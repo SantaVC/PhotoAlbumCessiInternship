@@ -1,15 +1,13 @@
 import "../../scss/LoginModal.scss";
 import { Link, Navigate } from "react-router-dom";
 import { CgCloseR } from "react-icons/cg";
-import { getAuthToken } from "../../services/authService";
-import Button from "../ui/Button";
-import Modal from "../ui/Modal";
-import SignInForm from "./SignInForm";
+import { Button, Modal, SignInForm } from "../index";
+import useUserAuth from "../../hooks/useUserAuth";
 
 const SignInModal = () => {
-  const authToken = getAuthToken();
+  const { token } = useUserAuth();
 
-  if (authToken) {
+  if (token) {
     return <Navigate to={"/"} />;
   }
 

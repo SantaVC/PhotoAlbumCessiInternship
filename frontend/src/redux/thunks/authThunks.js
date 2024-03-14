@@ -1,37 +1,26 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { setUser, setLoading, setError } from "../slices/authSlice";
-import authService, {
-  removeAuthToken,
-  removeLocalUser,
-  setAuthToken,
-  setLocalUser,
-} from "../../services/authService";
+import { resetAuth, setAuth, setLoading } from "../slices/authSlice";
+import authService from "../../services/authService";
 
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async (userData, { dispatch }) => {
     try {
       dispatch(setLoading(true));
-      const { user, token } = await authService.register(userData);
 
-      setAuthToken(token);
-      setLocalUser(user);
+      const response = await authService.register(userData);
 
-      dispatch(setUser(user));
+      dispatch(setAuth(response));
     } catch (error) {
       console.log(error);
 
       if (!error.request.status || error.response.status === 500) {
-        dispatch(setError(error.message));
         throw error.message;
       }
 
-      removeAuthToken();
-      removeLocalUser();
-      // error.response.data.errors <- errors object
-      dispatch(setError(error.response.data.errors));
-
       throw error.response.data;
+    } finally {
+      dispatch(setLoading(false));
     }
   }
 );
@@ -42,25 +31,19 @@ export const loginUser = createAsyncThunk(
     try {
       dispatch(setLoading(true));
 
-      const { user, token } = await authService.login(userData);
+      const response = await authService.login(userData);
 
-      setLocalUser(user);
-      setAuthToken(token);
-
-      dispatch(setUser(user));
+      dispatch(setAuth(response));
     } catch (error) {
       console.log(error);
 
       if (!error.request.status || error.response.status === 500) {
-        dispatch(setError(error.message));
         throw error.message;
       }
 
-      removeAuthToken();
-      removeLocalUser();
-      // error.response.data.errors <- errors object
-      dispatch(setError(error.response.data.errors));
       throw error.response.data;
+    } finally {
+      dispatch(setLoading(false));
     }
   }
 );
@@ -70,25 +53,21 @@ export const logoutUser = createAsyncThunk(
   async (_, { dispatch }) => {
     try {
       dispatch(setLoading(true));
+
       const response = await authService.logout();
       console.log(response);
 
-      removeAuthToken();
-      removeLocalUser();
-
-      dispatch(setUser(null));
+      dispatch(resetAuth());
     } catch (error) {
       console.log(error);
 
       if (!error.request.status || error.response.status === 500) {
-        dispatch(setError(error.message));
         throw error.message;
       }
 
-      // error.response.data.errors <- errors object
-      dispatch(setError(error.response.data.errors));
-
       throw error.response.data;
+    } finally {
+      dispatch(setLoading(false));
     }
   }
 );

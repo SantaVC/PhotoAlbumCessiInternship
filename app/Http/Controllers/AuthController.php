@@ -39,17 +39,17 @@ class AuthController extends Controller
   {
       $credentials = $request->validated();
       $token = JWTAuth::attempt($credentials);
-  
+
       if (!$token) {
           return response()->json(['error' => 'Invalid credentials'], 422);
       }
       $user = Auth::user();
       return response([
-          'user' => $user, 
+          'user' => $user,
           'token' => $token
       ]);
   }
-  
+
 
     public function testAPI()
     {
@@ -61,5 +61,13 @@ class AuthController extends Controller
       Auth::logout();
 
       return response()->json(['message' => 'Logged out successfully']);
+    }
+    public function refresh()
+    {
+      return $this->respondWithToken(auth()->refresh());
+       // {
+       //     return response()->json([
+       //         'token' => auth()->refresh(),
+       //     ]);
     }
 }

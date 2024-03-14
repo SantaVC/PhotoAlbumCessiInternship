@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,8 +16,10 @@ const schema = z.object({
 });
 
 const SignInForm = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
 
   const {
     register,
@@ -32,7 +34,10 @@ const SignInForm = () => {
       await dispatch(loginUser(data)).unwrap();
 
       console.log("Login success");
-      navigate("/");
+
+      // navigates user to where they wanted to go
+      // for expample to Profile page if they clicked on Profile icon
+      navigate(from, { replace: true });
       reset();
     } catch (error) {
       console.log("Login failed");
