@@ -1,8 +1,10 @@
 import axios from "axios";
+import { getAuthToken } from "./services/authService";
 
-const instance = axios.create({
+const axiosClient = axios.create({
   baseURL: `http://localhost:8000/api`,
 });
+
 
  instance.interceptors.request.use((config) => {
    const token = localStorage.getItem("token");
@@ -10,20 +12,7 @@ const instance = axios.create({
    return config;
  });
 
-// instance.interceptors.response.use(
-//   (response) => {
-//     return response;
-//   },
-//   (error) => {
-//     if (error.response && error.response.status === 401) {
-//       localStorage.removeItem("token");
 
-//       window.location.href = "/login";
+// race condition access refresh tokens
 
-//       return error;
-//     }
-//     return Promise.reject(error);
-//   }
-// );
-
-export default instance;
+export default axiosClient;

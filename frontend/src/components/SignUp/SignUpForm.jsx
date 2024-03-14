@@ -116,9 +116,7 @@ const SignUpForm = () => {
 
       <Button
         type="submit"
-        className={`border border-neutral-500 px-5 py-2 f-bold hover:bg-sky-300 ${
-          isSubmitting && "hover:bg-neutral-300 cursor-not-allowed"
-        }`}
+        className="border border-neutral-500 px-5 py-2 f-bold hover:bg-sky-300 disabled:bg-neutral-300 disabled:cursor-not-allowed"
         disabled={isSubmitting}
       >
         {isSubmitting ? "Loading..." : "Sign up"}
