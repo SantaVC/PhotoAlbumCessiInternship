@@ -1,19 +1,21 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { logoutUser } from "../redux/thunks/authThunks";
 import { AiOutlineLoading } from "react-icons/ai";
-import { getAuthToken } from "../services/authService";
 import { selectLoading } from "../redux/slices/authSlice";
-import Button from "./ui/Button";
+import { Button } from "./index";
+import useUserAuth from "../hooks/useUserAuth";
 
 const Menu = ({ setIsOpen }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const loading = useSelector(selectLoading);
-  const token = getAuthToken();
+  const { token } = useUserAuth();
 
   const handleClick = async () => {
     await dispatch(logoutUser()).unwrap();
     setIsOpen(false);
+    navigate("/");
   };
 
   return (

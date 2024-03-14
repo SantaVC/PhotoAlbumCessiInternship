@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Button from "../ui/Button";
 import { passwordRegex, nicknameRegex } from "../../constants";
 import { registerUser } from "../../redux/thunks/authThunks";
-import axios from "../../axios";
+import Button from "../ui/Button";
+
 const schema = z
   .object({
     nickname: z
@@ -37,8 +37,8 @@ const schema = z
   });
 
 const SignUpForm = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -50,10 +50,11 @@ const SignUpForm = () => {
 
   const onSubmitRegister = async (data) => {
     try {
-      const response = await axios.post('/signup', data);
-      console.log(response.data); // Вывод данных из ответа
-      navigate("/"); // Перенаправление после успешной регистрации
-      reset(); // Сброс формы
+      await dispatch(registerUser(data)).unwrap();
+
+      // navigates user to main page
+      navigate("");
+      reset();
     } catch (error) {
       console.log("Register failed", error);
       setError("root", { message: error.message });
