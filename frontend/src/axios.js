@@ -1,10 +1,12 @@
 import axios from "axios";
+import { TOKEN_KEY } from "./constants";
 
 const BASE_URL = "http://localhost:8000/api";
 
 const axiosClient = axios.create({
   baseURL: BASE_URL,
   headers: { "Content-Type": "application/json" },
+  withCredentials: true,
 });
 
 export const axiosPrivateClient = axios.create({
@@ -13,13 +15,13 @@ export const axiosPrivateClient = axios.create({
   withCredentials: true,
 });
 
-axiosClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
+// axiosClient.interceptors.request.use((config) => {
+//   const token = localStorage.getItem(TOKEN_KEY);
 
-  config.headers.Authorization = `Bearer ${token}`;
+//   config.headers.Authorization = `Bearer ${token}`;
 
-  return config;
-});
+//   return config;
+// });
 
 // race condition access refresh tokens
 
