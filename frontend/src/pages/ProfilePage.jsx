@@ -7,6 +7,7 @@ const ProfilePage = () => {
     <section>
       <p>ProfilePage</p>
       <p>nickname: {token?.nickname}</p>
+      <p>Vanya</p>
     </section>
   );
 };
