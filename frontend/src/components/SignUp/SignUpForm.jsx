@@ -53,7 +53,8 @@ const SignUpForm = () => {
       await dispatch(registerUser(data)).unwrap();
 
       // navigates user to main page
-      navigate("");
+
+      navigate("/");
       reset();
     } catch (error) {
       console.log("Register failed", error);
