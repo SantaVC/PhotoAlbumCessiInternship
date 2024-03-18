@@ -14,8 +14,8 @@ export const registerUser = createAsyncThunk(
     } catch (error) {
       console.log(error);
 
-      if (!error.request.status || error.response.status === 500) {
-        throw error.message;
+      if (!error.request.status || error?.response?.status === 500) {
+        throw new Error("Internal server error.");
       }
 
       throw error.response.data;
@@ -33,17 +33,19 @@ export const loginUser = createAsyncThunk(
 
       const response = await authService.login(userData);
 
-      console.log(response);
-
       dispatch(setAuth(response));
     } catch (error) {
       console.log(error);
 
-      if (!error.request.status || error.response.status === 500) {
-        throw error.message;
+      if (error?.response?.status === 422) {
+        throw new Error("Wrong email or password.");
       }
 
-      throw error.response.data;
+      if (!error.request.status || error.response.status === 500) {
+        throw new Error("Internal server error.");
+      }
+
+      throw error.response.data.error;
     } finally {
       dispatch(setLoading(false));
     }

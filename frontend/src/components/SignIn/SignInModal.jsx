@@ -19,21 +19,6 @@ const SignInModal = () => {
 
           <SignInForm />
 
-          <div className="self-start">
-            <input
-              className="cursor-pointer absolute opacity-0"
-              id="rememberMe"
-              type="checkbox"
-            />
-
-            <label
-              className="flex items-center justify-center gap-2 cursor-pointer"
-              htmlFor="rememberMe"
-            >
-              Remember me
-            </label>
-          </div>
-
           <Button className="self-end text-sm underline underline-offset-2 decoration-sky-300">
             Forgot password?
           </Button>

@@ -1,12 +1,9 @@
 import axios from "axios";
-import { TOKEN_KEY } from "./constants";
 
 const BASE_URL = "http://localhost:8000/api";
 
 const axiosClient = axios.create({
   baseURL: BASE_URL,
-  headers: { "Content-Type": "application/json" },
-  withCredentials: true,
 });
 
 export const axiosPrivateClient = axios.create({

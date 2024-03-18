@@ -13,11 +13,10 @@ const useAxiosPrivate = () => {
         if (!config.headers["Authorization"]) {
           config.headers["Authorization"] = `Bearer ${token}`;
         }
-        console.log(config);
+
         return config;
       },
       (error) => {
-        console.log(error);
         Promise.reject(error);
       }
     );
@@ -28,11 +27,14 @@ const useAxiosPrivate = () => {
       async (error) => {
         const prevRequest = error?.config;
 
-        if (error?.response?.status === 401 && !prevRequest?.sent) {
+        console.log(error);
+        const errorStatus = error?.response?.status;
+
+        if (errorStatus === 401 && !prevRequest?.sent) {
           prevRequest.sent = true;
           const newAccessToken = await refresh();
 
-          console.log(`Prev token: ${token}\nNew token: ${newAccessToken}`);
+          console.log(`Prev token:\n${token}\nNew token:\n${newAccessToken}`);
 
           prevRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
 

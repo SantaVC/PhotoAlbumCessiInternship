@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Tymon\JWTAuth\Http\Middleware\Authenticate;
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+Route::middleware('jwt.auth')->get('/user', function (Request $request) {
     return $request->user();
 });
 
@@ -20,7 +20,7 @@ Route::middleware('jwt.auth')->get('/profile', function () {
 Route::post('/refresh', [AuthController::class, 'refresh']);
 Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout']);
+Route::get('/logout', [AuthController::class, 'logout']);
 Route::get('/testAPI', [AuthController::class, 'testAPI']);
 // Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
 // Route::middleware('auth:sanctum')->get('/testAPI', [AuthController::class, 'testAPI']);

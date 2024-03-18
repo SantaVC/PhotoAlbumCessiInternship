@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { removeAuthToken, setAuthToken } from "../../services/authService";
 
 export const authSlice = createSlice({
   name: "auth",
@@ -8,6 +7,7 @@ export const authSlice = createSlice({
       user: null,
       token: null,
     },
+    persist: JSON.parse(localStorage.getItem("persist")) || false,
     loading: false,
   },
   reducers: {
@@ -16,26 +16,31 @@ export const authSlice = createSlice({
 
       state.userAuth.user = user;
       state.userAuth.token = token;
-      setAuthToken(token);
+    },
+    setUser: (state, action) => {
+      state.userAuth.user = action.payload;
+    },
+    setToken: (state, action) => {
+      state.userAuth.token = action.payload;
     },
     resetAuth: (state, action) => {
       state.userAuth.user = null;
       state.userAuth.token = null;
-      removeAuthToken();
-    },
-    setToken: (state, action) => {
-      state.userAuth.token = action.payload;
-      setAuthToken(action.payload);
     },
     setLoading: (state, action) => {
       state.loading = action.payload;
     },
+    setPersist: (state, action) => {
+      state.persist = action.payload;
+    },
   },
 });
 
-export const { setAuth, setToken, setLoading, resetAuth } = authSlice.actions;
+export const { setAuth, setToken, setLoading, resetAuth, setUser, setPersist } =
+  authSlice.actions;
 
 export const selectAuth = (state) => state.auth.userAuth;
 export const selectLoading = (state) => state.auth.loading;
+export const selectPersist = (state) => state.auth.persist;
 
 export default authSlice.reducer;
