@@ -1,30 +1,44 @@
 import { useEffect } from "react";
-import useUserAuth from "../hooks/useUserAuth";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import useUserAuth from "../hooks/useUserAuth";
 import {
   resetAuth,
   selectLoading,
+  setUser,
   setLoading,
 } from "../redux/slices/authSlice";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const ProfilePage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const axiosPrivate = useAxiosPrivate();
   const loading = useSelector(selectLoading);
   const { user } = useUserAuth();
 
   useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+
     const fetchProfile = async () => {
       try {
         dispatch(setLoading(true));
 
-        const response = await axiosPrivate.get("/profile");
-        console.log(response.data);
+        const response = await axiosPrivate.get("/user", {
+          signal: controller.signal,
+        });
+
+        isMounted && dispatch(setUser(response.data));
       } catch (error) {
         console.log(error);
-        if (error.response.status === 401) {
-          dispatch(resetAuth());
+
+        dispatch(resetAuth());
+
+        if (error?.response?.status === 401) {
+          navigate("/login", { state: { from: location }, replace: true });
         }
       } finally {
         dispatch(setLoading(false));
@@ -32,7 +46,12 @@ const ProfilePage = () => {
     };
 
     fetchProfile();
-  }, [dispatch, axiosPrivate]);
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+  }, [axiosPrivate, dispatch, location, navigate]);
 
   return (
     <section>

@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import { setToken } from "../redux/slices/authSlice";
-import axiosClient, { axiosPrivateClient } from "../axios";
+import { axiosPrivateClient } from "../axios";
 
 const useRefreshToken = () => {
   const dispatch = useDispatch();

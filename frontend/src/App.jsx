@@ -4,8 +4,9 @@ import {
   SignUpModal,
   Header,
   RequireAuth,
+  PersistLogin,
 } from "./components/index";
-import { HomePage, ProfilePage } from "./pages/index";
+import { ProfilePage, LayoutPage } from "./pages/index";
 
 const App = () => {
   return (
@@ -13,15 +14,17 @@ const App = () => {
       <Header />
 
       <Routes>
-        <Route path="/" element={<HomePage />}>
+        <Route path="/" element={<LayoutPage />}>
           {/* Public routes */}
           <Route path="/login" element={<SignInModal />} />
           <Route path="/signup" element={<SignUpModal />} />
-        </Route>
 
-        {/* Protected routes */}
-        <Route element={<RequireAuth />}>
-          <Route path="/profile" element={<ProfilePage />} />
+          {/* Protected routes */}
+          <Route element={<PersistLogin />}>
+            <Route element={<RequireAuth />}>
+              <Route path="/profile" element={<ProfilePage />} />
+            </Route>
+          </Route>
         </Route>
       </Routes>
     </div>

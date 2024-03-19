@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
+use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\SignupRequest;
@@ -53,56 +56,43 @@ class AuthController extends Controller
             'token' => $token
         ]);
 
+        $expirationTime = 1440;
+
+        // Set path to '/'
+        $path = '/';
+
+        // Set domain to null for all subdomains
+        $domain = null;
+
+        // Set secure flag to true if using HTTPS
+        $secure = false;
+
+        $httpOnly = true;
+
         // Устанавливаем куку
-        $response->withCookie(Cookie::make('token', $token, /* Время жизни куки */));
+        $response->withCookie(Cookie::make('token', $token, $expirationTime, $path, $domain, $secure, $httpOnly));
 
         return $response;
     }
 
-    // public function refresh(Request $request)
-    // {
-    //   try {
-    //     // Get the current token from the request
-    //     $currentToken = $request->bearerToken();
-
-    //     // Refresh the token
-    //     $newToken = JWTAuth::refresh($currentToken);
-
-    //     // Create a new response with the new token
-    //     $response = response()->json(['token' => $newToken]);
-
-    //     // Attach the new token to a cookie
-    //     $cookie = Cookie::make('token', $newToken, /* Время жизни куки */);
-    //     $response->withCookie($cookie);
-
-    //     return $response;
-    //   } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
-    //     return response()->json(['error' => 'Token expired'], 401);
-    //   } catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
-    //     return response()->json(['error' => 'Token invalid'], 401);
-    //   } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
-    //     return response()->json(['error' => 'JWT exception'], 500);
-    //   }
-    // }
-
     public function refresh(Request $request)
     {
-        try {
-            $currentToken = JWTAuth::parseToken()->getToken();
-            $newToken = JWTAuth::refresh($currentToken);
+      try {
+        $currentToken = JWTAuth::parseToken()->getToken();
+        $newToken = JWTAuth::refresh($currentToken);
 
-            // Обновляем куку с новым токеном
-            $response = response()->json(['token' => $newToken]);
-            $response->withCookie(Cookie::make('token', $newToken, /* Время жизни куки */));
+        // Update the cookie with the new token
+        $response = response()->json(['token' => $newToken]);
+        $response->withCookie(Cookie::make('token', $newToken, /* Cookie parameters here */));
 
-            return $response;
-        } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
-            return response()->json(['error' => 'Token expired'], 401);
-        } catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
-            return response()->json(['error' => 'Token invalid'], 401);
-        } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
-            return response()->json(['error' => 'JWT exception'], 500);
-        }
+        return $response;
+      } catch (TokenExpiredException $e) {
+        return response()->json(['error' => 'Token expired'], 401);
+      } catch (TokenInvalidException $e) {
+        return response()->json(['error' => 'Token invalid'], 401);
+      } catch (JWTException $e) {
+        return response()->json(['error' => 'JWT exception'], 500);
+      }
     }
 
     public function testAPI()
@@ -112,7 +102,13 @@ class AuthController extends Controller
 
     public function logout()
     {
-        Auth::logout();
-        return response()->json(['message' => 'Logged out successfully']);
+        try {
+            // Удаляем токен из куки
+            $response = response()->json(['message' => 'Logged out successfully']);
+            $response->withCookie(Cookie::forget('token'));
+            return $response;
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Logout failed'], 500);
+        }
     }
 }
