@@ -26,6 +26,7 @@ export const authSlice = createSlice({
     resetAuth: (state, action) => {
       state.userAuth.user = null;
       state.userAuth.token = null;
+      state.persist = false;
     },
     setLoading: (state, action) => {
       state.loading = action.payload;

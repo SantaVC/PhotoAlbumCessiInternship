@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { FaUserCircle } from "react-icons/fa";
 import { CiMenuKebab } from "react-icons/ci";
 import { IoNotifications } from "react-icons/io5";
-import { FaUserCircle } from "react-icons/fa";
 import { Button, Menu } from "./index";
 
 const Header = () => {
