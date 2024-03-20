@@ -1,21 +1,16 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ForgotPasswordController;
+use Tymon\JWTAuth\Http\Middleware\Authenticate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Tymon\JWTAuth\Http\Middleware\Authenticate;
-
-// Route::get('api/email/verify', function () {
-//   return view('auth.verify-email');
-
-// })->middleware('auth')->name('verification.notice');
-
-// Route::get('api/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])->name('verification.verify');
-// Route::get('/email/verify/resend', [AuthController::class, 'resendVerificationEmail'])->name('verification.resend');
 
 Route::middleware('jwt.auth')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
 
 Route::get('/test', function () {
   return response()->json(['message' => 'Test successful']);

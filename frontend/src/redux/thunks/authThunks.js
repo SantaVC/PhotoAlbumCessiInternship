@@ -75,3 +75,25 @@ export const logoutUser = createAsyncThunk(
     }
   }
 );
+
+export const resetPassword = createAsyncThunk(
+  "auth/resetPassword",
+  async (userData, { dispatch }) => {
+    try {
+      dispatch(setLoading(true));
+
+      const response = await authService.resetPassword(userData);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+
+      if (!error.request.status || error.response.status === 500) {
+        throw error.message;
+      }
+
+      throw error.response.data;
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }
+);

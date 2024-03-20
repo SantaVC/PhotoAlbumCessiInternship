@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { resetPassword } from "../../redux/thunks/authThunks";
 import { Button } from "../index";
 
 const schema = z.object({
@@ -21,7 +22,15 @@ const ResetPasswordForm = () => {
     formState: { errors, isSubmitting },
   } = useForm({ resolver: zodResolver(schema) });
 
-  const onSubmit = async (data) => {};
+  const onSubmit = async (data) => {
+    console.log(data);
+    try {
+      await dispatch(resetPassword(data)).unwrap();
+    } catch (error) {
+      console.log(error);
+      setError("root", { message: error.message });
+    }
+  };
 
   return (
     <form
