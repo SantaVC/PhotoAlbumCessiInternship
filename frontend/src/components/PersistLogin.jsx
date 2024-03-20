@@ -10,9 +10,8 @@ const PersistLogin = () => {
 
   const dispatch = useDispatch();
   const refresh = useRefreshToken();
-  const { token } = useUserAuth();
   const persist = useSelector(selectPersist);
-  console.log(persist);
+  const { token } = useUserAuth();
 
   useEffect(() => {
     let isMounted = true;
@@ -42,7 +41,7 @@ const PersistLogin = () => {
   if (!persist) {
     return <Outlet />;
   } else if (isLoading) {
-    return <p>Verifying the token...</p>;
+    return <p>...</p>;
   } else {
     return <Outlet />;
   }

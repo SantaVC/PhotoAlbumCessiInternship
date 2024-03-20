@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { setToken } from "../redux/slices/authSlice";
+import { setLoading, setToken } from "../redux/slices/authSlice";
 import { axiosPrivateClient } from "../axios";
 
 const useRefreshToken = () => {
@@ -7,6 +7,8 @@ const useRefreshToken = () => {
 
   const refresh = async () => {
     try {
+      dispatch(setLoading(true));
+
       const response = await axiosPrivateClient.post("/refresh");
 
       dispatch(setToken(response.data.token));
@@ -14,6 +16,8 @@ const useRefreshToken = () => {
       return response.data.token;
     } catch (error) {
       console.log(error);
+    } finally {
+      dispatch(setLoading(false));
     }
   };
 

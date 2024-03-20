@@ -6,7 +6,7 @@ import {
   RequireAuth,
   PersistLogin,
 } from "./components/index";
-import { ProfilePage, LayoutPage } from "./pages/index";
+import { ProfilePage, LayoutPage, HomePage } from "./pages/index";
 
 const App = () => {
   return (
@@ -15,13 +15,13 @@ const App = () => {
 
       <Routes>
         <Route path="/" element={<LayoutPage />}>
-          {/* Public routes */}
-          <Route path="/login" element={<SignInModal />} />
-          <Route path="/signup" element={<SignUpModal />} />
-
           {/* Protected routes */}
           <Route element={<PersistLogin />}>
+            <Route path="/login" element={<SignInModal />} />
+            <Route path="/signup" element={<SignUpModal />} />
+
             <Route element={<RequireAuth />}>
+              <Route path="/" element={<HomePage />} />
               <Route path="/profile" element={<ProfilePage />} />
             </Route>
           </Route>
