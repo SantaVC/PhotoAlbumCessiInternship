@@ -8,11 +8,9 @@ import useUserAuth from "../../hooks/useUserAuth";
 const SignUpModal = () => {
   const { token } = useUserAuth();
 
-  if (token) {
-    return <Navigate to={"/"} />;
-  }
-
-  return (
+  return token ? (
+    <Navigate to={"/"} />
+  ) : (
     <Modal>
       <div className="SignInModal fixed top-1/2 left-1/2 max-w-96 bg-white rounded-xl onModalOpen">
         <div className="SignInModal__content relative flex flex-col gap-5 justify-center items-center h-full p-6">
@@ -30,12 +28,14 @@ const SignUpModal = () => {
             </Link>
           </div>
 
-          <Link
-            to={"/"}
-            className="absolute top-[-32px] right-[-32px] p-1 opacity-60 hover:opacity-100 hover:rotate-90 transition-[transform] duration-300"
-          >
-            <CgCloseR size={30} />
-          </Link>
+          {token && (
+            <Link
+              to={"/"}
+              className="absolute top-[-32px] right-[-32px] p-1 opacity-60 hover:opacity-100 hover:rotate-90 transition-[transform] duration-300"
+            >
+              <CgCloseR size={30} />
+            </Link>
+          )}
         </div>
       </div>
     </Modal>

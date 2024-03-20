@@ -56,7 +56,7 @@ const ProfilePage = () => {
   return (
     <section>
       {loading ? (
-        <p>Loading...</p>
+        <p>Loading Profile Page...</p>
       ) : (
         <>
           <p>ProfilePage</p>
