@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Outlet } from "react-router-dom";
+import { selectPersist } from "../redux/slices/authSlice";
 import useRefreshToken from "../hooks/useRefreshToken";
 import useUserAuth from "../hooks/useUserAuth";
-import { selectPersist } from "../redux/slices/authSlice";
 
 const PersistLogin = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -28,6 +28,7 @@ const PersistLogin = () => {
     };
 
     if (!token && persist) {
+      console.log("verify called ", persist);
       verifyRefreshToken();
     } else {
       setIsLoading(false);

@@ -1,7 +1,7 @@
 import "../../scss/LoginModal.scss";
 import { Link, Navigate } from "react-router-dom";
 import { CgCloseR } from "react-icons/cg";
-import { Button, Modal, SignInForm } from "../index";
+import { Modal, SignInForm } from "../index";
 import useUserAuth from "../../hooks/useUserAuth";
 
 const SignInModal = () => {
@@ -17,9 +17,12 @@ const SignInModal = () => {
 
           <SignInForm />
 
-          <Button className="self-end text-sm underline underline-offset-2 decoration-sky-300">
+          <Link
+            to={"/reset-password"}
+            className="self-end text-sm underline underline-offset-2 decoration-sky-300"
+          >
             Forgot password?
-          </Button>
+          </Link>
 
           <div className="self-end">
             <span>Don't have an account? </span>

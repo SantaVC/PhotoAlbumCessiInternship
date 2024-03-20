@@ -15,7 +15,7 @@ const Menu = ({ setIsOpen }) => {
   const handleClick = async () => {
     await dispatch(logoutUser()).unwrap();
     setIsOpen(false);
-    navigate("/");
+    navigate("/login");
   };
 
   return (

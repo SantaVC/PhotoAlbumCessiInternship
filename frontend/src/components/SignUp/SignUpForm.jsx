@@ -5,7 +5,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { passwordRegex, nicknameRegex } from "../../constants";
 import { registerUser } from "../../redux/thunks/authThunks";
-import Button from "../ui/Button";
+import { Button } from "../index";
 
 const schema = z
   .object({
@@ -51,8 +51,6 @@ const SignUpForm = () => {
   const onSubmitRegister = async (data) => {
     try {
       await dispatch(registerUser(data)).unwrap();
-
-      // navigates user to main page
 
       navigate("/");
       reset();
