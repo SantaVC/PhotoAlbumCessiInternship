@@ -9,8 +9,13 @@ const useAxiosPrivate = () => {
 
   useEffect(() => {
     const requestIntercept = axiosPrivateClient.interceptors.request.use(
+      // race condition
+
+      // Remember me переделать
+
       (config) => {
         if (!config.headers["Authorization"]) {
+          // убрать отправку токена из конфига при login & sign up
           config.headers["Authorization"] = `Bearer ${token}`;
         }
 

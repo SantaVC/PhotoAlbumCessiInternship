@@ -20,6 +20,10 @@ const authService = {
     const response = await axiosClient.post("/forgot-password", userData);
     return response.data;
   },
+  resendVerification: async (userData) => {
+    const response = await axiosClient.post("/email/resend", userData);
+    return response.data;
+  },
 };
 
 export default authService;
