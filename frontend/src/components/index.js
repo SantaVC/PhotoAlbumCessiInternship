@@ -11,6 +11,7 @@ import RememberMe from "./RememberMe.jsx";
 import Modal from "./ui/Modal";
 import ResetPasswordForm from "./ResetPassword/ResetPasswordForm.jsx";
 import ResetPasswordModal from "./ResetPassword/ResetPasswordModal.jsx";
+import SignUpVerifyEmail from "./SignUp/SignUpVerifyEmail.jsx";
 
 export {
   Header,
@@ -26,4 +27,5 @@ export {
   RememberMe,
   ResetPasswordForm,
   ResetPasswordModal,
+  SignUpVerifyEmail,
 };

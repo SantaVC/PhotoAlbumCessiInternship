@@ -1,21 +1,25 @@
 import "../../scss/LoginModal.scss";
+import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { CgCloseR } from "react-icons/cg";
 import { Modal, SignUpForm } from "../index";
 import useUserAuth from "../../hooks/useUserAuth";
 
 const SignUpModal = () => {
-  const { token } = useUserAuth();
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const { token, user } = useUserAuth();
 
-  return token ? (
-    <Navigate to={"/"} />
-  ) : (
+  if (isSubmitted && Boolean(user)) {
+    return <Navigate to={"/verify-email"} />;
+  }
+
+  return (
     <Modal>
       <div className="fixed top-1/2 left-1/2 max-w-96 bg-white rounded-xl onModalOpen">
         <div className="relative flex flex-col gap-5 justify-center items-center h-full p-6">
           <h2 className="text-center text-3xl f-regular">Sign up</h2>
 
-          <SignUpForm />
+          <SignUpForm setIsSubmitted={setIsSubmitted} />
 
           <div className="self-end">
             <span>Already have an account? </span>

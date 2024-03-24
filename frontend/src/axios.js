@@ -12,14 +12,6 @@ export const axiosPrivateClient = axios.create({
   withCredentials: true,
 });
 
-// axiosClient.interceptors.request.use((config) => {
-//   const token = localStorage.getItem(TOKEN_KEY);
-
-//   config.headers.Authorization = `Bearer ${token}`;
-
-//   return config;
-// });
-
 // race condition access refresh tokens
 
 export default axiosClient;

@@ -8,6 +8,7 @@ export const authSlice = createSlice({
       token: null,
     },
     persist: JSON.parse(localStorage.getItem("persist")) || false,
+    canVerify: false,
     loading: false,
   },
   reducers: {
@@ -34,14 +35,25 @@ export const authSlice = createSlice({
     setPersist: (state, action) => {
       state.persist = action.payload;
     },
+    setCanVerify: (state, action) => {
+      state.canVerify = action.payload;
+    },
   },
 });
 
-export const { setAuth, setToken, setLoading, resetAuth, setUser, setPersist } =
-  authSlice.actions;
+export const {
+  setAuth,
+  setToken,
+  setLoading,
+  resetAuth,
+  setUser,
+  setPersist,
+  setCanVerify,
+} = authSlice.actions;
 
 export const selectAuth = (state) => state.auth.userAuth;
 export const selectLoading = (state) => state.auth.loading;
 export const selectPersist = (state) => state.auth.persist;
+export const selectCanVerify = (state) => state.auth.canVerify;
 
 export default authSlice.reducer;

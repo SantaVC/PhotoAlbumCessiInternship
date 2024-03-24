@@ -25,5 +25,13 @@ Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/logout', [AuthController::class, 'logout']);
 Route::get('/testAPI', [AuthController::class, 'testAPI']);
-// Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
-// Route::middleware('auth:sanctum')->get('/testAPI', [AuthController::class, 'testAPI']);
+
+Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword']);
+
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//   return $request->user();
+// });
+
+
+Route::post('/email/resend', 'App\Http\Controllers\Auth\VerificationController@resend')->name('verification.resend');
+

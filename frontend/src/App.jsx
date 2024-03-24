@@ -6,6 +6,7 @@ import {
   RequireAuth,
   PersistLogin,
   ResetPasswordModal,
+  SignUpVerifyEmail,
 } from "./components/index";
 import { ProfilePage, LayoutPage, HomePage } from "./pages/index";
 
@@ -20,6 +21,7 @@ const App = () => {
           <Route element={<PersistLogin />}>
             <Route path="/login" element={<SignInModal />} />
             <Route path="/signup" element={<SignUpModal />} />
+            <Route path="/verify-email" element={<SignUpVerifyEmail />} />
             <Route path="/reset-password" element={<ResetPasswordModal />} />
 
             <Route element={<RequireAuth />}>

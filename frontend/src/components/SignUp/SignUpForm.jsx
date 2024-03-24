@@ -1,5 +1,4 @@
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -36,9 +35,8 @@ const schema = z
     path: ["password_confirmation"],
   });
 
-const SignUpForm = () => {
+const SignUpForm = ({ setIsSubmitted }) => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const {
     register,
@@ -48,21 +46,26 @@ const SignUpForm = () => {
     formState: { errors, isSubmitting },
   } = useForm({ resolver: zodResolver(schema) });
 
-  const onSubmitRegister = async (data) => {
+  const onSubmit = async (data) => {
+    // await new Promise((resolve, reject) => setTimeout(resolve, 1000));
+    // dispatch(setUser({ email: data.email }));
+    // setIsSubmitted(true);
+
     try {
       await dispatch(registerUser(data)).unwrap();
 
-      navigate("/");
-      reset();
+      setIsSubmitted(true);
+
+      // reset();
     } catch (error) {
-      console.log("Register failed", error);
+      console.log("Register failed");
       setError("root", { message: error.message });
     }
   };
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmitRegister)}
+      onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col items-center gap-4 f-regular"
     >
       <div className="w-[300px]">

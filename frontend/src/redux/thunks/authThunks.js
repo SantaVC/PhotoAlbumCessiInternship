@@ -1,5 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { resetAuth, setAuth, setLoading } from "../slices/authSlice";
+import {
+  resetAuth,
+  setAuth,
+  setCanVerify,
+  setLoading,
+} from "../slices/authSlice";
 import authService from "../../services/authService";
 
 export const registerUser = createAsyncThunk(
@@ -7,18 +12,21 @@ export const registerUser = createAsyncThunk(
   async (userData, { dispatch }) => {
     try {
       dispatch(setLoading(true));
+      dispatch(setCanVerify(false));
 
       const response = await authService.register(userData);
 
       dispatch(setAuth(response));
+      dispatch(setCanVerify(true));
     } catch (error) {
       console.log(error);
+      dispatch(setCanVerify(false));
 
-      if (!error.request.status || error?.response?.status === 500) {
-        throw new Error("Internal server error.");
+      if (error?.request?.status === 422) {
+        throw new Error("This user already exists.");
       }
 
-      throw error.response.data;
+      throw new Error("Internal server error.");
     } finally {
       dispatch(setLoading(false));
     }
@@ -41,11 +49,7 @@ export const loginUser = createAsyncThunk(
         throw new Error("Wrong email or password.");
       }
 
-      if (!error.request.status || error.response.status === 500) {
-        throw new Error("Internal server error.");
-      }
-
-      throw error.response.data.error;
+      throw new Error("Internal server error.");
     } finally {
       dispatch(setLoading(false));
     }
@@ -76,6 +80,24 @@ export const logoutUser = createAsyncThunk(
   }
 );
 
+export const resendVerification = createAsyncThunk(
+  "auth/resendVerification",
+  async (userData, { dispatch }) => {
+    try {
+      dispatch(setLoading(true));
+
+      const response = await authService.resendVerification(userData);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+
+      throw new Error("Internal server error.");
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }
+);
+
 export const resetPassword = createAsyncThunk(
   "auth/resetPassword",
   async (userData, { dispatch }) => {
@@ -87,11 +109,7 @@ export const resetPassword = createAsyncThunk(
     } catch (error) {
       console.log(error);
 
-      if (!error.request.status || error.response.status === 500) {
-        throw error.message;
-      }
-
-      throw error.response.data;
+      throw new Error("Internal server error.");
     } finally {
       dispatch(setLoading(false));
     }
