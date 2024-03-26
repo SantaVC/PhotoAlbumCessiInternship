@@ -5,6 +5,7 @@ use App\Http\Controllers\ForgotPasswordController;
 use Tymon\JWTAuth\Http\Middleware\Authenticate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TokenController;
 
 Route::middleware('jwt.auth')->get('/user', function (Request $request) {
     return $request->user();
@@ -15,6 +16,8 @@ Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink
 Route::get('/test', function () {
   return response()->json(['message' => 'Test successful']);
 });
+
+Route::post('/generate-tokens', [TokenController::class, 'generate']);
 
 Route::middleware('jwt.auth')->get('/profile', function () {
   return response()->json(['message' => 'This route is protected by JWT']);
