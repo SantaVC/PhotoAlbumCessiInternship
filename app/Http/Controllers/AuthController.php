@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Tymon\JWTAuth\Exceptions\TokenExpiredException;
-use Tymon\JWTAuth\Exceptions\TokenInvalidException;
-use Tymon\JWTAuth\Exceptions\JWTException;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Http\Controllers\TokenController;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\SignupRequest;
 use App\Models\User;
@@ -15,65 +12,32 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Verified;
-
+use Tymon\JWTAuth\Facades\JWTAuth;
 class AuthController extends Controller
 {
-  public function verifyEmail(Request $request, $id, $hash)
+  
+  protected $tokenController;
+
+  public function __construct(TokenController $tokenController)
   {
-    $user = User::findOrFail($id);
-
-    if (!hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
-      return response()->json(['error' => 'Invalid verification link'], 401);
-    }
-
-    if ($user->hasVerifiedEmail()) {
-      return response()->json(['message' => 'Email already verified'], 200);
-    }
-
-    if ($user->markEmailAsVerified()) {
-      event(new Verified($user));
-      return response()->json(['message' => 'Email successfully verified'], 200);
-    }
-
-    return response()->json(['error' => 'Failed to verify email'], 500);
-  }
-
-  public function resendVerificationEmail(Request $request)
-  {
-    if ($request->user()->hasVerifiedEmail()) {
-      return response()->json(['message' => 'Email already verified'], 200);
-    }
-
-    $request->user()->sendEmailVerificationNotification();
-
-    return response()->json(['message' => 'Email verification link sent']);
+      $this->tokenController = $tokenController;
   }
 
   public function signup(SignupRequest $request)
   {
-    Log::info('Signup data: ', $request->all());
-    try {
-      $data = $request->validated();
-
-      $user = User::create([
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-            'nickname' => $data['nickname']
+     Log::info('Signup data: ', $request->all());
+     try {
+         $data = $request->validated();
+         $user = new User();
+         $user->fill([
+          'email' => $data['email'],
+          'password' => bcrypt($data['password']),
+          'nickname' => $data['nickname']
       ]);
+      $user->save();
+     $tokens = $this->tokenController->generate($request);
 
-      $token = JWTAuth::fromUser($user);
-
-        $response = response()->json([
-            'user' => $user,
-            'token' => $token
-      ]);
-
-      // Устанавливаем куку
-      $response->withCookie(Cookie::make('token', $token, /* Время жизни куки */));
-
-      $user->sendEmailVerificationNotification();
-
-      return $response;
+      return response()->json(['tokens' => $tokens]);
     } catch (\Illuminate\Validation\ValidationException $e) {
       return response()->json(['errors' => $e->errors()], 422);
     }
@@ -82,55 +46,48 @@ class AuthController extends Controller
   public function login(LoginRequest $request)
   {
       $credentials = $request->validated();
+
       if (!$token = JWTAuth::attempt($credentials)) {
           return response()->json(['error' => 'Invalid credentials'], 422);
       }
 
       $user = Auth::user();
 
+      // Генерация токенов через контроллер токенов
+      $tokens = $this->tokenController->generate($request);
+
+      // Устанавливаем куку с access токеном
       $response = response()->json([
           'user' => $user,
-          'token' => $token
+          'tokens' => $tokens
       ]);
 
       $expirationTime = 1440;
-
-      // Set path to '/'
       $path = '/';
-
-      // Set domain to null for all subdomains
       $domain = null;
-
-      // Set secure flag to true if using HTTPS
       $secure = false;
-
       $httpOnly = true;
 
-      // Устанавливаем куку
-      $response->withCookie(Cookie::make('token', $token, $expirationTime, $path, $domain, $secure, $httpOnly));
+      $response->withCookie(Cookie::make('token', $tokens['access_token'], $expirationTime, $path, $domain, $secure, $httpOnly));
 
       return $response;
   }
+
 
   public function refresh(Request $request)
-  {
-    try {
-      $currentToken = JWTAuth::parseToken()->getToken();
-      $newToken = JWTAuth::refresh($currentToken);
+    {
+        try {
+            // Вызываем функцию обновления токенов из контроллера токенов
+            $tokens = $this->tokenController->refreshAllTokens($request);
 
-      // Update the cookie with the new token
-      $response = response()->json(['token' => $newToken]);
-      $response->withCookie(Cookie::make('token', $newToken, /* Cookie parameters here */));
-
-      return $response;
-    } catch (TokenExpiredException $e) {
-      return response()->json(['error' => 'Token expired'], 401);
-    } catch (TokenInvalidException $e) {
-      return response()->json(['error' => 'Token invalid'], 401);
-    } catch (JWTException $e) {
-      return response()->json(['error' => 'JWT exception'], 500);
+            // Возвращаем новые токены
+            return response()->json(['tokens' => $tokens]);
+        } catch (\Exception $e) {
+            // Если возникает ошибка при обновлении токенов
+            return response()->json(['error' => 'Could not refresh tokens'], 500);
+        }
     }
-  }
+
 
   public function logout()
   {
@@ -142,10 +99,5 @@ class AuthController extends Controller
     } catch (\Exception $e) {
       return response()->json(['error' => 'Logout failed'], 500);
     }
-  }
-
-  protected function registered($user)
-  {
-    $user->sendEmailVerificationNotification();
   }
 }
