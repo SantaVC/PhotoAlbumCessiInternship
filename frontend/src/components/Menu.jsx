@@ -16,6 +16,7 @@ const Menu = ({ setIsOpen }) => {
     await dispatch(logoutUser()).unwrap();
     setIsOpen(false);
     navigate("/login");
+    console.log("redirected to /login after logout");
   };
 
   return (

@@ -16,14 +16,14 @@ const App = () => {
       <Header />
 
       <Routes>
-        <Route path="/" element={<LayoutPage />}>
-          {/* Protected routes */}
-          <Route element={<PersistLogin />}>
-            <Route path="/login" element={<SignInModal />} />
-            <Route path="/signup" element={<SignUpModal />} />
-            <Route path="/verify-email" element={<SignUpVerifyEmail />} />
-            <Route path="/reset-password" element={<ResetPasswordModal />} />
+        <Route path="/login" element={<SignInModal />} />
+        <Route path="/signup" element={<SignUpModal />} />
+        <Route path="/verify-email" element={<SignUpVerifyEmail />} />
+        <Route path="/reset-password" element={<ResetPasswordModal />} />
 
+        <Route element={<PersistLogin />}>
+          <Route path="/" element={<LayoutPage />}>
+            {/* Protected routes */}
             <Route element={<RequireAuth />}>
               <Route path="/" element={<HomePage />} />
               <Route path="/profile" element={<ProfilePage />} />

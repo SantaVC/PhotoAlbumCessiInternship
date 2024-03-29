@@ -22,7 +22,7 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
     {
         try {
             // Проверяем валидность токена
-            $payload = JWTAuth::setToken($providedToken)->getPayload();
+            $payload = auth()->setToken($providedToken)->getPayload();
 
             // Получаем идентификатор пользователя из токена
             $userId = $payload['sub'];
@@ -42,7 +42,7 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
     protected $fillable = [
         'nickname',
         'email',
-        'password'
+        'password',
     ];
 
     /*

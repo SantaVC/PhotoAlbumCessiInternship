@@ -4,6 +4,7 @@ import {
   setAuth,
   setCanVerify,
   setLoading,
+  setToken,
 } from "../slices/authSlice";
 import authService from "../../services/authService";
 
@@ -12,15 +13,15 @@ export const registerUser = createAsyncThunk(
   async (userData, { dispatch }) => {
     try {
       dispatch(setLoading(true));
-      dispatch(setCanVerify(false));
+      // dispatch(setCanVerify(false));
 
       const response = await authService.register(userData);
 
       dispatch(setAuth(response));
-      dispatch(setCanVerify(true));
+      // dispatch(setCanVerify(true));
     } catch (error) {
       console.log(error);
-      dispatch(setCanVerify(false));
+      // dispatch(setCanVerify(false));
 
       if (error?.request?.status === 422) {
         throw new Error("This user already exists.");
@@ -39,9 +40,9 @@ export const loginUser = createAsyncThunk(
     try {
       dispatch(setLoading(true));
 
-      const response = await authService.login(userData);
+      const { token } = await authService.login(userData);
 
-      dispatch(setAuth(response));
+      dispatch(setToken(token));
     } catch (error) {
       console.log(error);
 
@@ -62,18 +63,14 @@ export const logoutUser = createAsyncThunk(
     try {
       dispatch(setLoading(true));
 
-      const response = await authService.logout();
-      console.log(response);
+      await authService.logout();
+      console.log("Logout success");
 
       dispatch(resetAuth());
     } catch (error) {
       console.log(error);
 
-      if (!error.request.status || error.response.status === 500) {
-        throw error.message;
-      }
-
-      throw error.response.data;
+      throw new Error("Logout failed...");
     } finally {
       dispatch(setLoading(false));
     }

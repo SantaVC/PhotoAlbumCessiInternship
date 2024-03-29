@@ -1,197 +1,116 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\User;
-use Tymon\JWTAuth\Exceptions\JWTException;
-//use \Firebase\JWT\JWT;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Cookie;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+use Firebase\JWT\SignatureInvalidException;
+use Firebase\JWT\BeforeValidException;
+use Firebase\JWT\ExpiredException;
+use DomainException;
+use InvalidArgumentException;
+use UnexpectedValueException;
+use Exception;
 
-class TokenController extends Controller
-{
+ class TokenController extends Controller
+ {
+  public function refreshTokens(Request $request)
+  {
+    // Получаем refresh token из куки
+    $refreshToken = $request->cookie('refresh_token');
 
-    public function generate(Request $request)
-    {
-        // Получаем идентификатор пользователя из запроса (предположим, что он передается)
-        $userId = $request->input('user_id');
-
-        // Проверяем, что передан идентификатор пользователя
-        if (!$userId) {
-            return response()->json(['error' => 'User ID is required'], 400);
-        }
-
-        // Создаем объект пользователя для тестового сценария
-        $user = new User();
-        $user->id = $userId;
-        $user->email = 'test@example.com'; // Замените на тестовые данные по вашему усмотрению
-
-        // Генерируем пару токенов
-        $tokens = $this->generateTokens($user);
-
-        // Возвращаем токены в формате JSON
-        return response()->json($tokens);
-    }
-
-    public function refreshAllTokens(Request $request)
-    {
-    // Получаем refresh токен из запроса
-    $refreshToken = $request->input('refresh_token');
-
-    // Проверяем, существует ли refresh токен
+    // Проверяем, что передан refresh token
     if (!$refreshToken) {
-        return response()->json(['error' => 'Refresh token is missing'], 400);
+      throw new \Exception('Refresh token is required', 400);
     }
 
-    try{
-        // Проверяем валидность refresh токена
-        $payload = JWTAuth::setToken($refreshToken)->getPayload();
+    // Получаем секретный ключ из переменных среды
+    $secretKey = (string) config('jwt.secret');
 
-        // Получаем идентификатор пользователя из токена
-        $userId = $payload['sub'];
+    // Расшифровываем refresh token
+    try {
+      $refreshTokenData = JWT::decode($refreshToken, new Key($secretKey, 'HS256'));
+    } catch (Exception $e) {
+      throw new Exception($e);
+    }
 
-        // Находим пользователя по идентификатору
-        $user = User::find($userId);
+    $userId = $refreshTokenData->sub;
+    $user = User::find($userId);
 
-        // Проверяем, существует ли пользователь
-        if (!$user) {
-            return response()->json(['error' => 'User not found'], 404);
-        }
+    if (!$user) {
+      throw new \Exception('User not found', 404);
+    }
 
-        // Проверяем, соответствует ли refresh токен текущему токену пользователя
-        if (!$user->hasValidToken($refreshToken)) {
-            return response()->json(['error' => 'Invalid refresh token'], 401);
-        }
+    Auth::login($user);
 
-        // Генерируем новую пару токенов
-        $tokens = $this->generateTokens($user);
-
-        } 
-     catch (JWTException $e) {
-        // Если возникает ошибка при обработке токена
-        return response()->json(['error' => 'Could not refresh token'], 500);
-        }
-    } 
-
-    public function takeAccessToken(Request $request){
-        // Получаем refresh токен из запроса
-        $refreshToken = $request->input('refresh_token');
-    
-        // Проверяем, существует ли refresh токен
-        if (!$refreshToken) {
-            return response()->json(['error' => 'Refresh token is missing'], 400);
-        }
-    
-        try{
-            // Проверяем валидность refresh токена
-            $payload = JWTAuth::setToken($refreshToken)->getPayload();
-    
-            // Получаем идентификатор пользователя из токена
-            $userId = $payload['sub'];
-    
-            // Находим пользователя по идентификатору
-            $user = User::find($userId);
-    
-            // Проверяем, существует ли пользователь
-            if (!$user) {
-                return response()->json(['error' => 'User not found'], 404);
-            }
-    
-            // Проверяем, соответствует ли refresh токен текущему токену пользователя
-            if (!$user->hasValidToken($refreshToken)) {
-                return response()->json(['error' => 'Invalid refresh token'], 401);
-            }
-    
-            // Генерируем новую пару токенов
-            $tokens = $this->generateAccessToken($user);
-    
-            } 
-         catch (JWTException $e) {
-            // Если возникает ошибка при обработке токена
-            return response()->json(['error' => 'Could not refresh token'], 500);
-            }
-        } 
-    private function generateAccessToken($user)
-{
-    // Генерация access токена
-    $accessToken = JWTAuth::fromUser($user);
-
-    return $accessToken;
-}
-
-private function generateRefreshToken($user)
-{
-    // Генерация refresh токена
-    $refreshToken = JWTAuth::fromUser($user);
-
-    return $refreshToken;
-}
-
-private function generateTokens($user)
-{
-    // Генерация access и refresh токенов
-    $accessToken = $this->generateAccessToken($user);
-    $refreshToken = $this->generateRefreshToken($user);
+    // Генерируем новую пару токенов
+    $newTokens = $this->generateTokens($userId, $secretKey);
 
     return [
-        'access_token' => $accessToken,
-        'refresh_token' => $refreshToken
+      'access_token' => $newTokens['access_token'],
+      'refresh_token' => $newTokens['refresh_token']
     ];
-}
+  }
 
-    // public function generate(Request $request)
-    // {
-    //     // Получаем идентификатор пользователя из запроса (предположим, что он передается)
-    //     $userId = $request->input('user_id');
+  public function generateTokens($userId, $secretKey)
+  {
+    $accessTokenId = base64_encode(random_bytes(32));     // Уникальный идентификатор токена access
+    $refreshTokenId = base64_encode(random_bytes(32));    // Уникальный идентификатор токена refresh
+    $issuedAt = time();                                   // Время создания токена
+    $accessExpire = $issuedAt + 60 * 60;                  // Срок действия токена (1 час)
+    $refreshExpire = $issuedAt + 60 * 60 * 24 * 30;       // Срок действия refresh токена (30 дней)
 
-    //     // Проверяем, что передан идентификатор пользователя
-    //     if (!$userId) {
-    //         return response()->json(['error' => 'User ID is required'], 400);
-    //     }
+    // Здесь мы формируем заголовок и тело access токена
+    $accessTokenPayload = [
+      'iat'  => $issuedAt,          // Время создания токена
+      'exp'  => $accessExpire,      // Время истечения срока действия токена
+      'sub'  => $userId,            // Идентификатор пользователя
+      'jti'  => $accessTokenId,     // Уникальный идентификатор токена
+      'type' => 'access'            // Тип токена (access)
+    ];
 
-    //     // Получаем секретный ключ из переменных среды
-    //     $secretKey = (string) config('app.jwt_secret');
+    // Здесь мы формируем заголовок и тело refresh токена
+    $refreshTokenPayload = [
+      'iat'  => $issuedAt,                // Время создания токена
+      'exp'  => $refreshExpire,           // Время истечения срока действия токена
+      'sub'  => $userId,                  // Идентификатор пользователя
+      'jti'  => $refreshTokenId,          // Уникальный идентификатор токена
+      'type' => 'refresh'                 // Тип токена (refresh)
+    ];
 
-    //     // Генерируем пару токенов
-    //     $tokens = $this->generateTokens($userId, $secretKey);
+    // Подписываем access токен
+    $accessToken = JWT::encode($accessTokenPayload, $secretKey, 'HS256');
 
-    //     // Возвращаем токены в формате JSON
-    //     return response()->json($tokens);
-    // }
+    // Подписываем refresh токен
+    $refreshToken = JWT::encode($refreshTokenPayload, $secretKey, 'HS256');
 
-    // private function generateTokens($userId, $secretKey) {
-    //     $tokenId    = base64_encode(random_bytes(32)); // Уникальный идентификатор токена
-    //     $issuedAt   = time(); // Время создания токена
-    //     $expire     = $issuedAt + 60 * 60; // Срок действия токена (1 час)
-    //     $refreshExpire = $issuedAt + 60 * 60 * 24 * 30; // Срок действия refresh токена (30 дней)
+    return [
+      'access_token' => $accessToken,
+      'refresh_token' => $refreshToken
+    ];
+  }
 
-    //     // Здесь мы формируем заголовок и тело access токена
-    //     $accessToken = [
-    //         'iat'  => $issuedAt,          // Время создания токена
-    //         'exp'  => $expire,            // Время истечения срока действия токена
-    //         'sub'  => $userId,            // Идентификатор пользователя
-    //         'jti'  => $tokenId,           // Уникальный идентификатор токена
-    //         'type' => 'access'            // Тип токена (access)
-    //     ];
 
-    //     // Здесь мы формируем заголовок и тело refresh токена
-    //     $refreshToken = [
-    //         'iat'  => $issuedAt,                // Время создания токена
-    //         'exp'  => $refreshExpire,           // Время истечения срока действия токена
-    //         'sub'  => $userId,                  // Идентификатор пользователя
-    //         'jti'  => $tokenId,                 // Уникальный идентификатор токена
-    //         'type' => 'refresh'                 // Тип токена (refresh)
-    //     ];
+  // public function generate(Request $request)
+  // {
+  //     // Получаем идентификатор пользователя из запроса (предположим, что он передается)
+  //     $userId = $request->input('user_id');
 
-    //     // Подписываем access токен
-    //     $accessToken = JWT::encode($accessToken, $secretKey, 'HS256');
-        
-    //     // Подписываем refresh токен
-    //     $refreshToken = JWT::encode($refreshToken, $secretKey, 'HS256');
+  //     // Проверяем, что передан идентификатор пользователя
+  //     if (!$userId) {
+  //       return response()->json(['error' => 'User ID is required'], 400);
+  //     }
 
-    //     return [
-    //         'access_token' => $accessToken,
-    //         'refresh_token' => $refreshToken
-    //     ];
-    // }
+  //     // Получаем секретный ключ из переменных среды
+  //     $secretKey = (string) config('app.jwt_secret');
+
+  //     // Генерируем пару токенов
+  //     $tokens = $this->generateTokens($userId, $secretKey);
+
+  //     // Возвращаем токены в формате JSON
+  //     return response()->json($tokens);
+  // }
 }

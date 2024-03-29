@@ -10,12 +10,15 @@ const useAxiosPrivate = () => {
   useEffect(() => {
     const requestIntercept = axiosPrivateClient.interceptors.request.use(
       // race condition
-
       // Remember me переделать
+      // убрать отправку токена из конфига при login & sign up
 
       (config) => {
-        if (!config.headers["Authorization"]) {
-          // убрать отправку токена из конфига при login & sign up
+        const isAuthRequired =
+          !["/login", "/signup", "/refresh"].includes(config.url) &&
+          !config.headers["Authorization"];
+
+        if (isAuthRequired) {
           config.headers["Authorization"] = `Bearer ${token}`;
         }
 
@@ -32,7 +35,6 @@ const useAxiosPrivate = () => {
       async (error) => {
         const prevRequest = error?.config;
 
-        console.log(error);
         const errorStatus = error?.response?.status;
 
         if (errorStatus === 401 && !prevRequest?.sent) {
