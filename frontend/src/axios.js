@@ -9,7 +9,6 @@ const axiosClient = axios.create({
 export const axiosPrivateClient = axios.create({
   baseURL: BASE_URL,
   headers: { "Content-Type": "application/json" },
-  withCredentials: true,
 });
 
 // race condition access refresh tokens

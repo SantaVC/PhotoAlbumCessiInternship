@@ -54,7 +54,7 @@ const SignUpForm = ({ setIsSubmitted }) => {
     try {
       await dispatch(registerUser(data)).unwrap();
 
-      setIsSubmitted(true);
+      // setIsSubmitted(true);
 
       // reset();
     } catch (error) {
