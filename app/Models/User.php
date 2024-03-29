@@ -8,11 +8,32 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Illuminate\Support\Facades\Hash;
 
-class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanResetPassword
+class User extends Authenticatable implements JWTSubject, MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    // Определение fillable, hidden, casts и других свойств модели...
+
+    public function hasValidToken($providedToken)
+    {
+        try {
+            // Проверяем валидность токена
+            $payload = auth()->setToken($providedToken)->getPayload();
+
+            // Получаем идентификатор пользователя из токена
+            $userId = $payload['sub'];
+
+            // Проверяем, что идентификатор пользователя в токене совпадает с идентификатором этого пользователя
+            return $userId == $this->id;
+        } catch (JWTException $e) {
+            // Если возникает ошибка при обработке токена, считаем токен недействительным
+            return false;
+        }
+    }
     /*
      * The attributes that are mass assignable.
      *
@@ -21,7 +42,7 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanRe
     protected $fillable = [
         'nickname',
         'email',
-        'password'
+        'password',
     ];
 
     /*
@@ -41,9 +62,26 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanRe
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
     ];
 
+    /**
+     * Automatically hash the password when setting it.
+     *
+     * @param  string  $value
+     * @return void
+     */
+    public function createUser(array $data)
+    {
+        return static::create([
+            'email' => $data['email'],
+            'password' => bcrypt($data['password']),
+            'nickname' => $data['nickname'],
+        ]);
+    }
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = Hash::make($value);
+    }
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *

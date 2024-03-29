@@ -9,7 +9,11 @@ const useRefreshToken = () => {
     try {
       dispatch(setLoading(true));
 
-      const response = await axiosPrivateClient.post("/refresh");
+      const response = await axiosPrivateClient.post("/refresh", "refresh", {
+        withCredentials: true,
+      });
+
+      console.log(response);
 
       dispatch(setToken(response.data.token));
 
