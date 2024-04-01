@@ -7,7 +7,6 @@ export const authSlice = createSlice({
       user: null,
       token: null,
     },
-    persist: JSON.parse(localStorage.getItem("persist")) || false,
     canVerify: false,
     loading: false,
   },
@@ -24,7 +23,7 @@ export const authSlice = createSlice({
     setToken: (state, action) => {
       state.userAuth.token = action.payload;
     },
-    resetAuth: (state, action) => {
+    resetAuth: (state) => {
       state.userAuth.user = null;
       state.userAuth.token = null;
       state.persist = false;
@@ -32,9 +31,7 @@ export const authSlice = createSlice({
     setLoading: (state, action) => {
       state.loading = action.payload;
     },
-    setPersist: (state, action) => {
-      state.persist = action.payload;
-    },
+
     setCanVerify: (state, action) => {
       state.canVerify = action.payload;
     },
@@ -47,13 +44,11 @@ export const {
   setLoading,
   resetAuth,
   setUser,
-  setPersist,
   setCanVerify,
 } = authSlice.actions;
 
 export const selectAuth = (state) => state.auth.userAuth;
 export const selectLoading = (state) => state.auth.loading;
-export const selectPersist = (state) => state.auth.persist;
 export const selectCanVerify = (state) => state.auth.canVerify;
 
 export default authSlice.reducer;

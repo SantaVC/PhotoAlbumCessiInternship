@@ -16,11 +16,13 @@ const PersistLogin = () => {
 
     const verifyRefreshToken = async () => {
       try {
+        console.log("refreshing the token");
         setIsLoading(true);
         await refresh();
       } catch (error) {
         console.log(error);
       } finally {
+        console.log("finished refreshing the token");
         isMounted && setIsLoading(false);
       }
     };
@@ -38,7 +40,7 @@ const PersistLogin = () => {
   }, [dispatch, token, refresh]);
 
   if (isLoading) {
-    return <p>...</p>;
+    return <p>Verifying token...</p>;
   } else {
     return <Outlet />;
   }

@@ -25,7 +25,7 @@ const SignInModal = () => {
           </Link>
 
           <div className="self-end">
-            <span>Don't have an account? </span>
+            <span>Don&apos;t have an account? </span>
             <Link
               to={"/signup"}
               className="underline underline-offset-2 decoration-sky-300"
