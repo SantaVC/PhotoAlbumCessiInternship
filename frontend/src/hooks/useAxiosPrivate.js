@@ -18,10 +18,9 @@ const useAxiosPrivate = () => {
           !["/login", "/signup", "/refresh"].includes(config.url) &&
           !config.headers["Authorization"];
 
-        if (isAuthRequired) {
+        if (isAuthRequired && token) {
           config.headers["Authorization"] = `Bearer ${token}`;
         }
-
         return config;
       },
       (error) => {
@@ -39,15 +38,14 @@ const useAxiosPrivate = () => {
 
         if (errorStatus === 401 && !prevRequest?.sent) {
           prevRequest.sent = true;
+
           const newAccessToken = await refresh();
 
           console.log(`Prev token:\n${token}\nNew token:\n${newAccessToken}`);
 
           prevRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
-
           return axiosPrivateClient(prevRequest);
         }
-
         return Promise.reject(error);
       }
     );

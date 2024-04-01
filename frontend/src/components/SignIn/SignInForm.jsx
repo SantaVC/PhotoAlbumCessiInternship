@@ -5,7 +5,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { passwordRegex } from "../../constants";
 import { loginUser } from "../../redux/thunks/authThunks";
-import { Button, RememberMe } from "../index";
+import { Button } from "../index";
 
 const schema = z.object({
   email: z.string().email("Invalid email."),
@@ -84,8 +84,6 @@ const SignInForm = () => {
       {errors.root && (
         <p className="self-start px-1 text-red-500">{errors.root.message}</p>
       )}
-
-      <RememberMe />
     </form>
   );
 };

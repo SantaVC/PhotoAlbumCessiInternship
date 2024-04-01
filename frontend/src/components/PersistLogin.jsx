@@ -13,7 +13,6 @@ const PersistLogin = () => {
 
   useEffect(() => {
     let isMounted = true;
-
     const verifyRefreshToken = async () => {
       try {
         setIsLoading(true);
@@ -38,7 +37,7 @@ const PersistLogin = () => {
   }, [dispatch, token, refresh]);
 
   if (isLoading) {
-    return <p>...</p>;
+    return <p>Verifying token...</p>;
   } else {
     return <Outlet />;
   }
