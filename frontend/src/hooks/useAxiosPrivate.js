@@ -57,7 +57,6 @@ const useAxiosPrivate = () => {
             config.headers["Authorization"] = `Bearer ${token}`;
           }
         }
-
         return config;
       },
       (error) => {

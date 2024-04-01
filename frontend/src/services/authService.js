@@ -21,7 +21,7 @@ const authService = {
   },
 
   logout: async () => {
-    const response = await axiosPrivateClient.get("/logout", {
+    const response = await axiosPrivateClient.post("/logout", "logout", {
       withCredentials: true,
     });
     return response;

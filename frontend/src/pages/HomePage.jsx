@@ -4,6 +4,5 @@ const HomePage = () => {
       <p>HomePage</p>
     </section>
   );
-};
 
 export default HomePage;
