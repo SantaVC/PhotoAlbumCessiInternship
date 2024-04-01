@@ -16,6 +16,7 @@ const App = () => {
       <Header />
 
       <Routes>
+        <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<SignInModal />} />
         <Route path="/signup" element={<SignUpModal />} />
         <Route path="/verify-email" element={<SignUpVerifyEmail />} />
@@ -25,7 +26,6 @@ const App = () => {
           <Route path="/" element={<LayoutPage />}>
             {/* Protected routes */}
             <Route element={<RequireAuth />}>
-              <Route path="/" element={<HomePage />} />
               <Route path="/profile" element={<ProfilePage />} />
             </Route>
           </Route>

@@ -5,8 +5,26 @@ import {
   setCanVerify,
   setLoading,
   setToken,
+  setUser,
 } from "../slices/authSlice";
 import authService from "../../services/authService";
+
+export const getUser = createAsyncThunk(
+  "auth/getUser",
+  async (config, { dispatch }) => {
+    try {
+      dispatch(setLoading(true));
+
+      const response = await authService.getUser(config);
+      dispatch(setUser(response));
+    } catch (error) {
+      console.log(error);
+      throw new Error("Internal server error.");
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }
+);
 
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
@@ -15,9 +33,9 @@ export const registerUser = createAsyncThunk(
       dispatch(setLoading(true));
       // dispatch(setCanVerify(false));
 
-      const response = await authService.register(userData);
+      const { token } = await authService.register(userData);
 
-      dispatch(setAuth(response));
+      dispatch(setToken(token));
       // dispatch(setCanVerify(true));
     } catch (error) {
       console.log(error);
