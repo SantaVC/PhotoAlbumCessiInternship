@@ -60,8 +60,8 @@ use Exception;
     $accessTokenId = base64_encode(random_bytes(32));     // Уникальный идентификатор токена access
     $refreshTokenId = base64_encode(random_bytes(32));    // Уникальный идентификатор токена refresh
     $issuedAt = time();                                   // Время создания токена
-    $accessExpire = $issuedAt + 60 * 10;                  // Срок действия токена (10 минут)
-    $refreshExpire = $issuedAt + 60 * 60 * 24;       // Срок действия refresh токена (1 день)
+    $accessExpire = $issuedAt + 60;                      // Срок действия токена (1 минута)
+    $refreshExpire = $issuedAt + 60 * 60 * 24 * 30;       // Срок действия refresh токена (30 дней)
 
     // Здесь мы формируем заголовок и тело access токена
     $accessTokenPayload = [

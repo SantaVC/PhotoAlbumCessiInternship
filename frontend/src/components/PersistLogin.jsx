@@ -15,11 +15,13 @@ const PersistLogin = () => {
     let isMounted = true;
     const verifyRefreshToken = async () => {
       try {
+        console.log("refreshing the token");
         setIsLoading(true);
         await refresh();
       } catch (error) {
         console.log(error);
       } finally {
+        console.log("finished refreshing the token");
         isMounted && setIsLoading(false);
       }
     };

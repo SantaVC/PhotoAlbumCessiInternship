@@ -1,10 +1,10 @@
-import { useEffect, useRef } from "react";
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { FaUserCircle } from "react-icons/fa";
-import { CiMenuKebab } from "react-icons/ci";
-import { IoNotifications } from "react-icons/io5";
-import { Button, Menu } from "./index";
+import { useEffect, useRef } from 'react';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { FaUserCircle } from 'react-icons/fa';
+import { CiMenuKebab } from 'react-icons/ci';
+import { IoNotifications } from 'react-icons/io5';
+import { Button, Menu } from './index';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -21,10 +21,10 @@ const Header = () => {
       }
     };
 
-    window.addEventListener("click", handler, true);
+    window.addEventListener('click', handler, true);
 
     return () => {
-      window.removeEventListener("click", handler);
+      window.removeEventListener('click', handler);
     };
   }, []);
 
@@ -32,7 +32,7 @@ const Header = () => {
     <header className="flex justify-between py-4">
       <div className="flex gap-6">
         <Link
-          to={"/"}
+          to={'/'}
           className="f-bold block bg-purple-600 py-2 px-4 border border-black rounded"
         >
           Logo
@@ -50,15 +50,12 @@ const Header = () => {
           <div className="block w-3 h-3 absolute top-1 right-1 bg-red-500 rounded-full"></div>
         </Button>
 
-        <Link to={"/profile"} className="flex items-center justify-center p-1">
+        <Link to={'/profile'} className="flex items-center justify-center p-1">
           <FaUserCircle size={30} />
         </Link>
 
         <div ref={menuRef} className="relative">
-          <Button
-            onClick={() => setIsMenuOpen((current) => !current)}
-            className="p-1"
-          >
+          <Button onClick={() => setIsMenuOpen((current) => !current)} className="p-1">
             <CiMenuKebab size={30} />
           </Button>
 

@@ -6,7 +6,6 @@ import { Button } from "../components";
 import useUserAuth from "../hooks/useUserAuth";
 
 const ProfilePage = () => {
-  console.log("profile page");
   const dispatch = useDispatch();
   const loading = useSelector(selectLoading);
   const { user } = useUserAuth();

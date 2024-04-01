@@ -1,32 +1,27 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { resetAuth } from "../redux/slices/authSlice";
 import { getUser } from "../redux/thunks/authThunks";
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import useUserAuth from "../hooks/useUserAuth";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const LayoutPage = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const location = useLocation();
   const axiosPrivate = useAxiosPrivate();
-
-  const { user, token } = useUserAuth();
+  const { user } = useUserAuth();
 
   useEffect(() => {
     let isMounted = true;
-    const controller = new AbortController();
+
     const fetchProfile = async () => {
       try {
-        isMounted &&
-          (await dispatch(
-            getUser({
-              signal: controller.signal,
-            })
-          ).unwrap());
+        console.log("fetching the user");
+        isMounted && (await dispatch(getUser()).unwrap());
       } catch (error) {
         dispatch(resetAuth());
+      } finally {
+        console.log("finished fetching the user");
       }
     };
 
@@ -36,9 +31,8 @@ const LayoutPage = () => {
 
     return () => {
       isMounted = false;
-      controller.abort();
     };
-  }, [axiosPrivate, navigate, dispatch, location, user, token]);
+  }, [axiosPrivate, dispatch, user]);
 
   return (
     <main>

@@ -24,6 +24,8 @@ const App = () => {
 
         <Route element={<PersistLogin />}>
           <Route path="/" element={<LayoutPage />}>
+            <Route path="/" element={<HomePage />} />
+
             {/* Protected routes */}
             <Route element={<RequireAuth />}>
               <Route path="/profile" element={<ProfilePage />} />
