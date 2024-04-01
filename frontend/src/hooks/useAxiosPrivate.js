@@ -1,7 +1,10 @@
 import { useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
 import { axiosPrivateClient } from "../axios";
 import useRefreshToken from "./useRefreshToken";
 import useUserAuth from "./useUserAuth";
+
+const threshold = 30; //seconds before the token expires;
 
 const useAxiosPrivate = () => {
   const { token } = useUserAuth();
@@ -10,17 +13,51 @@ const useAxiosPrivate = () => {
   useEffect(() => {
     const requestIntercept = axiosPrivateClient.interceptors.request.use(
       // race condition
-      // Remember me переделать
-      // убрать отправку токена из конфига при login & sign up
+      // Remember me переделать +
+      // убрать отправку токена из конфига при login & sign up +
 
-      (config) => {
+      async (config) => {
         const isAuthRequired =
-          !["/login", "/signup", "/refresh"].includes(config.url) &&
-          !config.headers["Authorization"];
+          !["/login", "/signup", "/refresh", "/email/resend"].includes(
+            config.url
+          ) && !config.headers["Authorization"];
 
         if (isAuthRequired && token) {
-          config.headers["Authorization"] = `Bearer ${token}`;
+          // if auth is required && have the token,
+          // check if the token is about to expire ->
+
+          const now = Math.floor(Date.now() / 1000);
+          const decoded = jwtDecode(token);
+          const expirationTime = decoded?.exp;
+          const timeDifference = expirationTime - now;
+          const isAboutToExpire = timeDifference <= threshold;
+
+          timeDifference - threshold > 0 &&
+            console.log(
+              `Seconds before refresh: ${timeDifference - threshold}`
+            );
+
+          if (isAboutToExpire) {
+            // if the token is about to expire, refresh all the tokens, set the header with the new token
+            try {
+              console.log("Token is about to expire, refreshing the tokens...");
+
+              const newAccessToken = await refresh();
+              config.headers["Authorization"] = `Bearer ${newAccessToken}`;
+
+              console.log("Tokens successfully refreshed.");
+            } catch (error) {
+              console.log(
+                "Error refreshing the about to expire token.\n",
+                error
+              );
+            }
+          } else {
+            // else, set the existing token
+            config.headers["Authorization"] = `Bearer ${token}`;
+          }
         }
+
         return config;
       },
       (error) => {
@@ -33,7 +70,6 @@ const useAxiosPrivate = () => {
 
       async (error) => {
         const prevRequest = error?.config;
-
         const errorStatus = error?.response?.status;
 
         if (errorStatus === 401 && !prevRequest?.sent) {
