@@ -1,41 +1,27 @@
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import {
-  resetAuth,
-  selectLoading,
-  setLoading,
-  setUser,
-} from "../redux/slices/authSlice";
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import { useDispatch } from "react-redux";
+import { Outlet } from "react-router-dom";
+import { resetAuth } from "../redux/slices/authSlice";
+import { getUser } from "../redux/thunks/authThunks";
 import useUserAuth from "../hooks/useUserAuth";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const LayoutPage = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const location = useLocation();
   const axiosPrivate = useAxiosPrivate();
-
   const { user } = useUserAuth();
-  const loading = useSelector(selectLoading);
 
   useEffect(() => {
     let isMounted = true;
-    const controller = new AbortController();
 
     const fetchProfile = async () => {
       try {
-        dispatch(setLoading(true));
-
-        const response = await axiosPrivate.get("/user", {
-          signal: controller.signal,
-        });
-
-        isMounted && dispatch(setUser(response.data));
+        console.log("fetching the user");
+        isMounted && (await dispatch(getUser()).unwrap());
       } catch (error) {
         dispatch(resetAuth());
       } finally {
-        dispatch(setLoading(false));
+        console.log("finished fetching the user");
       }
     };
 
@@ -45,13 +31,10 @@ const LayoutPage = () => {
 
     return () => {
       isMounted = false;
-      controller.abort();
     };
-  }, [axiosPrivate, navigate, dispatch, location, user]);
+  }, [axiosPrivate, dispatch, user]);
 
-  return loading ? (
-    <p>...</p>
-  ) : (
+  return (
     <main>
       <Outlet />
     </main>

@@ -1,5 +1,6 @@
 import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { passwordRegex, nicknameRegex } from "../../constants";
@@ -37,6 +38,7 @@ const schema = z
 
 const SignUpForm = ({ setIsSubmitted }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -54,6 +56,7 @@ const SignUpForm = ({ setIsSubmitted }) => {
     try {
       await dispatch(registerUser(data)).unwrap();
 
+      navigate("/");
       // setIsSubmitted(true);
 
       // reset();
