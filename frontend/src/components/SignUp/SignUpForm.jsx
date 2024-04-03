@@ -104,12 +104,12 @@ const SignUpForm = ({ setIsSubmitted }) => {
             className="w-full py-2 pl-3 pr-8 border border-neutral-500 rounded-md"
             placeholder="Password..."
           />
-          <Button
+          <div
             onClick={() => setIsPasswordHidden((current) => !current)}
-            className="absolute bottom-1/2 right-3 translate-y-1/2"
+            className="absolute bottom-1/2 right-3 p-1 translate-y-1/2 cursor-pointer"
           >
             {isPasswordHidden ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
-          </Button>
+          </div>
         </div>
 
         {errors.password && (
@@ -125,12 +125,12 @@ const SignUpForm = ({ setIsSubmitted }) => {
             className="w-full py-2 pl-3 pr-8 border border-neutral-500 rounded-md"
             placeholder="Password..."
           />
-          <Button
+          <div
             onClick={() => setIsConfirmHidden((current) => !current)}
-            className="absolute bottom-1/2 right-3 translate-y-1/2"
+            className="absolute bottom-1/2 right-3 p-1 translate-y-1/2 cursor-pointer"
           >
             {isConfirmHidden ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
-          </Button>
+          </div>
         </div>
 
         {errors.password_confirmation && (

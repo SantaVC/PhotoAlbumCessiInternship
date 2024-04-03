@@ -65,7 +65,6 @@ class AuthController extends Controller
       $user->save();
 
       $generatedTokens = $this->tokenController->generateTokens($user->id, $this->secretKey);
-
       $refreshToken = $generatedTokens['refresh_token'];
 
       $response = response()->json([
