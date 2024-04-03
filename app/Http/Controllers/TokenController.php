@@ -60,7 +60,7 @@ use Exception;
     $accessTokenId = base64_encode(random_bytes(32));     // Уникальный идентификатор токена access
     $refreshTokenId = base64_encode(random_bytes(32));    // Уникальный идентификатор токена refresh
     $issuedAt = time();                                   // Время создания токена
-    $accessExpire = $issuedAt + 60 * 60;                  // Срок действия токена (1 час)
+    $accessExpire = $issuedAt + 60;                      // Срок действия токена (1 минута)
     $refreshExpire = $issuedAt + 60 * 60 * 24 * 30;       // Срок действия refresh токена (30 дней)
 
     // Здесь мы формируем заголовок и тело access токена
@@ -92,6 +92,23 @@ use Exception;
       'refresh_token' => $refreshToken
     ];
   }
+
+  public function decodeToken($token, $secretKey)
+{
+    try {
+        // Декодируем JWT токен
+        $decoded = JWT::decode($token, new Key($secretKey, 'HS256'));
+        
+        // Извлекаем идентификатор пользователя из декодированного токена
+        $userId = $decoded->sub;
+        
+        // Возвращаем идентификатор пользователя
+        return $userId;
+    } catch (Exception $e) {
+        // Если токен недействителен, обрабатываем ошибку
+        return null;
+    }
+}
 
 
   // public function generate(Request $request)
