@@ -10,7 +10,6 @@ const useRefreshToken = () => {
   const refresh = useCallback(async () => {
     try {
       dispatch(setLoading(true));
-
       const response = await axiosPrivateClient.post("/refresh", "refresh", {
         withCredentials: true,
       });

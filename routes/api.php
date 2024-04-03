@@ -24,7 +24,7 @@ Route::middleware('jwt.auth')->get('/profile', function () {
 Route::post('/refresh', [AuthController::class, 'refresh']);
 Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::get('/logout', [AuthController::class, 'logout']);
+Route::post('/logout', [AuthController::class, 'logout']);
 Route::get('/testAPI', [AuthController::class, 'testAPI']);
 
 Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword']);
@@ -36,6 +36,8 @@ Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'
 
 Route::post('/email/resend', 'App\Http\Controllers\Auth\VerificationController@resend')->name('verification.resend');
 
+
 Route::post('email/verify', 'VerificationController@verify')->name('verification.verify');
 Route::post('email/resend', 'VerificationController@resend')->name('verification.resend');
 Route::get('email/verify', [AuthController::class, 'verifyEmail']);
+

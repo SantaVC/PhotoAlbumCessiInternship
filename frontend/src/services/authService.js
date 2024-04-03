@@ -1,4 +1,4 @@
-import axiosClient, { axiosPrivateClient } from "../axios";
+import { axiosPrivateClient } from "../axios";
 
 const authService = {
   getUser: async (config) => {
@@ -21,22 +21,25 @@ const authService = {
   },
 
   logout: async () => {
-    const response = await axiosPrivateClient.get("/logout", {
+    const response = await axiosPrivateClient.post("/logout", "logout", {
       withCredentials: true,
     });
-
     return response;
   },
 
   resetPassword: async (userData) => {
-    const response = await axiosClient.post("/forgot-password", userData, {
-      withCredentials: true,
-    });
+    const response = await axiosPrivateClient.post(
+      "/forgot-password",
+      userData,
+      {
+        withCredentials: true,
+      }
+    );
     return response.data;
   },
 
   resendVerification: async (userData) => {
-    const response = await axiosClient.post("/email/resend", userData);
+    const response = await axiosPrivateClient.post("/email/resend", userData);
     return response.data;
   },
 };
