@@ -1,7 +1,7 @@
-import { Button, Modal } from "../index";
-import { Navigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { Link, Navigate } from "react-router-dom";
 import { resendVerification } from "../../redux/thunks/authThunks";
+import { Button, Modal } from "../index";
 import useUserAuth from "../../hooks/useUserAuth";
 
 const SignUpVerifyEmail = () => {
@@ -28,7 +28,7 @@ const SignUpVerifyEmail = () => {
 
           <p className="max-w-[300px] f-regular">
             We have sent you a letter to
-            <span className="f-bold"> {user.email}</span>. Follow the link in
+            <span className="f-bold"> {user?.email}</span>. Follow the link in
             the letter to confirm that the email is yours to secure your
             account.
           </p>
@@ -39,6 +39,13 @@ const SignUpVerifyEmail = () => {
           >
             Send letter again
           </Button>
+
+          <Link
+            className="border border-neutral-500 px-5 py-2 f-bold hover:bg-sky-300"
+            to={"/login"}
+          >
+            Proceed
+          </Link>
         </div>
       </div>
     </Modal>

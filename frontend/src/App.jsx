@@ -16,7 +16,6 @@ const App = () => {
       <Header />
 
       <Routes>
-        <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<SignInModal />} />
         <Route path="/signup" element={<SignUpModal />} />
         <Route path="/verify-email" element={<SignUpVerifyEmail />} />

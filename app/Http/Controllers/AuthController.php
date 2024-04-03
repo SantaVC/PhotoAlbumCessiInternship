@@ -58,7 +58,7 @@ class AuthController extends Controller
 
       $user->fill([
         'email' => $data['email'],
-        'password' => bcrypt($data['password']),
+        'password' => $data['password'],
         'nickname' => $data['nickname'],
       ]);
 
@@ -66,17 +66,16 @@ class AuthController extends Controller
 
       $generatedTokens = $this->tokenController->generateTokens($user->id, $this->secretKey);
 
-      $accessToken = $generatedTokens['access_token'];
       $refreshToken = $generatedTokens['refresh_token'];
 
       $response = response()->json([
-        'token' => $accessToken
+        'user' => $user,
       ]);
 
       $response = $response->withCookie(Cookie::make('refresh_token', $refreshToken, $this->expirationTime, $this->path, $this->domain, $this->secure, $this->httpOnly));
 
        // Отправка письма для подтверждения email
-       event(new Registered($user));
+      event(new Registered($user));
 
       return $response;
     } catch (\Illuminate\Validation\ValidationException $e) {
@@ -86,16 +85,14 @@ class AuthController extends Controller
 
   public function login(LoginRequest $request)
   {
-    $credentials = $request->validate([
-      'email' => 'required|email',
-      'password' => 'required|string'
-    ]);
+    $credentials = $request->validated();
 
+    Log::info('credentials: ', $request->validated());
     // Попытка аутентификации пользователя
     if (!Auth::attempt($credentials)) {
       // Если аутентификация не удалась, возвращаем ошибку
       throw ValidationException::withMessages([
-        'email' => ['Invalid credentials']
+        'email' => ['Invalid credentials'],
       ]);
     }
 
@@ -164,7 +161,7 @@ class AuthController extends Controller
 
   // Извлекаем идентификатор пользователя из cookie
   $payload = JWT::decode($refreshToken, new Key($secretKey, 'HS256'));
-        
+
         // Извлекаем идентификатор пользователя из декодированного токена
         $userId = $payload->sub;
 

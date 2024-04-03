@@ -9,9 +9,9 @@ const SignUpModal = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { token, user } = useUserAuth();
 
-  // if (isSubmitted && Boolean(user)) {
-  //   return <Navigate to={"/verify-email"} />;
-  // }
+  if (isSubmitted && user) {
+    return <Navigate to={"/verify-email"} />;
+  }
 
   return (
     <Modal>

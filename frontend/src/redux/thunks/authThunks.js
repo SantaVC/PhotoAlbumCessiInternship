@@ -1,12 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import {
-  resetAuth,
-  setAuth,
-  setCanVerify,
-  setLoading,
-  setToken,
-  setUser,
-} from "../slices/authSlice";
+import { resetAuth, setLoading, setToken, setUser } from "../slices/authSlice";
 import authService from "../../services/authService";
 
 export const getUser = createAsyncThunk(
@@ -32,15 +25,12 @@ export const registerUser = createAsyncThunk(
   async (userData, { dispatch }) => {
     try {
       dispatch(setLoading(true));
-      // dispatch(setCanVerify(false));
 
-      const { token } = await authService.register(userData);
+      const { user } = await authService.register(userData);
 
-      dispatch(setToken(token));
-      // dispatch(setCanVerify(true));
+      dispatch(setUser(user));
     } catch (error) {
       console.log(error);
-      // dispatch(setCanVerify(false));
 
       if (error?.request?.status === 422) {
         throw new Error("This user already exists.");
