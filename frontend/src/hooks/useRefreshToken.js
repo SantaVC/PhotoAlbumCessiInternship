@@ -1,7 +1,6 @@
 import { useDispatch } from "react-redux";
 import { setLoading, setToken } from "../redux/slices/authSlice";
 import { axiosPrivateClient } from "../axios";
-import { logoutUser } from "../redux/thunks/authThunks";
 import { useCallback } from "react";
 
 const useRefreshToken = () => {
@@ -13,8 +12,6 @@ const useRefreshToken = () => {
       const response = await axiosPrivateClient.post("/refresh", "refresh", {
         withCredentials: true,
       });
-
-      console.log(response);
 
       dispatch(setToken(response.data.token));
       return response.data.token;

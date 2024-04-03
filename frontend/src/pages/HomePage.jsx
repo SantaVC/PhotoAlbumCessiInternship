@@ -1,8 +1,9 @@
 const HomePage = () => {
   return (
     <section>
-      <p>HomePage</p>
+      <p className="dark:text-white">HomePage</p>
     </section>
   );
+};
 
 export default HomePage;

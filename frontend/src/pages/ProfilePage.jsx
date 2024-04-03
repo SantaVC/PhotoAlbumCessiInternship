@@ -15,13 +15,16 @@ const ProfilePage = () => {
   };
 
   return (
-    <section>
+    <section className="dark:text-white">
       <p>ProfilePage</p>
       <p>Игорь молодец</p>
 
       <div className="my-3">
         {loading ? (
-          <AiOutlineLoading size={28} className="animate-spin" />
+          <AiOutlineLoading
+            size={28}
+            className="animate-spin dark:text-white"
+          />
         ) : (
           <>
             <p>nickname: {user?.nickname}</p>

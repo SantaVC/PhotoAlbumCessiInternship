@@ -1,6 +1,7 @@
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { passwordRegex, nicknameRegex } from "../../constants";
@@ -37,8 +38,10 @@ const schema = z
   });
 
 const SignUpForm = ({ setIsSubmitted }) => {
+  const [isPasswordHidden, setIsPasswordHidden] = useState(true);
+  const [isConfirmHidden, setIsConfirmHidden] = useState(true);
+
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const {
     register,
@@ -56,10 +59,9 @@ const SignUpForm = ({ setIsSubmitted }) => {
     try {
       await dispatch(registerUser(data)).unwrap();
 
-      navigate("/");
-      // setIsSubmitted(true);
+      setIsSubmitted(true);
 
-      // reset();
+      reset();
     } catch (error) {
       console.log("Register failed");
       setError("root", { message: error.message });
@@ -95,24 +97,42 @@ const SignUpForm = ({ setIsSubmitted }) => {
       </div>
 
       <div className="w-[300px]">
-        <input
-          {...register("password")}
-          type="password"
-          className="w-full py-2 px-3 border border-neutral-500 rounded-md"
-          placeholder="Password..."
-        />
+        <div className="relative">
+          <input
+            {...register("password")}
+            type={isPasswordHidden ? "password" : "text"}
+            className="w-full py-2 pl-3 pr-8 border border-neutral-500 rounded-md"
+            placeholder="Password..."
+          />
+          <div
+            onClick={() => setIsPasswordHidden((current) => !current)}
+            className="absolute bottom-1/2 right-3 p-1 translate-y-1/2 cursor-pointer"
+          >
+            {isPasswordHidden ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+          </div>
+        </div>
+
         {errors.password && (
           <p className="px-1 text-red-500">{errors.password.message}</p>
         )}
       </div>
 
       <div className="w-[300px]">
-        <input
-          {...register("password_confirmation")}
-          type="password"
-          className="w-full py-2 px-3 border border-neutral-500 rounded-md"
-          placeholder="Confirm password..."
-        />
+        <div className="relative">
+          <input
+            {...register("password_confirmation")}
+            type={isConfirmHidden ? "password" : "text"}
+            className="w-full py-2 pl-3 pr-8 border border-neutral-500 rounded-md"
+            placeholder="Password..."
+          />
+          <div
+            onClick={() => setIsConfirmHidden((current) => !current)}
+            className="absolute bottom-1/2 right-3 p-1 translate-y-1/2 cursor-pointer"
+          >
+            {isConfirmHidden ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+          </div>
+        </div>
+
         {errors.password_confirmation && (
           <p className="px-1 text-red-500">
             {errors.password_confirmation.message}
