@@ -93,6 +93,23 @@ use Exception;
     ];
   }
 
+  public function decodeToken($token, $secretKey)
+{
+    try {
+        // Декодируем JWT токен
+        $decoded = JWT::decode($token, new Key($secretKey, 'HS256'));
+        
+        // Извлекаем идентификатор пользователя из декодированного токена
+        $userId = $decoded->sub;
+        
+        // Возвращаем идентификатор пользователя
+        return $userId;
+    } catch (Exception $e) {
+        // Если токен недействителен, обрабатываем ошибку
+        return null;
+    }
+}
+
 
   // public function generate(Request $request)
   // {
