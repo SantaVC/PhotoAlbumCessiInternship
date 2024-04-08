@@ -12,6 +12,9 @@ import Modal from "./ui/Modal";
 import ResetPasswordForm from "./ResetPassword/ResetPasswordForm.jsx";
 import ResetPasswordModal from "./ResetPassword/ResetPasswordModal.jsx";
 import SignUpVerifyEmail from "./SignUp/SignUpVerifyEmail.jsx";
+import ToggleTheme from "./ToggleTheme.jsx";
+import UserAvatar from "./UserProfile/UserAvatar.jsx";
+import ChangeNicknameModal from "./ChangeNicknameModal.jsx";
 
 export {
   Header,
@@ -28,4 +31,7 @@ export {
   ResetPasswordForm,
   ResetPasswordModal,
   SignUpVerifyEmail,
+  ToggleTheme,
+  UserAvatar,
+  ChangeNicknameModal,
 };

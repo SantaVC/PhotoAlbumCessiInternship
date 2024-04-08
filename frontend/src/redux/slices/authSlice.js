@@ -24,10 +24,14 @@ export const authSlice = createSlice({
     setLoading: (state, action) => {
       state.loading = action.payload;
     },
+    updateNickname: (state, action) => {
+      state.userAuth.user.nickname = action.payload;
+    },
   },
 });
 
-export const { setToken, setLoading, resetAuth, setUser } = authSlice.actions;
+export const { setToken, setLoading, resetAuth, setUser, updateNickname } =
+  authSlice.actions;
 
 export const selectAuth = (state) => state.auth.userAuth;
 export const selectLoading = (state) => state.auth.loading;

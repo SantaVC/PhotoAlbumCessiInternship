@@ -2,7 +2,11 @@
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      gridTemplateColumns: {
+        posts: "repeat(auto-fill, 220px)",
+      },
+    },
   },
   plugins: [],
   darkMode: "class",

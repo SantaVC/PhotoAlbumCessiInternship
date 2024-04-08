@@ -35,7 +35,7 @@ const LayoutPage = () => {
   }, [axiosPrivate, dispatch, user]);
 
   return (
-    <main>
+    <main className="flex-1">
       <Outlet />
     </main>
   );

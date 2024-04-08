@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { resetPassword } from "../../redux/thunks/authThunks";
+import { resetPassword } from "../../redux/thunks/userThunks";
 import { Button } from "../index";
 
 const schema = z.object({

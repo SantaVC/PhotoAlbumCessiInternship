@@ -2,10 +2,12 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\ProfileController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TokenController;
- 
+
 
 Route::middleware('jwt.auth')->get('/user', function (Request $request) {
     return $request->user();
@@ -28,6 +30,7 @@ Route::post('/logout', [AuthController::class, 'logout']);
 Route::get('/testAPI', [AuthController::class, 'testAPI']);
 
 Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword']);
+Route::patch('/change-nickname', [ProfileController::class, 'changeNickname']);
 
 // Route::middleware('auth:api')->get('/user', function (Request $request) {
 //   return $request->user();
