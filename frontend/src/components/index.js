@@ -13,7 +13,10 @@ import ResetPasswordForm from "./ResetPassword/ResetPasswordForm.jsx";
 import ResetPasswordModal from "./ResetPassword/ResetPasswordModal.jsx";
 import SignUpVerifyEmail from "./SignUp/SignUpVerifyEmail.jsx";
 import ToggleTheme from "./ToggleTheme.jsx";
-import ChangeNicknameModal from "./ChangeNicknameModal.jsx";
+
+import ChangeNicknameModal from "./UserProfile/ChangeNicknameModal.jsx";
+import ChangePasswordModal from "./ChangePassword//ChangePasswordModal.jsx";
+
 import UserAvatar from "./UserProfile/UserAvatar.jsx";
 import UserInfoList from "./UserProfile/UserInfoList.jsx";
 import UserPosts from "./UserProfile/UserPosts.jsx";
@@ -37,6 +40,7 @@ export {
   SignUpVerifyEmail,
   ToggleTheme,
   ChangeNicknameModal,
+  ChangePasswordModal,
   UserAvatar,
   UserInfoList,
   UserPosts,

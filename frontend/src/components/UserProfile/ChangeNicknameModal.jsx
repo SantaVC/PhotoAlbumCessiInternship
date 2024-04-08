@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { changeNickname } from "../redux/thunks/userThunks";
 import { AiOutlineLoading } from "react-icons/ai";
 import { CgCloseR } from "react-icons/cg";
-import { Modal, Button } from "./index";
-import { selectLoading } from "../redux/slices/authSlice";
-import { nicknameRegex } from "../constants";
-import useUserAuth from "../hooks/useUserAuth";
+import { Modal, Button } from "../index";
+import { changeNickname } from "../../redux/thunks/userThunks";
+import { selectLoading } from "../../redux/slices/authSlice";
+import { nicknameRegex } from "../../constants";
+import useUserAuth from "../../hooks/useUserAuth";
 
 const ChangeNicknameModal = ({ setIsOpen }) => {
   const { user } = useUserAuth();

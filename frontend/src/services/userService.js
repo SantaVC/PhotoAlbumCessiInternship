@@ -10,6 +10,11 @@ const userService = {
     const response = await axiosPrivateClient.post("/reset-password", data);
     return response.data;
   },
+
+  changePassword: async (data) => {
+    const response = await axiosPrivateClient.patch("/change-password", data);
+    return response.data;
+  },
 };
 
 export default userService;
