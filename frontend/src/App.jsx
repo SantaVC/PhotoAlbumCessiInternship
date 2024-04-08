@@ -12,13 +12,13 @@ import {
 import { ProfilePage, LayoutPage, HomePage } from "./pages/index";
 
 const App = () => {
-  const [isDark, setIsDark] = useState(false);
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
 
   return (
-    <div className={isDark ? "dark" : null}>
-      <div className="min-h-[100dvh] bg-white dark:bg-neutral-900 transition-colors duration-100">
-        <div className="max-w-screen-xl mx-auto px-4 bg-white dark:bg-neutral-900 transition-colors duration-100">
-          <Header isDark={isDark} setIsDark={setIsDark} />
+    <div className={theme === "dark" ? "dark" : null}>
+      <div className="min-h-[100dvh] bg-white dark:bg-neutral-900 transition-colors duration-100 f-regular">
+        <div className="h-full flex flex-col max-w-screen-xl mx-auto px-4 bg-white dark:bg-neutral-900 transition-colors duration-100">
+          <Header theme={theme} setTheme={setTheme} />
 
           <Routes>
             <Route path="/login" element={<SignInModal />} />

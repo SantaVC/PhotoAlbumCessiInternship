@@ -105,21 +105,3 @@ export const resendVerification = createAsyncThunk(
     }
   }
 );
-
-export const resetPassword = createAsyncThunk(
-  "auth/resetPassword",
-  async (userData, { dispatch }) => {
-    try {
-      dispatch(setLoading(true));
-
-      const response = await authService.resetPassword(userData);
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-
-      throw new Error("Internal server error.");
-    } finally {
-      dispatch(setLoading(false));
-    }
-  }
-);

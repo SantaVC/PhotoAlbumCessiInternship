@@ -1,8 +1,10 @@
 const HomePage = () => {
   return (
-    <section>
-      <p className="dark:text-white">HomePage</p>
-    </section>
+    <>
+      <section className="h-full">
+        <p className="dark:text-white">HomePage</p>
+      </section>
+    </>
   );
 };
 

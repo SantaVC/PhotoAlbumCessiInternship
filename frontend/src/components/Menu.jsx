@@ -16,7 +16,6 @@ const Menu = ({ setIsOpen }) => {
     await dispatch(logoutUser()).unwrap();
     setIsOpen(false);
     navigate("/login");
-    console.log("redirected to /login after logout");
   };
 
   return (
@@ -32,7 +31,7 @@ const Menu = ({ setIsOpen }) => {
           </Link>
         ) : (
           <Button
-            className="min-w-[100px] bg-sky-800 px-4 py-2 rounded text-white text-lg disabled:cursor-not-allowed rounded"
+            className="min-w-[100px] bg-sky-800 px-4 py-2 rounded text-white text-lg disabled:cursor-not-allowed"
             disabled={loading}
             onClick={() => handleClick()}
           >
@@ -43,9 +42,6 @@ const Menu = ({ setIsOpen }) => {
             )}
           </Button>
         )}
-      </li>
-      <li className="min-w-[100px] bg-sky-800 px-4 py-2 rounded text-white text-lg text-center f-regular">
-        Тема
       </li>
     </ul>
   );

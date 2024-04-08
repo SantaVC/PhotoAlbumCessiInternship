@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 import { CiMenuKebab } from "react-icons/ci";
 import { IoNotifications } from "react-icons/io5";
-import { Button, Menu } from "./index";
+import { Button, Menu, ToggleTheme } from "./index";
 
-const Header = ({ isDark, setIsDark }) => {
+const Header = ({ theme, setTheme }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef();
 
@@ -28,6 +28,11 @@ const Header = ({ isDark, setIsDark }) => {
     };
   }, []);
 
+  const handleToggleTheme = () => {
+    localStorage.setItem("theme", theme === "dark" ? "light" : "dark");
+    setTheme((cur) => (cur === "dark" ? "light" : "dark"));
+  };
+
   return (
     <header className="flex justify-between py-4">
       <div className="flex gap-6">
@@ -45,6 +50,11 @@ const Header = ({ isDark, setIsDark }) => {
       </div>
 
       <div className="flex items-center gap-3">
+        <ToggleTheme
+          isChecked={theme === "dark"}
+          handleChange={handleToggleTheme}
+        />
+
         <Button className="relative p-1">
           <IoNotifications className="dark:text-white" size={30} />
           <div className="block w-3 h-3 absolute top-1 right-1 bg-red-500 rounded-full"></div>
@@ -64,13 +74,6 @@ const Header = ({ isDark, setIsDark }) => {
 
           {isMenuOpen && <Menu setIsOpen={setIsMenuOpen} />}
         </div>
-
-        <Button
-          className="dark:text-white"
-          onClick={() => setIsDark((cur) => !cur)}
-        >
-          {isDark ? "Light" : "Dark"}
-        </Button>
       </div>
     </header>
   );
