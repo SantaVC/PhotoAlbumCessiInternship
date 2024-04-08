@@ -1,12 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import {
-  resetAuth,
-  setAuth,
-  setCanVerify,
-  setLoading,
-  setToken,
-  setUser,
-} from "../slices/authSlice";
+import { resetAuth, setLoading, setToken, setUser } from "../slices/authSlice";
 import authService from "../../services/authService";
 
 export const getUser = createAsyncThunk(
@@ -15,9 +8,11 @@ export const getUser = createAsyncThunk(
     try {
       dispatch(setLoading(true));
 
-      const data = await authService.getUser(config);
+      const user = await authService.getUser(config);
 
-      dispatch(setUser(data));
+      dispatch(setUser(user));
+
+      return user;
     } catch (error) {
       console.log(error);
       throw new Error("Internal server error.");
@@ -32,15 +27,12 @@ export const registerUser = createAsyncThunk(
   async (userData, { dispatch }) => {
     try {
       dispatch(setLoading(true));
-      // dispatch(setCanVerify(false));
 
-      const { token } = await authService.register(userData);
+      const { user } = await authService.register(userData);
 
-      dispatch(setToken(token));
-      // dispatch(setCanVerify(true));
+      dispatch(setUser(user));
     } catch (error) {
       console.log(error);
-      // dispatch(setCanVerify(false));
 
       if (error?.request?.status === 422) {
         throw new Error("This user already exists.");
@@ -103,24 +95,6 @@ export const resendVerification = createAsyncThunk(
       dispatch(setLoading(true));
 
       const response = await authService.resendVerification(userData);
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-
-      throw new Error("Internal server error.");
-    } finally {
-      dispatch(setLoading(false));
-    }
-  }
-);
-
-export const resetPassword = createAsyncThunk(
-  "auth/resetPassword",
-  async (userData, { dispatch }) => {
-    try {
-      dispatch(setLoading(true));
-
-      const response = await authService.resetPassword(userData);
       console.log(response);
     } catch (error) {
       console.log(error);

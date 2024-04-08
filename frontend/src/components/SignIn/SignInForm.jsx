@@ -1,11 +1,13 @@
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { passwordRegex } from "../../constants";
 import { loginUser } from "../../redux/thunks/authThunks";
 import { Button } from "../index";
+import { useState } from "react";
 
 const schema = z.object({
   email: z.string().email("Invalid email."),
@@ -16,6 +18,8 @@ const schema = z.object({
 });
 
 const SignInForm = () => {
+  const [isHidden, setIsHidden] = useState(true);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -62,12 +66,21 @@ const SignInForm = () => {
       </div>
 
       <div className="w-[300px]">
-        <input
-          {...register("password")}
-          type="password"
-          className="w-full py-2 px-3 border border-neutral-500 rounded-md"
-          placeholder="Password..."
-        />
+        <div className="relative">
+          <input
+            {...register("password")}
+            type={isHidden ? "password" : "text"}
+            className="w-full py-2 pl-3 pr-8 border border-neutral-500 rounded-md"
+            placeholder="Password..."
+          />
+          <Button
+            onClick={() => setIsHidden((current) => !current)}
+            className="absolute bottom-1/2 right-3 translate-y-1/2"
+          >
+            {isHidden ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+          </Button>
+        </div>
+
         {errors.password && (
           <p className="px-1 text-red-500">{errors.password.message}</p>
         )}

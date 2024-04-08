@@ -8,7 +8,7 @@ use App\User;
 use App\UserProfile;
 use Illuminate\Support\Facades\Validator;
 
-class UserProfileController extends Controller
+class ProfileController extends Controller
 {
     public function show()
     {

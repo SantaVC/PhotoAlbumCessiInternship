@@ -1,12 +1,12 @@
-import { useEffect, useRef } from 'react';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { FaUserCircle } from 'react-icons/fa';
-import { CiMenuKebab } from 'react-icons/ci';
-import { IoNotifications } from 'react-icons/io5';
-import { Button, Menu } from './index';
+import { useEffect, useRef } from "react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { FaUserCircle } from "react-icons/fa";
+import { CiMenuKebab } from "react-icons/ci";
+import { IoNotifications } from "react-icons/io5";
+import { Button, Menu, ToggleTheme } from "./index";
 
-const Header = () => {
+const Header = ({ theme, setTheme }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef();
 
@@ -21,42 +21,55 @@ const Header = () => {
       }
     };
 
-    window.addEventListener('click', handler, true);
+    window.addEventListener("click", handler, true);
 
     return () => {
-      window.removeEventListener('click', handler);
+      window.removeEventListener("click", handler);
     };
   }, []);
+
+  const handleToggleTheme = () => {
+    localStorage.setItem("theme", theme === "dark" ? "light" : "dark");
+    setTheme((cur) => (cur === "dark" ? "light" : "dark"));
+  };
 
   return (
     <header className="flex justify-between py-4">
       <div className="flex gap-6">
         <Link
-          to={'/'}
+          to={"/"}
           className="f-bold block bg-purple-600 py-2 px-4 border border-black rounded"
         >
           Logo
         </Link>
 
         <input
-          className="min-w-64 border border-neutral-700 rounded-md py-1 px-2 text-base"
+          className="min-w-64 border border-neutral-700 rounded-md py-1 px-2 text-base dark:bg-neutral-300"
           type="text"
         />
       </div>
 
       <div className="flex items-center gap-3">
+        <ToggleTheme
+          isChecked={theme === "dark"}
+          handleChange={handleToggleTheme}
+        />
+
         <Button className="relative p-1">
-          <IoNotifications size={30} />
+          <IoNotifications className="dark:text-white" size={30} />
           <div className="block w-3 h-3 absolute top-1 right-1 bg-red-500 rounded-full"></div>
         </Button>
 
-        <Link to={'/profile'} className="flex items-center justify-center p-1">
-          <FaUserCircle size={30} />
+        <Link to={"/profile"} className="flex items-center justify-center p-1">
+          <FaUserCircle className="dark:text-white" size={30} />
         </Link>
 
         <div ref={menuRef} className="relative">
-          <Button onClick={() => setIsMenuOpen((current) => !current)} className="p-1">
-            <CiMenuKebab size={30} />
+          <Button
+            onClick={() => setIsMenuOpen((current) => !current)}
+            className="p-1"
+          >
+            <CiMenuKebab className="dark:text-white" size={30} />
           </Button>
 
           {isMenuOpen && <Menu setIsOpen={setIsMenuOpen} />}

@@ -1,9 +1,9 @@
 import { createPortal } from "react-dom";
 
-const Modal = ({ children }) => {
+const Modal = ({ children, ...rest }) => {
   return createPortal(
     <>
-      <div className="fixed inset-0 bg-gray-400 opacity-50"></div>
+      <div {...rest} className="fixed inset-0 bg-neutral-400 opacity-50"></div>
       {children}
     </>,
     document.getElementById("modals")
