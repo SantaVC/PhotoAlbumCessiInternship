@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { changeNickname } from "../redux/thunks/userThunks";
 import { AiOutlineLoading } from "react-icons/ai";
 import { CgCloseR } from "react-icons/cg";
 import { Modal, Button } from "./index";
 import { selectLoading } from "../redux/slices/authSlice";
+import { nicknameRegex } from "../constants";
 import useUserAuth from "../hooks/useUserAuth";
 
 const ChangeNicknameModal = ({ setIsOpen }) => {
@@ -12,24 +13,45 @@ const ChangeNicknameModal = ({ setIsOpen }) => {
   const dispatch = useDispatch();
   const loading = useSelector(selectLoading);
 
-  const [nickname, setNickname] = useState("");
   const [error, setError] = useState("");
+  const nickname = useRef(null);
 
   useEffect(() => {
-    setNickname(user?.nickname);
+    nickname.current = user?.nickname;
   }, [user?.nickname]);
+
+  useEffect(() => {
+    const BODY = document.body;
+
+    BODY.style.paddingRight =
+      window.innerWidth - document.getElementById("root").offsetWidth + "px";
+    BODY.classList.add("overflow-hidden");
+
+    return () => {
+      BODY.style.paddingRight = 0 + "px";
+      BODY.classList.remove("overflow-hidden");
+    };
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (nickname === user?.nickname) {
+    setError("");
+
+    if (nickname.current === user?.nickname) {
       setError("Enter new nickname.");
       return;
     }
 
+    if (!nicknameRegex.test(nickname.current)) {
+      setError(
+        "Usernames must only contain alphanumeric characters (minimum 4 characters)."
+      );
+      return;
+    }
+
     try {
-      setError("");
-      await dispatch(changeNickname({ nickname })).unwrap();
+      await dispatch(changeNickname({ nickname: nickname.current })).unwrap();
 
       setIsOpen(false);
     } catch (error) {
@@ -38,7 +60,7 @@ const ChangeNicknameModal = ({ setIsOpen }) => {
   };
 
   const handleEditNickname = (event) => {
-    setNickname(event.target.value);
+    nickname.current = event.target.value;
   };
 
   return (
@@ -54,7 +76,6 @@ const ChangeNicknameModal = ({ setIsOpen }) => {
             <div className="relative">
               <input
                 onChange={handleEditNickname}
-                defaultValue={nickname}
                 placeholder="New Nickname"
                 className="w-full bg-transparent border border-neutral-500 rounded-full px-3 py-1"
                 type="text"
