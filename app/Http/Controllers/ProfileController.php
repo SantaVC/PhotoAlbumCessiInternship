@@ -42,7 +42,7 @@ class ProfileController extends Controller
     public function changePassword(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'password' => 'required|string|min:6|confirmed',
+            'newPassword' => 'required|string|min:6|confirmed',
         ]);
 
         if ($validator->fails()) {
@@ -50,7 +50,7 @@ class ProfileController extends Controller
         }
 
         $user = Auth::user();
-        $user->update(['password' => bcrypt($request->password)]);
+        $user->update(['password' => $request->newPassword]);
 
         return response()->json(['message' => 'Password changed successfully']);
     }

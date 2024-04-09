@@ -4,7 +4,6 @@ export const useCountdown = () => {
   const [seconds, setSeconds] = useState(0);
 
   useEffect(() => {
-    console.log(seconds);
     if (seconds <= 0) {
       return;
     }

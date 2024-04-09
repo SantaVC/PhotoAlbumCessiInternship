@@ -26,7 +26,6 @@ const SignUpVerifyEmail = () => {
   }, [setSeconds]);
 
   if (user?.email_verified_at) {
-    console.log(from);
     return <Navigate to={from} />;
   }
 

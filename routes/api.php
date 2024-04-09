@@ -31,6 +31,7 @@ Route::get('/testAPI', [AuthController::class, 'testAPI']);
 
 Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword']);
 Route::patch('/change-nickname', [ProfileController::class, 'changeNickname']);
+Route::patch('/change-password', [ProfileController::class, 'changePassword']);
 
 // Route::middleware('auth:api')->get('/user', function (Request $request) {
 //   return $request->user();
