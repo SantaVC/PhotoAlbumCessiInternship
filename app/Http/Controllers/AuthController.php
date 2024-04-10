@@ -16,6 +16,8 @@ use Illuminate\Validation\ValidationException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use App\Notifications\EmailVerificationNotification;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class AuthController extends Controller
 {
@@ -74,7 +76,11 @@ class AuthController extends Controller
       $response = $response->withCookie(Cookie::make('refresh_token', $refreshToken, $this->expirationTime, $this->path, $this->domain, $this->secure, $this->httpOnly));
 
        // Отправка письма для подтверждения email
-      event(new Registered($user));
+
+       //event(new Registered($user));
+       $user->notify(new EmailVerificationNotification($user));
+
+
 
       return $response;
     } catch (\Illuminate\Validation\ValidationException $e) {
@@ -149,41 +155,5 @@ class AuthController extends Controller
       return response()->json(['error' => 'Logout failed'], 500);
     }
   }
-  public function verifyEmail(Request $request)
-{
-  $secretKey = (string) config('jwt.secret');
-  $refreshToken = $request->cookie('refresh_token');
-
-  if (!$refreshToken) {
-      return response()->json(['message' => 'Refresh token not found in cookie'], 401);
-  }
-
-  // Извлекаем идентификатор пользователя из cookie
-  $payload = JWT::decode($refreshToken, new Key($secretKey, 'HS256'));
-
-        // Извлекаем идентификатор пользователя из декодированного токена
-        $userId = $payload->sub;
-
-  // Находим пользователя в базе данных по его ID
-  $user = User::find($userId);
-
-
-  if (!$user) {
-      return response()->json(['message' => 'Invalid refresh token or user ID'], 401);
-  }
-
-    if ($user->email_verified_at) {
-        return response()->json(['message' => 'Email already verified'], 422);
-    }
-
-    // Проверяем наличие email_verified_at перед сохранением
-    if (!$user->email_verified_at) {
-        $user->email_verified_at = now();
-        $user->save();
-
-        event(new Verified($user));
-
-        return response()->json(['message' => 'Email successfully verified'], 200);
-    }
 }
-}
+

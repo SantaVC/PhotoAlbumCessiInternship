@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TokenController;
 
+use App\Notifications\EmailVerificationNotification;
+use App\Http\Controllers\EmailVerificationResendController;
+
 
 Route::middleware('jwt.auth')->get('/user', function (Request $request) {
     return $request->user();
@@ -33,15 +36,18 @@ Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'
 Route::patch('/change-nickname', [ProfileController::class, 'changeNickname']);
 Route::patch('/change-password', [ProfileController::class, 'changePassword']);
 
+
+Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->middleware('throttle:1,1');
+Route::get('email/verify', [VerificationController::class, 'verifyEmail']);
+Route::post('email/resend', [EmailVerificationResendController::class, 'resend'])->middleware('throttle:1,1');
 // Route::middleware('auth:api')->get('/user', function (Request $request) {
 //   return $request->user();
 // });
 
 
-Route::post('/email/resend', 'App\Http\Controllers\Auth\VerificationController@resend')->name('verification.resend');
+// Route::post('/email/resend', 'App\Http\Controllers\Auth\VerificationController@resend')->name('verification.resend');
 
-
-Route::post('email/verify', 'VerificationController@verify')->name('verification.verify');
-Route::post('email/resend', 'VerificationController@resend')->name('verification.resend');
-Route::get('email/verify', [AuthController::class, 'verifyEmail']);
-
+// protected $middleware = [
+    // Other middleware
+//     \App\Http\Middleware\ThrottleRequests::class,
+// ];
