@@ -52,10 +52,6 @@ const SignUpForm = ({ setIsSubmitted }) => {
   } = useForm({ resolver: zodResolver(schema) });
 
   const onSubmit = async (data) => {
-    // await new Promise((resolve, reject) => setTimeout(resolve, 1000));
-    // dispatch(setUser({ email: data.email }));
-    // setIsSubmitted(true);
-
     try {
       await dispatch(registerUser(data)).unwrap();
 

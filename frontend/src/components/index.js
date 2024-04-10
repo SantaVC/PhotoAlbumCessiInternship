@@ -13,8 +13,15 @@ import ResetPasswordForm from "./ResetPassword/ResetPasswordForm.jsx";
 import ResetPasswordModal from "./ResetPassword/ResetPasswordModal.jsx";
 import SignUpVerifyEmail from "./SignUp/SignUpVerifyEmail.jsx";
 import ToggleTheme from "./ToggleTheme.jsx";
+
+import ChangeNicknameModal from "./UserProfile/ChangeNicknameModal.jsx";
+import ChangePasswordModal from "./ChangePassword//ChangePasswordModal.jsx";
+
 import UserAvatar from "./UserProfile/UserAvatar.jsx";
-import ChangeNicknameModal from "./ChangeNicknameModal.jsx";
+import UserInfoList from "./UserProfile/UserInfoList.jsx";
+import UserPosts from "./UserProfile/UserPosts.jsx";
+import UserPostSkeleton from "./UserProfile/UserPostSkeleton.jsx";
+import UserInfoListSkeleton from "./UserProfile/UserInfoListSkeleton.jsx";
 
 export {
   Header,
@@ -32,6 +39,11 @@ export {
   ResetPasswordModal,
   SignUpVerifyEmail,
   ToggleTheme,
-  UserAvatar,
   ChangeNicknameModal,
+  ChangePasswordModal,
+  UserAvatar,
+  UserInfoList,
+  UserPosts,
+  UserPostSkeleton,
+  UserInfoListSkeleton,
 };
