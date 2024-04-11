@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\User;
-use App\UserProfile;
+use App\Models\User;
+use App\Models\UserProfile;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
+
 
 class ProfileController extends Controller
 {
@@ -40,21 +42,28 @@ class ProfileController extends Controller
     }
 
     public function changePassword(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'newPassword' => 'required|string|min:6|confirmed',
-        ]);
+{
+    $validator = Validator::make($request->all(), [
+        'oldPassword' => 'required|string',
+        'newPassword' => 'required|string|min:6|confirmed',
+    ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        $user = Auth::user();
-        $user->update(['password' => $request->newPassword]);
-
-        return response()->json(['message' => 'Password changed successfully']);
+    if ($validator->fails()) {
+        return response()->json(['errors' => $validator->errors()], 422);
     }
 
+    $user = Auth::user();
+
+    // Проверяем, совпадает ли введенный старый пароль с текущим паролем пользователя
+    if (!Hash::check($request->oldPassword, $user->password)) {
+        return response()->json(['errors' => ['oldPassword' => ['Old password is incorrect.']]], 422);
+    }
+
+    // Обновляем пароль пользователя
+    $user->update(['password' => ($request->newPassword)]);
+
+    return response()->json(['message' => 'Password changed successfully']);
+}
     public function changeNickname(Request $request)
     {
         $validator = Validator::make($request->all(), [
