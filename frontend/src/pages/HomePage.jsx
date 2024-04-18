@@ -1,10 +1,10 @@
+import { Section, SectionHeading } from "../components";
+
 const HomePage = () => {
   return (
-    <>
-      <section className="h-full">
-        <p className="dark:text-white">HomePage</p>
-      </section>
-    </>
+    <Section primary>
+      <SectionHeading>HomePage</SectionHeading>
+    </Section>
   );
 };
 

@@ -7,8 +7,11 @@ import SignInModal from "./SignIn/SignInModal.jsx";
 import SignUpForm from "./SignUp/SignUpForm";
 import SignUpModal from "./SignUp/SignUpModal.jsx";
 import Button from "./ui/Button";
-import RememberMe from "./RememberMe.jsx";
 import Modal from "./ui/Modal";
+import Section from "./ui/Section.jsx";
+import SectionHeading from "./ui/SectionHeading.jsx";
+
+import RememberMe from "./RememberMe.jsx";
 import ResetPasswordForm from "./ResetPassword/ResetPasswordForm.jsx";
 import ResetPasswordModal from "./ResetPassword/ResetPasswordModal.jsx";
 import SignUpVerifyEmail from "./SignUp/SignUpVerifyEmail.jsx";
@@ -22,6 +25,7 @@ import UserInfoList from "./UserProfile/UserInfoList.jsx";
 import UserPosts from "./UserProfile/UserPosts.jsx";
 import UserPostSkeleton from "./UserProfile/UserPostSkeleton.jsx";
 import UserInfoListSkeleton from "./UserProfile/UserInfoListSkeleton.jsx";
+import EditProfileForm from "./UserProfile/EditProfileForm.jsx";
 
 export {
   Header,
@@ -46,4 +50,7 @@ export {
   UserPosts,
   UserPostSkeleton,
   UserInfoListSkeleton,
+  Section,
+  SectionHeading,
+  EditProfileForm,
 };

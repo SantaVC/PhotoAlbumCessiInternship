@@ -9,7 +9,7 @@ import {
   ResetPasswordModal,
   SignUpVerifyEmail,
 } from "./components/index";
-import { ProfilePage, LayoutPage, HomePage } from "./pages/index";
+import { ProfilePage, LayoutPage, HomePage, EditProfile } from "./pages/index";
 
 const App = () => {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
@@ -33,6 +33,7 @@ const App = () => {
                 {/* Protected routes */}
                 <Route element={<RequireAuth />}>
                   <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/profile/edit" element={<EditProfile />} />
                 </Route>
               </Route>
             </Route>

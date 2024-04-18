@@ -64,3 +64,21 @@ export const resetPassword = createAsyncThunk(
     }
   }
 );
+
+export const updateProfile = createAsyncThunk(
+  "user/updateProfile",
+  async (userData, { dispatch }) => {
+    try {
+      dispatch(setLoading(true));
+
+      const response = await userService.updateProfile(userData);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+
+      throw new Error("Internal server error.");
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }
+);

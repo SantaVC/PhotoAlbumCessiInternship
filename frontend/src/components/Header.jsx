@@ -4,9 +4,10 @@ import { Link } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 import { CiMenuKebab } from "react-icons/ci";
 import { IoNotifications } from "react-icons/io5";
-import { Button, Menu, ToggleTheme } from "./index";
+import { Button, ChangePasswordModal, Menu, ToggleTheme } from "./index";
 
 const Header = ({ theme, setTheme }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef();
 
@@ -55,25 +56,35 @@ const Header = ({ theme, setTheme }) => {
           handleChange={handleToggleTheme}
         />
 
-        <Button className="relative p-1">
+        <Button className="relative p-1 hover:text-white hover:outline hover:bg-sky-500 outline-sky-300 rounded-md">
           <IoNotifications className="dark:text-white" size={30} />
           <div className="block w-3 h-3 absolute top-1 right-1 bg-red-500 rounded-full"></div>
         </Button>
 
-        <Link to={"/profile"} className="flex items-center justify-center p-1">
+        <Link
+          to={"/profile"}
+          className="flex items-center justify-center p-1 hover:text-white hover:outline hover:bg-sky-500 outline-sky-300 rounded-md"
+        >
           <FaUserCircle className="dark:text-white" size={30} />
         </Link>
 
         <div ref={menuRef} className="relative">
           <Button
             onClick={() => setIsMenuOpen((current) => !current)}
-            className="p-1"
+            className="p-1 hover:text-white hover:outline hover:bg-sky-500 outline-sky-300 rounded-md"
           >
             <CiMenuKebab className="dark:text-white" size={30} />
           </Button>
 
-          {isMenuOpen && <Menu setIsOpen={setIsMenuOpen} />}
+          {isMenuOpen && (
+            <Menu
+              setIsModalOpen={setIsModalOpen}
+              setIsMenuOpen={setIsMenuOpen}
+            />
+          )}
         </div>
+
+        {isModalOpen && <ChangePasswordModal setIsOpen={setIsModalOpen} />}
       </div>
     </header>
   );

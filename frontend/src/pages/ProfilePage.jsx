@@ -1,18 +1,17 @@
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectLoading } from "../redux/slices/authSlice";
 import { getUser } from "../redux/thunks/authThunks";
 import {
   Button,
-  ChangePasswordModal,
   UserAvatar,
   UserInfoList,
   UserPosts,
+  Section,
+  SectionHeading,
 } from "../components";
+import { Link } from "react-router-dom";
 
 const ProfilePage = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   const loading = useSelector(selectLoading);
   const dispatch = useDispatch();
 
@@ -21,8 +20,10 @@ const ProfilePage = () => {
   };
 
   return (
-    <section className="dark:text-white p-5 bg-sky-200 dark:bg-neutral-800 rounded-3xl">
-      <header className="flex items-start gap-5 mb-8 rounded-3xl p-4">
+    <Section primary>
+      <SectionHeading>ProfilePage</SectionHeading>
+
+      <div className="flex items-start gap-5 mb-8 rounded-3xl p-4">
         <UserAvatar />
 
         <UserInfoList />
@@ -30,14 +31,13 @@ const ProfilePage = () => {
         <Button primary disabled={loading} onClick={handleFetchUser}>
           Fetch user
         </Button>
-        <Button primary disabled={loading} onClick={() => setIsModalOpen(true)}>
-          Change password
-        </Button>
-      </header>
 
+        <Link className="hover:underline p-1" to="/profile/edit">
+          Edit profile
+        </Link>
+      </div>
       <UserPosts />
-      {isModalOpen && <ChangePasswordModal setIsOpen={setIsModalOpen} />}
-    </section>
+    </Section>
   );
 };
 
