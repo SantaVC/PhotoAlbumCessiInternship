@@ -6,39 +6,64 @@ import { selectLoading } from "../redux/slices/authSlice";
 import { Button } from "./index";
 import useUserAuth from "../hooks/useUserAuth";
 
-const Menu = ({ setIsOpen }) => {
+const Menu = ({ setIsMenuOpen, setIsModalOpen }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const loading = useSelector(selectLoading);
   const { token } = useUserAuth();
 
-  const handleClick = async () => {
+  const handleClickLogout = async () => {
     await dispatch(logoutUser()).unwrap();
-    setIsOpen(false);
+    setIsMenuOpen(false);
     navigate("/login");
   };
 
+  const handleClickChangePassword = async () => {
+    setIsMenuOpen(false);
+    setIsModalOpen(true);
+  };
+
   return (
-    <ul className="absolute right-0 top-[50px] flex flex-col gap-3 p-4 bg-sky-200 rounded animate-opacity">
-      <li className="f-regular">
+    <ul className="absolute right-0 top-[50px] flex flex-col gap-3 p-3 bg-sky-300 rounded animate-opacity leading-none">
+      <li className="min-w-[100px]">
+        <Link
+          className="hover:underline p-1"
+          to="/profile/edit"
+          onClick={() => setIsMenuOpen(false)}
+        >
+          Edit profile
+        </Link>
+      </li>
+
+      <li className="min-w-[100px]">
+        <Button
+          className="text-left hover:underline p-1"
+          disabled={loading}
+          onClick={handleClickChangePassword}
+        >
+          Change password
+        </Button>
+      </li>
+
+      <li className="min-w-[100px]">
         {!token ? (
           <Link
-            className="block min-w-[100px] bg-sky-800 px-4 py-2 rounded text-white text-lg text-center"
-            onClick={() => setIsOpen(false)}
+            className="text-left hover:underline p-1"
+            onClick={() => setIsMenuOpen(false)}
             to={"/login"}
           >
             Войти
           </Link>
         ) : (
           <Button
-            className="min-w-[100px] bg-sky-800 px-4 py-2 rounded text-white text-lg disabled:cursor-not-allowed"
+            className="text-left hover:underline p-1"
             disabled={loading}
-            onClick={() => handleClick()}
+            onClick={handleClickLogout}
           >
             {!loading ? (
               "Выйти"
             ) : (
-              <AiOutlineLoading size={28} className="animate-spin" />
+              <AiOutlineLoading size={20} className="animate-spin" />
             )}
           </Button>
         )}

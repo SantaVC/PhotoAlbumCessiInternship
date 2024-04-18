@@ -32,10 +32,10 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 Route::get('/testAPI', [AuthController::class, 'testAPI']);
 
-Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword']);
-Route::patch('/change-nickname', [ProfileController::class, 'changeNickname']);
-Route::patch('/change-password', [ProfileController::class, 'changePassword']);
-
+Route::post('/reset-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
+Route::patch('/profile/change-nickname', [ProfileController::class, 'changeNickname']);
+Route::patch('/profile/change-password', [ProfileController::class, 'changePassword']);
+Route::patch('/profile/update', [ProfileController::class, 'updateProfile']);
 
 Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->middleware('throttle:1,1');
 Route::get('email/verify', [VerificationController::class, 'verifyEmail']);

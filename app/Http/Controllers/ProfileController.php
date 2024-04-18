@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
-use App\Models\UserProfile;
+use App\Models\UserInfo;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 
@@ -24,10 +25,15 @@ class ProfileController extends Controller
         $user = Auth::user();
         $profile = $user->profile;
 
+        // Если у пользователя нет профиля, создаем его
+        if (!$profile) {
+            $profile = new UserInfo();
+            $profile->user_id = $user->id;
+        }
+
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'age' => 'required|integer|min:18',
             'gender' => 'required|in:male,female,other',
             'avatar' => 'nullable|image|max:2048',
         ]);
@@ -35,14 +41,17 @@ class ProfileController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-        
-        if ($request->hasFile('avatar')) 
-        {
-            $avatarPath = $request->file('avatar')->store('avatars'); // Метод store сохраняет файл и возвращает путь к нему
-            $profile->avatar_path = $avatarPath;
+
+        if ($request->hasFile('avatar')) {
+            $avatarPath = $request->file('avatar')->store('avatars');
+            $profile->avatar = $avatarPath; // заменил avatar_path на avatar
         }
 
-        $profile->update($request->all());
+        // Обновляем профиль пользователя
+        $profile->updateOrCreate(
+          ['user_id' => $user->id], // Условие поиска профиля
+          $request->all() // Данные для обновления
+        );
 
         return response()->json(['message' => 'Profile updated successfully', 'profile' => $profile]);
     }

@@ -16,11 +16,10 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->unique();
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
-            $table->integer('age')->nullable();            
+            $table->integer('age')->nullable();
             $table->enum('gender', ['male', 'female', 'other'])->default('other');
             $table->string('avatar')->nullable();
             $table->timestamps();
-            
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
