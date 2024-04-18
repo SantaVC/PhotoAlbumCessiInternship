@@ -33,6 +33,12 @@ class ProfileController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
+        
+        if ($request->hasFile('avatar')) 
+        {
+            $avatarPath = $request->file('avatar')->store('avatars'); // Метод store сохраняет файл и возвращает путь к нему
+            $profile->avatar_path = $avatarPath;
+        }
 
         $profile->update($request->all());
 
