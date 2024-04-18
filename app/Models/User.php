@@ -12,28 +12,29 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Support\Facades\Hash;
 
+
 class User extends Authenticatable implements JWTSubject, MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
     // Определение fillable, hidden, casts и других свойств модели...
 
-    public function hasValidToken($providedToken)
-    {
-        try {
-            // Проверяем валидность токена
-            $payload = auth()->setToken($providedToken)->getPayload();
+    // public function hasValidToken($providedToken)
+    // {
+    //     try {
+    //         // Проверяем валидность токена
+    //         $payload = auth()->setToken($providedToken)->getPayload();
 
-            // Получаем идентификатор пользователя из токена
-            $userId = $payload['sub'];
+    //         // Получаем идентификатор пользователя из токена
+    //         $userId = $payload['sub'];
 
-            // Проверяем, что идентификатор пользователя в токене совпадает с идентификатором этого пользователя
-            return $userId == $this->id;
-        } catch (JWTException $e) {
-            // Если возникает ошибка при обработке токена, считаем токен недействительным
-            return false;
-        }
-    }
+    //         // Проверяем, что идентификатор пользователя в токене совпадает с идентификатором этого пользователя
+    //         return $userId == $this->id;
+    //     } catch (JWTException $e) {
+    //         // Если возникает ошибка при обработке токена, считаем токен недействительным
+    //         return false;
+    //     }
+    // }
     /*
      * The attributes that are mass assignable.
      *
