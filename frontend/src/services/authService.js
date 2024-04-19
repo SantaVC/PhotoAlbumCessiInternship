@@ -7,14 +7,14 @@ const authService = {
   },
 
   register: async (userData) => {
-    const response = await axiosPrivateClient.post("/signup", userData, {
+    const response = await axiosPrivateClient.post("/sign-up", userData, {
       withCredentials: true,
     });
     return response.data;
   },
 
   login: async (userData) => {
-    const response = await axiosPrivateClient.post("/login", userData, {
+    const response = await axiosPrivateClient.post("/sign-in", userData, {
       withCredentials: true,
     });
     return response.data;

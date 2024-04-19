@@ -15,7 +15,7 @@ const Menu = ({ setIsMenuOpen, setIsModalOpen }) => {
   const handleClickLogout = async () => {
     await dispatch(logoutUser()).unwrap();
     setIsMenuOpen(false);
-    navigate("/login");
+    navigate("/sign-in");
   };
 
   const handleClickChangePassword = async () => {
@@ -50,7 +50,7 @@ const Menu = ({ setIsMenuOpen, setIsModalOpen }) => {
           <Link
             className="text-left hover:underline p-1"
             onClick={() => setIsMenuOpen(false)}
-            to={"/login"}
+            to={"/sign-in"}
           >
             Войти
           </Link>

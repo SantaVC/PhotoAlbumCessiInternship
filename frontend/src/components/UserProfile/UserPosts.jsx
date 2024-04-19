@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { IoIosAddCircleOutline } from "react-icons/io";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { TiDelete } from "react-icons/ti";
 import { Button, UserPostSkeleton } from "../index";
+import { IconButton, List, ListItem, Paper } from "@mui/material";
 
 const cards = [
   {
@@ -11,6 +12,13 @@ const cards = [
     id: 1,
   },
 ];
+
+const style = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fill, 220px)",
+  justifyContent: "space-around",
+  gap: 3,
+};
 
 const UserPosts = () => {
   const [items, setItems] = useState([]);
@@ -42,42 +50,64 @@ const UserPosts = () => {
 
   if (isLoading) {
     return (
-      <ul className="grid grid-cols-posts justify-between gap-5">
+      <List sx={{ ...style }}>
         {[...Array(5)].map((_, index) => (
           <li key={index}>
             <UserPostSkeleton speed={0.75} />
           </li>
         ))}
-      </ul>
+      </List>
     );
   }
 
   return (
-    <ul className="grid grid-cols-posts justify-between gap-5">
+    <List sx={{ ...style }}>
       {items.map((item, index) => (
-        <li
-          className="w-[220px] h-[300px] relative border border-white p-2 rounded-xl bg-sky-400"
-          key={index}
-        >
-          {item.id}
-          <Button
-            className="absolute top-2 right-2"
-            onClick={() => handleDeleteItem(item)}
+        <ListItem key={index} disablePadding>
+          <Paper
+            variant="outlined"
+            sx={{
+              width: 220,
+              height: 300,
+              position: "relative",
+              p: 2,
+            }}
           >
-            <TiDelete size={22} />
-          </Button>
-        </li>
+            {item.id}
+            <Button
+              className="absolute top-2 right-2"
+              onClick={() => handleDeleteItem(item)}
+            >
+              <TiDelete size={22} />
+            </Button>
+          </Paper>
+        </ListItem>
       ))}
 
-      <li className="flex items-center justify-center w-[220px] h-[300px] border border-white p-2 rounded-xl bg-neutral-400">
-        <Button
-          className="p-4"
-          onClick={() => handleAddItem({ id: Math.round(Math.random() * 999) })}
+      <ListItem disablePadding>
+        <Paper
+          variant="outlined"
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            p: 2,
+            width: 220,
+            height: 300,
+            position: "relative",
+          }}
         >
-          <IoIosAddCircleOutline color="white" size={50} />
-        </Button>
-      </li>
-    </ul>
+          <IconButton
+            sx={{ p: 2 }}
+            onClick={() =>
+              handleAddItem({ id: Math.round(Math.random() * 999) })
+            }
+          >
+            <AddCircleIcon fontSize="large" />
+          </IconButton>
+        </Paper>
+      </ListItem>
+    </List>
   );
 };
 

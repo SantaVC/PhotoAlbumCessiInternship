@@ -1,46 +1,46 @@
-import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
+import { ThemeProvider } from "@emotion/react";
+import { CssBaseline } from "@mui/material";
 import {
   SignInModal,
   SignUpModal,
-  Header,
   RequireAuth,
   PersistLogin,
   ResetPasswordModal,
   SignUpVerifyEmail,
+  Appbar,
 } from "./components/index";
 import { ProfilePage, LayoutPage, HomePage, EditProfile } from "./pages/index";
+import { useThemeContext } from "./theme/useThemeContext";
 
 const App = () => {
-  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+  const { theme } = useThemeContext();
 
   return (
-    <div className={theme === "dark" ? "dark" : null}>
-      <div className="min-h-[100dvh] bg-white dark:bg-neutral-900 transition-colors duration-100 f-regular">
-        <div className="h-full flex flex-col max-w-screen-xl mx-auto px-4 bg-white dark:bg-neutral-900 transition-colors duration-100">
-          <Header theme={theme} setTheme={setTheme} />
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
 
-          <Routes>
-            <Route path="/login" element={<SignInModal />} />
-            <Route path="/signup" element={<SignUpModal />} />
-            <Route path="/reset-password" element={<ResetPasswordModal />} />
+      <Appbar />
 
-            <Route element={<PersistLogin />}>
-              <Route path="/" element={<LayoutPage />}>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/verify-email" element={<SignUpVerifyEmail />} />
+      <Routes>
+        <Route path="/sign-in" element={<SignInModal />} />
+        <Route path="/sign-up" element={<SignUpModal />} />
+        <Route path="/reset-password" element={<ResetPasswordModal />} />
 
-                {/* Protected routes */}
-                <Route element={<RequireAuth />}>
-                  <Route path="/profile" element={<ProfilePage />} />
-                  <Route path="/profile/edit" element={<EditProfile />} />
-                </Route>
-              </Route>
+        <Route element={<PersistLogin />}>
+          <Route path="/" element={<LayoutPage />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/verify-email" element={<SignUpVerifyEmail />} />
+
+            {/* Protected routes */}
+            <Route element={<RequireAuth />}>
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/profile/edit" element={<EditProfile />} />
             </Route>
-          </Routes>
-        </div>
-      </div>
-    </div>
+          </Route>
+        </Route>
+      </Routes>
+    </ThemeProvider>
   );
 };
 

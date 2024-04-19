@@ -1,14 +1,22 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AiOutlineLoading } from "react-icons/ai";
-import { CgCloseR } from "react-icons/cg";
-import { Modal, Button } from "../index";
+import {
+  Box,
+  CircularProgress,
+  IconButton,
+  Stack,
+  TextField,
+  Typography,
+  Button,
+} from "@mui/material";
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
+import { BasicModal } from "../index";
 import { changeNickname } from "../../redux/thunks/userThunks";
 import { selectLoading } from "../../redux/slices/authSlice";
 import { nicknameRegex } from "../../constants";
 import useUserAuth from "../../hooks/useUserAuth";
 
-const ChangeNicknameModal = ({ setIsOpen }) => {
+const ChangeNicknameModal = ({ isOpen, handleClose }) => {
   const { user } = useUserAuth();
   const dispatch = useDispatch();
   const loading = useSelector(selectLoading);
@@ -19,19 +27,6 @@ const ChangeNicknameModal = ({ setIsOpen }) => {
   useEffect(() => {
     nickname.current = user?.nickname;
   }, [user?.nickname]);
-
-  useEffect(() => {
-    const BODY = document.body;
-
-    BODY.style.paddingRight =
-      window.innerWidth - document.getElementById("root").offsetWidth + "px";
-    BODY.classList.add("overflow-hidden");
-
-    return () => {
-      BODY.style.paddingRight = 0 + "px";
-      BODY.classList.remove("overflow-hidden");
-    };
-  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -53,7 +48,7 @@ const ChangeNicknameModal = ({ setIsOpen }) => {
     try {
       await dispatch(changeNickname({ nickname: nickname.current })).unwrap();
 
-      setIsOpen(false);
+      handleClose();
     } catch (error) {
       setError(error.message);
     }
@@ -64,58 +59,85 @@ const ChangeNicknameModal = ({ setIsOpen }) => {
   };
 
   return (
-    <Modal onClick={() => setIsOpen(false)}>
-      <div className="fixed top-1/2 left-1/2 max-w-96 bg-white rounded-xl onModalOpen">
-        <div className="relative flex flex-col gap-3 justify-center items-center h-full p-6">
-          <h2 className="text-center text-2xl f-regular">Change Username</h2>
-          <p>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Doloribus,
-            dolorum consequatur libero optio ratione consequuntur.
-          </p>
-          <form className="w-full f-regular">
-            <div className="relative">
-              <input
-                onChange={handleEditNickname}
-                placeholder="New Nickname"
-                className="w-full bg-transparent border border-neutral-500 rounded-full px-3 py-1"
-                type="text"
-              />
-              {loading && (
-                <div className="absolute top-1/2 translate-y-[-50%] right-3">
-                  <AiOutlineLoading
-                    size={20}
-                    className="animate-spin text-black"
-                  />
-                </div>
-              )}
-            </div>
+    <BasicModal isOpen={isOpen} handleClose={handleClose}>
+      <Stack gap={2}>
+        <Typography component="h2" variant="h4" textAlign="center">
+          Change Username
+        </Typography>
 
-            {error && <p className="mt-2 pl-2 text-red-500">{error}</p>}
+        <Typography component="p" variant="body1">
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil,
+          earum!
+        </Typography>
 
-            <div className="flex items-center justify-center gap-5 mt-8">
-              <Button
-                primary
-                type="submit"
-                disabled={loading}
-                onClick={handleSubmit}
-              >
-                Submit
-              </Button>
-              <Button primary onClick={() => setIsOpen(false)}>
-                Cancel
-              </Button>
-            </div>
-          </form>
+        <Box component="form">
+          <Box position="relative">
+            <TextField
+              fullWidth
+              id="outlined-basic"
+              label="New Nickname"
+              variant="outlined"
+              onChange={handleEditNickname}
+              type="text"
+            />
+            {loading && (
+              <Box>
+                <CircularProgress
+                  sx={{
+                    position: "absolute",
+                    right: 12,
+                    top: "50%",
+                    translate: "0% -50%",
+                  }}
+                  size={20}
+                  color="inherit"
+                />
+              </Box>
+            )}
+          </Box>
 
-          <Button
-            className="absolute top-[-32px] right-[-32px] p-1 opacity-60 hover:opacity-100 hover:rotate-90 transition-[transform] duration-300"
-            onClick={() => setIsOpen(false)}
+          {error && (
+            <Typography
+              component="p"
+              variant="body1"
+              mt={1}
+              pl={1}
+              color={"error"}
+            >
+              {error}
+            </Typography>
+          )}
+
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="center"
+            gap={2}
+            mt={4}
           >
-            <CgCloseR size={30} />
-          </Button>
-        </div>
-      </div>
-    </Modal>
+            <Button
+              variant="contained"
+              type="submit"
+              disabled={loading}
+              onClick={handleSubmit}
+            >
+              Submit
+            </Button>
+            <Button variant="contained" onClick={handleClose}>
+              Close
+            </Button>
+          </Stack>
+        </Box>
+
+        <IconButton
+          size="small"
+          sx={{ position: "absolute", top: "-36px", right: "-36px" }}
+          onClick={handleClose}
+        >
+          <CancelOutlinedIcon fontSize="large" />
+        </IconButton>
+      </Stack>
+    </BasicModal>
   );
 };
 

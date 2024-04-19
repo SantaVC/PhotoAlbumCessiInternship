@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { CgCloseR } from "react-icons/cg";
-import { Modal, Button } from "../index";
+import { BasicModal, Button } from "../index";
 import ChangePasswordForm from "./ChangePasswordForm";
 
 const ChangePasswordModal = ({ setIsOpen }) => {
@@ -18,7 +18,7 @@ const ChangePasswordModal = ({ setIsOpen }) => {
   }, []);
 
   return (
-    <Modal onClick={() => setIsOpen(false)}>
+    <BasicModal onClick={() => setIsOpen(false)}>
       <div className="fixed top-1/2 left-1/2 max-w-96 bg-white rounded-xl onModalOpen">
         <div className="relative flex flex-col gap-3 justify-center items-center h-full p-6">
           <h2 className="text-center text-2xl f-regular">Change Password</h2>
@@ -37,7 +37,7 @@ const ChangePasswordModal = ({ setIsOpen }) => {
           </Button>
         </div>
       </div>
-    </Modal>
+    </BasicModal>
   );
 };
 

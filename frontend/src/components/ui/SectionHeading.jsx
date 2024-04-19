@@ -1,9 +1,11 @@
-import classNames from "classnames";
+import { Typography } from "@mui/material";
 
-const SectionHeading = ({ className, children }) => {
-  const finalClassname = classNames("text-2xl text-center", className);
-
-  return <h1 className={finalClassname}>{children}</h1>;
+const SectionHeading = ({ children }) => {
+  return (
+    <Typography variant="h4" component="h1" textAlign="center">
+      {children}
+    </Typography>
+  );
 };
 
 export default SectionHeading;
