@@ -4,7 +4,7 @@ import { Link, Navigate, useNavigate, useLocation } from "react-router-dom";
 import { CgCloseR } from "react-icons/cg";
 import { AiOutlineLoading } from "react-icons/ai";
 import { getUser, resendVerification } from "../../redux/thunks/authThunks";
-import { Button, Modal } from "../index";
+import { Button, BasicModal } from "../index";
 import { selectLoading } from "../../redux/slices/authSlice";
 import { useCountdown } from "../../hooks/useCountdown";
 import useUserAuth from "../../hooks/useUserAuth";
@@ -30,7 +30,7 @@ const SignUpVerifyEmail = () => {
   }
 
   if (!token) {
-    return <Navigate to={"/signup"} />;
+    return <Navigate to={"/sign-up"} />;
   }
 
   const handleClick = async (userData) => {
@@ -60,7 +60,7 @@ const SignUpVerifyEmail = () => {
   };
 
   return (
-    <Modal>
+    <BasicModal>
       <div className="fixed top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] max-w-96 bg-white rounded-xl">
         <div className="relative flex flex-col gap-5 justify-center items-center h-full p-6">
           <h2 className="text-center text-3xl f-regular">Verify Your Email</h2>
@@ -107,7 +107,7 @@ const SignUpVerifyEmail = () => {
           ) : (
             <Link
               className="border border-neutral-500 px-5 py-2 f-bold hover:bg-sky-300"
-              to={"/login"}
+              to={"/sign-in"}
             >
               Proceed
             </Link>
@@ -121,7 +121,7 @@ const SignUpVerifyEmail = () => {
           </Link>
         </div>
       </div>
-    </Modal>
+    </BasicModal>
   );
 };
 

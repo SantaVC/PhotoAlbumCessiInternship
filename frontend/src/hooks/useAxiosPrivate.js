@@ -18,7 +18,7 @@ const useAxiosPrivate = () => {
 
       async (config) => {
         const isAuthRequired =
-          !["/login", "/signup", "/refresh", "/email/resend"].includes(
+          !["/sign-in", "/sign-up", "/refresh", "/email/resend"].includes(
             config.url
           ) && !config.headers["Authorization"];
 

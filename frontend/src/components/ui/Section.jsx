@@ -1,13 +1,11 @@
-import classNames from "classnames";
+import { Paper } from "@mui/material";
 
-const Section = ({ className, primary, children }) => {
-  const finalClassName = classNames(
-    "h-full",
-    primary && "dark:text-white p-5 bg-sky-200 dark:bg-neutral-800 rounded-3xl",
-    className
+const Section = ({ sx, children }) => {
+  return (
+    <Paper elevation={3} sx={{ my: 4, p: 3, ...sx }} component="section">
+      {children}
+    </Paper>
   );
-
-  return <section className={finalClassName}>{children}</section>;
 };
 
 export default Section;

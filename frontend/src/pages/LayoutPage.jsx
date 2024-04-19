@@ -5,6 +5,7 @@ import { resetAuth } from "../redux/slices/authSlice";
 import { getUser } from "../redux/thunks/authThunks";
 import useUserAuth from "../hooks/useUserAuth";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import { Container } from "@mui/material";
 
 const LayoutPage = () => {
   const dispatch = useDispatch();
@@ -35,9 +36,9 @@ const LayoutPage = () => {
   }, [axiosPrivate, dispatch, user]);
 
   return (
-    <main className="flex-1">
+    <Container maxWidth="xl">
       <Outlet />
-    </main>
+    </Container>
   );
 };
 

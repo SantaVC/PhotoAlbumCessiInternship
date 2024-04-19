@@ -1,15 +1,15 @@
 import { useDispatch, useSelector } from "react-redux";
+import { Link as RouterLink } from "react-router-dom";
 import { selectLoading } from "../redux/slices/authSlice";
 import { getUser } from "../redux/thunks/authThunks";
+import { Stack, Button, Link } from "@mui/material";
 import {
-  Button,
   UserAvatar,
   UserInfoList,
   UserPosts,
   Section,
   SectionHeading,
 } from "../components";
-import { Link } from "react-router-dom";
 
 const ProfilePage = () => {
   const loading = useSelector(selectLoading);
@@ -20,22 +20,26 @@ const ProfilePage = () => {
   };
 
   return (
-    <Section primary>
+    <Section>
       <SectionHeading>ProfilePage</SectionHeading>
 
-      <div className="flex items-start gap-5 mb-8 rounded-3xl p-4">
+      <Stack direction="row" alignItems="flex-start" gap={3} my={4}>
         <UserAvatar />
 
         <UserInfoList />
 
-        <Button primary disabled={loading} onClick={handleFetchUser}>
+        <Button
+          variant="contained"
+          disabled={loading}
+          onClick={handleFetchUser}
+        >
           Fetch user
         </Button>
 
-        <Link className="hover:underline p-1" to="/profile/edit">
+        <Link component={RouterLink} to="/profile/edit">
           Edit profile
         </Link>
-      </div>
+      </Stack>
       <UserPosts />
     </Section>
   );

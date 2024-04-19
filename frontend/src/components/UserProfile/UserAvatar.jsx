@@ -1,5 +1,18 @@
+import { Box } from "@mui/material";
 import { useState } from "react";
-import { IoIosAddCircleOutline } from "react-icons/io";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+
+const style = {
+  flexShrink: 0,
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  width: 128,
+  height: 128,
+  border: "2px solid",
+  borderRadius: "50%",
+  overflow: "hidden",
+};
 
 const UserAvatar = () => {
   const [url, setUrl] = useState();
@@ -15,7 +28,7 @@ const UserAvatar = () => {
   };
 
   return (
-    <div className="shrink-0 flex items-center justify-center w-32 h-32 rounded-full overflow-hidden border-2 border-neutral-800 dark:border-sky-300">
+    <Box flexShrink={0} sx={{ ...style }}>
       <label
         className="w-full h-full flex items-center justify-center cursor-pointer"
         htmlFor="userAvatar"
@@ -28,10 +41,7 @@ const UserAvatar = () => {
         />
 
         {!url ? (
-          <IoIosAddCircleOutline
-            className="text-neutral-800 dark:text-sky-300"
-            size={50}
-          />
+          <AddCircleIcon fontSize="large" />
         ) : (
           <img
             src={url}
@@ -40,7 +50,7 @@ const UserAvatar = () => {
           />
         )}
       </label>
-    </div>
+    </Box>
   );
 };
 

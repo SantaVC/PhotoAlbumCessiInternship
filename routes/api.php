@@ -27,8 +27,8 @@ Route::middleware('jwt.auth')->get('/profile', function () {
 });
 
 Route::post('/refresh', [AuthController::class, 'refresh']);
-Route::post('/signup', [AuthController::class, 'signup']);
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/sign-up', [AuthController::class, 'signup']);
+Route::post('/sign-in', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 Route::get('/testAPI', [AuthController::class, 'testAPI']);
 

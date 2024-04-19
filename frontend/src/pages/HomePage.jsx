@@ -2,7 +2,7 @@ import { Section, SectionHeading } from "../components";
 
 const HomePage = () => {
   return (
-    <Section primary>
+    <Section>
       <SectionHeading>HomePage</SectionHeading>
     </Section>
   );

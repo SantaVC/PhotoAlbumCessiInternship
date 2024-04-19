@@ -1,21 +1,22 @@
-import "./ToggleTheme.scss";
+import { Typography, Box, IconButton } from "@mui/material";
+import Brightness4Icon from "@mui/icons-material/Brightness4";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
+import { useThemeContext } from "../theme/useThemeContext";
 
-const ToggleTheme = ({ handleChange, isChecked }) => {
+const ToggleTheme = ({ className }) => {
+  const { mode, colorMode } = useThemeContext();
+
   return (
-    <div className="toggle-container">
-      <input
-        type="checkbox"
-        id="themeToggle"
-        checked={isChecked}
-        onChange={handleChange}
-      />
-      <label
-        className="flex items-center dark:text-white gap-2 before:bg-sky-400 dark:before:bg-sky-800 after:bg-white dark:after:bg-neutral-200"
-        htmlFor="themeToggle"
+    <Box sx={{ display: "flex", alignItems: "center", mr: 2, ...className }}>
+      <Typography component="span">{mode} mode</Typography>
+      <IconButton
+        sx={{ ml: 1 }}
+        onClick={colorMode.toggleColorMode}
+        color="inherit"
       >
-        Dark Mode
-      </label>
-    </div>
+        {mode === "dark" ? <Brightness7Icon /> : <Brightness4Icon />}
+      </IconButton>
+    </Box>
   );
 };
 
