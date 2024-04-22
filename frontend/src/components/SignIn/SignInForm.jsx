@@ -1,20 +1,30 @@
+import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useForm } from "react-hook-form";
+import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { passwordRegex } from "../../constants";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
+import {
+  Avatar,
+  Box,
+  Checkbox,
+  FormControlLabel,
+  Grid,
+  TextField,
+  Typography,
+  Button,
+  Link,
+  IconButton,
+  Stack,
+} from "@mui/material";
 import { loginUser } from "../../redux/thunks/authThunks";
-import { Button } from "../index";
-import { useState } from "react";
 
 const schema = z.object({
   email: z.string().email("Invalid email."),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters.")
-    .regex(passwordRegex, "Invalid password."),
+  password: z.string().min(8, "Password must be at least 8 characters."),
 });
 
 const SignInForm = () => {
@@ -33,7 +43,7 @@ const SignInForm = () => {
     formState: { errors, isSubmitting },
   } = useForm({ resolver: zodResolver(schema) });
 
-  const onSubmitLogin = async (data) => {
+  const onSubmit = async (data) => {
     try {
       await dispatch(loginUser(data)).unwrap();
 
@@ -41,7 +51,7 @@ const SignInForm = () => {
 
       // navigates user to where they wanted to go
       // for expample to Profile page if they clicked on Profile icon
-      navigate(from, { replace: true });
+      navigate(from);
       reset();
     } catch (error) {
       console.log("Login failed", error);
@@ -50,54 +60,127 @@ const SignInForm = () => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmitLogin)}
-      className="flex flex-col items-center gap-4 f-regular"
+    <Box
+      sx={{
+        my: 8,
+        mx: 4,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
     >
-      <div className="w-[300px]">
-        <input
-          {...register("email")}
-          className="w-full py-2 px-3 border border-neutral-500 rounded-md"
-          placeholder="Email..."
-        />
-        {errors.email && (
-          <p className="px-1 text-red-500">{errors.email.message}</p>
-        )}
-      </div>
+      <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+        <LockOutlinedIcon />
+      </Avatar>
 
-      <div className="w-[300px]">
-        <div className="relative">
-          <input
-            {...register("password")}
-            type={isHidden ? "password" : "text"}
-            className="w-full py-2 pl-3 pr-8 border border-neutral-500 rounded-md"
-            placeholder="Password..."
-          />
-          <div
-            onClick={() => setIsHidden((current) => !current)}
-            className="absolute bottom-1/2 right-3 translate-y-1/2 cursor-pointer"
-          >
-            {isHidden ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
-          </div>
-        </div>
+      <Typography component="h1" variant="h4">
+        Sign in
+      </Typography>
 
-        {errors.password && (
-          <p className="px-1 text-red-500">{errors.password.message}</p>
-        )}
-      </div>
-
-      <Button
-        type="submit"
-        className="border border-neutral-500 px-5 py-2 f-bold hover:bg-sky-300 disabled:cursor-not-allowed"
-        disabled={isSubmitting}
+      <Stack
+        direction="column"
+        gap={2}
+        component="form"
+        noValidate
+        onSubmit={handleSubmit(onSubmit)}
+        sx={{ mt: 3, width: 1 }}
       >
-        {isSubmitting ? "Loading..." : "Sign in"}
-      </Button>
+        <Box>
+          <TextField
+            {...register("email")}
+            required
+            fullWidth
+            id="email"
+            label="Email Address"
+            name="email"
+            autoComplete="email"
+            autoFocus
+          />
 
-      {errors.root && (
-        <p className="self-start px-1 text-red-500">{errors.root.message}</p>
-      )}
-    </form>
+          {errors.email && (
+            <Typography variant="body1" color="error">
+              {errors.email.message}
+            </Typography>
+          )}
+        </Box>
+
+        <Box>
+          <Box position="relative">
+            <TextField
+              {...register("password")}
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type={isHidden ? "password" : "text"}
+              id="password"
+              autoComplete="current-password"
+            />
+
+            <IconButton
+              tabIndex={-1}
+              component="div"
+              sx={{
+                position: "absolute",
+                top: "50%",
+                right: 4,
+                translate: "0 -50%",
+              }}
+              onClick={() => setIsHidden((current) => !current)}
+            >
+              {isHidden ? (
+                <VisibilityOutlinedIcon />
+              ) : (
+                <VisibilityOffOutlinedIcon />
+              )}
+            </IconButton>
+          </Box>
+
+          {errors.password && (
+            <Typography component="p" variant="body1" color="error">
+              {errors.password.message}
+            </Typography>
+          )}
+        </Box>
+
+        <Box>
+          <FormControlLabel
+            control={<Checkbox value="remember" color="primary" />}
+            label="Remember me"
+          />
+        </Box>
+
+        {errors.root && (
+          <Typography component="p" variant="body1" color="error">
+            {errors.root.message}
+          </Typography>
+        )}
+
+        <Button
+          disabled={isSubmitting}
+          fullWidth
+          type="submit"
+          variant="contained"
+          disableTouchRipple
+        >
+          Sign In
+        </Button>
+
+        <Grid container>
+          <Grid item xs>
+            <Link href="#" variant="body2">
+              Forgot password?
+            </Link>
+          </Grid>
+
+          <Grid item>
+            <Link variant="body2" component={RouterLink} to="/sign-up">
+              {"Don't have an account? Sign Up"}
+            </Link>
+          </Grid>
+        </Grid>
+      </Stack>
+    </Box>
   );
 };
 

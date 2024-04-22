@@ -6,13 +6,6 @@ import { BasicModal, SignUpForm } from "../index";
 import useUserAuth from "../../hooks/useUserAuth";
 
 const SignUpModal = () => {
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const { token, user } = useUserAuth();
-
-  if (isSubmitted && user) {
-    return <Navigate to={"/verify-email"} />;
-  }
-
   return (
     <BasicModal>
       <div className="fixed top-1/2 left-1/2 max-w-96 bg-white rounded-xl onModalOpen">
@@ -31,14 +24,12 @@ const SignUpModal = () => {
             </Link>
           </div>
 
-          {token && (
-            <Link
-              to={"/"}
-              className="absolute top-[-32px] right-[-32px] p-1 opacity-60 hover:opacity-100 hover:rotate-90 transition-[transform] duration-300"
-            >
-              <CgCloseR size={30} />
-            </Link>
-          )}
+          <Link
+            to={"/"}
+            className="absolute top-[-32px] right-[-32px] p-1 opacity-60 hover:opacity-100 hover:rotate-90 transition-[transform] duration-300"
+          >
+            <CgCloseR size={30} />
+          </Link>
         </div>
       </div>
     </BasicModal>

@@ -1,15 +1,28 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, Navigate, useNavigate, useLocation } from "react-router-dom";
-import { CgCloseR } from "react-icons/cg";
-import { AiOutlineLoading } from "react-icons/ai";
+import {
+  Link as RouterLink,
+  Navigate,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import { getUser, resendVerification } from "../../redux/thunks/authThunks";
-import { Button, BasicModal } from "../index";
 import { selectLoading } from "../../redux/slices/authSlice";
 import { useCountdown } from "../../hooks/useCountdown";
 import useUserAuth from "../../hooks/useUserAuth";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Typography,
+  Button,
+} from "@mui/material";
 
 const SignUpVerifyEmail = () => {
+  const [isOpen, setIsOpen] = useState(true);
+
   const [error, setError] = useState("");
   const { seconds, setSeconds } = useCountdown();
 
@@ -30,8 +43,13 @@ const SignUpVerifyEmail = () => {
   }
 
   if (!token) {
-    return <Navigate to={"/sign-up"} />;
+    return <Navigate to={"/"} />;
   }
+
+  const handleClose = () => {
+    setIsOpen(false);
+    navigate("/");
+  };
 
   const handleClick = async (userData) => {
     try {
@@ -60,68 +78,77 @@ const SignUpVerifyEmail = () => {
   };
 
   return (
-    <BasicModal>
-      <div className="fixed top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] max-w-96 bg-white rounded-xl">
-        <div className="relative flex flex-col gap-5 justify-center items-center h-full p-6">
-          <h2 className="text-center text-3xl f-regular">Verify Your Email</h2>
+    <Dialog open={isOpen} onClose={handleClose}>
+      <DialogTitle variant="h5" textAlign="center">
+        Confirm your email
+      </DialogTitle>
 
-          <p className="max-w-[300px] f-regular">
-            We have sent you a letter to
-            <span className="f-bold"> {user?.email}</span>. Follow the link in
-            the letter to confirm that the email is yours to secure your
-            account.
-          </p>
+      <DialogContent>
+        <DialogContentText mb={2}>
+          We have sent you a letter to
+          <Typography component="span" variant="body1" fontWeight={700}>
+            {" "}
+            {user?.email}
+          </Typography>
+          . Follow the link in the letter to confirm that the email is yours to
+          secure your account.
+        </DialogContentText>
 
-          {error && (
-            <p className="self-start text-red-500 f-regular">{error}</p>
-          )}
+        {error && (
+          <Typography variant="body1" component="p" color="error">
+            {error}
+          </Typography>
+        )}
 
-          <div className="self-start flex items-center justify-center">
-            <Button
-              disabled={seconds > 0}
-              className={`self-start mr-2 text-sm underline underline-offset-2 decoration-sky-300 f-regular ${
-                seconds > 0 &&
-                " text-neutral-400 decoration-neutral-400 cursor-not-allowed"
-              }`}
-              onClick={() => handleClick(user)}
-            >
-              Send letter again
-            </Button>
-            <span className="text-sm f-regular">
-              {seconds > 0 && `0:${seconds >= 10 ? seconds : "0" + seconds}`}
-            </span>
-          </div>
+        <Button disabled={seconds > 0} onClick={() => handleClick(user)}>
+          Send letter again{" "}
+          {seconds > 0 && `0:${seconds >= 10 ? seconds : "0" + seconds}`}
+        </Button>
+      </DialogContent>
 
-          {!user?.email_verified_at ? (
-            <Button
-              disabled={loading}
-              className="min-w-[100px] border border-neutral-500 px-5 py-2 f-bold hover:bg-sky-300 disabled:cursor-not-allowed"
-              onClick={handleFetchUser}
-            >
-              {loading ? (
-                <AiOutlineLoading size={24} className="animate-spin" />
-              ) : (
-                "Proceed"
-              )}
-            </Button>
-          ) : (
-            <Link
-              className="border border-neutral-500 px-5 py-2 f-bold hover:bg-sky-300"
-              to={"/sign-in"}
-            >
-              Proceed
-            </Link>
-          )}
-
-          <Link
-            to={"/"}
-            className="absolute top-[-32px] right-[-32px] p-1 opacity-60 hover:opacity-100 hover:rotate-90 transition-[transform] duration-300"
+      <DialogActions>
+        {!user?.email_verified_at ? (
+          <Button
+            variant="contained"
+            disabled={loading}
+            onClick={handleFetchUser}
           >
-            <CgCloseR size={30} />
-          </Link>
-        </div>
-      </div>
-    </BasicModal>
+            Proceed
+          </Button>
+        ) : (
+          <Button component={RouterLink} to={"/sign-in"}>
+            Proceed
+          </Button>
+        )}
+
+        <Button variant="contained" onClick={handleClose}>
+          Close
+        </Button>
+      </DialogActions>
+    </Dialog>
+    // <BasicModal>
+    //   <div className="fixed top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] max-w-96 bg-white rounded-xl">
+    //     <div className="relative flex flex-col gap-5 justify-center items-center h-full p-6">
+    //       <h2 className="text-center text-3xl f-regular">Verify Your Email</h2>
+
+    //       <p className="max-w-[300px] f-regular">
+    //         We have sent you a letter to
+    //         <span className="f-bold"> {user?.email}</span>. Follow the link in
+    //         the letter to confirm that the email is yours to secure your
+    //         account.
+    //       </p>
+
+    //
+
+    //       <Link
+    //         to={"/"}
+    //         className="absolute top-[-32px] right-[-32px] p-1 opacity-60 hover:opacity-100 hover:rotate-90 transition-[transform] duration-300"
+    //       >
+    //         <CgCloseR size={30} />
+    //       </Link>
+    //     </div>
+    //   </div>
+    // </BasicModal>
   );
 };
 

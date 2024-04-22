@@ -1,12 +1,25 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
+import {
+  Avatar,
+  Box,
+  Grid,
+  TextField,
+  Typography,
+  Button,
+  Link,
+  IconButton,
+  Stack,
+} from "@mui/material";
 import { passwordRegex, nicknameRegex } from "../../constants";
 import { registerUser } from "../../redux/thunks/authThunks";
-import { Button } from "../index";
 
 const schema = z
   .object({
@@ -42,6 +55,7 @@ const SignUpForm = ({ setIsSubmitted }) => {
   const [isConfirmHidden, setIsConfirmHidden] = useState(true);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -55,9 +69,9 @@ const SignUpForm = ({ setIsSubmitted }) => {
     try {
       await dispatch(registerUser(data)).unwrap();
 
-      setIsSubmitted(true);
-
+      // setIsSubmitted(true);
       reset();
+      navigate("/verify-email");
     } catch (error) {
       console.log("Register failed");
       setError("root", { message: error.message });
@@ -65,89 +79,170 @@ const SignUpForm = ({ setIsSubmitted }) => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col items-center gap-4 f-regular"
+    <Box
+      sx={{
+        my: 8,
+        mx: 4,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
     >
-      <div className="w-[300px]">
-        <input
-          {...register("nickname")}
-          type="text"
-          className="w-full py-2 px-3 border border-neutral-500 rounded-md"
-          placeholder="Nickname..."
-        />
-        {errors.nickname && (
-          <p className="px-1 text-red-500">{errors.nickname.message}</p>
-        )}
-      </div>
+      <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+        <LockOutlinedIcon />
+      </Avatar>
 
-      <div className="w-[300px]">
-        <input
-          {...register("email")}
-          className="w-full py-2 px-3 border border-neutral-500 rounded-md"
-          placeholder="Email..."
-        />
-        {errors.email && (
-          <p className="px-1 text-red-500">{errors.email.message}</p>
-        )}
-      </div>
+      <Typography component="h1" variant="h4">
+        Sign Up
+      </Typography>
 
-      <div className="w-[300px]">
-        <div className="relative">
-          <input
-            {...register("password")}
-            type={isPasswordHidden ? "password" : "text"}
-            className="w-full py-2 pl-3 pr-8 border border-neutral-500 rounded-md"
-            placeholder="Password..."
-          />
-          <div
-            onClick={() => setIsPasswordHidden((current) => !current)}
-            className="absolute bottom-1/2 right-3 p-1 translate-y-1/2 cursor-pointer"
-          >
-            {isPasswordHidden ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
-          </div>
-        </div>
-
-        {errors.password && (
-          <p className="px-1 text-red-500">{errors.password.message}</p>
-        )}
-      </div>
-
-      <div className="w-[300px]">
-        <div className="relative">
-          <input
-            {...register("password_confirmation")}
-            type={isConfirmHidden ? "password" : "text"}
-            className="w-full py-2 pl-3 pr-8 border border-neutral-500 rounded-md"
-            placeholder="Password..."
-          />
-          <div
-            onClick={() => setIsConfirmHidden((current) => !current)}
-            className="absolute bottom-1/2 right-3 p-1 translate-y-1/2 cursor-pointer"
-          >
-            {isConfirmHidden ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
-          </div>
-        </div>
-
-        {errors.password_confirmation && (
-          <p className="px-1 text-red-500">
-            {errors.password_confirmation.message}
-          </p>
-        )}
-      </div>
-
-      <Button
-        type="submit"
-        className="border border-neutral-500 px-5 py-2 f-bold hover:bg-sky-300 disabled:cursor-not-allowed"
-        disabled={isSubmitting}
+      <Stack
+        direction="column"
+        gap={2}
+        component="form"
+        noValidate
+        onSubmit={handleSubmit(onSubmit)}
+        sx={{ mt: 3, width: 1 }}
       >
-        {isSubmitting ? "Loading..." : "Sign up"}
-      </Button>
+        <Box>
+          <TextField
+            {...register("nickname")}
+            required
+            fullWidth
+            id="nickname"
+            label="Nickname"
+            name="nickname"
+            autoFocus
+          />
 
-      {errors.root && (
-        <p className="self-start px-1 text-red-500">{errors.root.message}</p>
-      )}
-    </form>
+          {errors.nickname && (
+            <Typography variant="body1" color="error">
+              {errors.nickname.message}
+            </Typography>
+          )}
+        </Box>
+
+        <Box>
+          <TextField
+            {...register("email")}
+            required
+            fullWidth
+            id="email"
+            label="Email Address"
+            name="email"
+            autoComplete="email"
+          />
+
+          {errors.email && (
+            <Typography variant="body1" color="error">
+              {errors.email.message}
+            </Typography>
+          )}
+        </Box>
+
+        <Box>
+          <Box position="relative">
+            <TextField
+              {...register("password")}
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type={isPasswordHidden ? "password" : "text"}
+              id="password"
+              autoComplete="current-password"
+            />
+
+            <IconButton
+              component="div"
+              tabIndex={-1}
+              sx={{
+                position: "absolute",
+                top: "50%",
+                right: 4,
+                translate: "0 -50%",
+              }}
+              onClick={() => setIsPasswordHidden((current) => !current)}
+            >
+              {isPasswordHidden ? (
+                <VisibilityOutlinedIcon />
+              ) : (
+                <VisibilityOffOutlinedIcon />
+              )}
+            </IconButton>
+          </Box>
+
+          {errors.password && (
+            <Typography component="p" variant="body1" color="error">
+              {errors.password.message}
+            </Typography>
+          )}
+        </Box>
+
+        <Box>
+          <Box position="relative">
+            <TextField
+              {...register("password_confirmation")}
+              required
+              fullWidth
+              name="password_confirmation"
+              label="Confirm password"
+              type={isConfirmHidden ? "password" : "text"}
+              id="password_confirmation"
+              autoComplete="current-password"
+            />
+
+            <IconButton
+              component="div"
+              tabIndex={-1}
+              sx={{
+                position: "absolute",
+                top: "50%",
+                right: 4,
+                translate: "0 -50%",
+              }}
+              onClick={() => setIsConfirmHidden((current) => !current)}
+            >
+              {isConfirmHidden ? (
+                <VisibilityOutlinedIcon />
+              ) : (
+                <VisibilityOffOutlinedIcon />
+              )}
+            </IconButton>
+          </Box>
+
+          {errors.password_confirmation && (
+            <Typography component="p" variant="body1" color="error">
+              {errors.password_confirmation.message}
+            </Typography>
+          )}
+        </Box>
+
+        {errors.root && (
+          <Typography component="p" variant="body1" color="error">
+            {errors.root.message}
+          </Typography>
+        )}
+
+        <Button
+          disabled={isSubmitting}
+          fullWidth
+          type="submit"
+          variant="contained"
+          disableTouchRipple
+        >
+          Sign Up
+        </Button>
+
+        <Grid container>
+          <Grid item>
+            <Link variant="body2" component={RouterLink} to="/sign-in">
+              {"Already have an account? Sign In"}
+            </Link>
+          </Grid>
+        </Grid>
+      </Stack>
+    </Box>
   );
 };
 

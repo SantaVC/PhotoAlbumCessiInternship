@@ -27,8 +27,10 @@ import Logo from "./ui/Logo.jsx";
 import Navbar from "./Navbar.jsx";
 import Userbar from "./Userbar.jsx";
 import BasicModal from "./ui/BasicModal.jsx";
+import SignLayout from "./SignLayout.jsx";
 
 export {
+  SignLayout,
   Userbar,
   Navbar,
   Logo,

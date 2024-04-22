@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TokenController;
 
+use App\Http\Controllers\VerificationController;
 use App\Notifications\EmailVerificationNotification;
 use App\Http\Controllers\EmailVerificationResendController;
 
