@@ -77,7 +77,7 @@ class AuthController extends Controller
 
        // Отправка письма для подтверждения email
 
-       //event(new Registered($user));
+       event(new Registered($user));
        $user->notify(new EmailVerificationNotification($user));
 
 

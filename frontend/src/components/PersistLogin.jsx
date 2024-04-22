@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Outlet } from "react-router-dom";
+import { Backdrop, CircularProgress } from "@mui/material";
 import useRefreshToken from "../hooks/useRefreshToken";
 import useUserAuth from "../hooks/useUserAuth";
 
@@ -38,11 +39,17 @@ const PersistLogin = () => {
     };
   }, [dispatch, token, refresh]);
 
-  if (isLoading) {
-    return <p>Verifying token...</p>;
-  } else {
-    return <Outlet />;
-  }
+  return (
+    <>
+      {isLoading && (
+        <Backdrop sx={{ color: "#fff", zIndex: 1000 }} open={isLoading}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      )}
+
+      <Outlet />
+    </>
+  );
 };
 
 export default PersistLogin;

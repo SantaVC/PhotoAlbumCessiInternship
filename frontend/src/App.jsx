@@ -2,15 +2,19 @@ import { Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@emotion/react";
 import { CssBaseline } from "@mui/material";
 import {
-  SignInModal,
-  SignUpModal,
   RequireAuth,
   PersistLogin,
   ResetPasswordModal,
   SignUpVerifyEmail,
-  Appbar,
 } from "./components/index";
-import { ProfilePage, LayoutPage, HomePage, EditProfile } from "./pages/index";
+import {
+  ProfilePage,
+  LayoutPage,
+  HomePage,
+  EditProfile,
+  SignIn,
+  SignUp,
+} from "./pages/index";
 import { useThemeContext } from "./theme/useThemeContext";
 
 const App = () => {
@@ -20,17 +24,12 @@ const App = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
 
-      <Appbar />
-
       <Routes>
-        <Route path="/sign-in" element={<SignInModal />} />
-        <Route path="/sign-up" element={<SignUpModal />} />
-        <Route path="/reset-password" element={<ResetPasswordModal />} />
-
         <Route element={<PersistLogin />}>
           <Route path="/" element={<LayoutPage />}>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/verify-email" element={<SignUpVerifyEmail />} />
+            <Route path="/" element={<HomePage />}>
+              <Route path="/verify-email" element={<SignUpVerifyEmail />} />
+            </Route>
 
             {/* Protected routes */}
             <Route element={<RequireAuth />}>
@@ -38,6 +37,10 @@ const App = () => {
               <Route path="/profile/edit" element={<EditProfile />} />
             </Route>
           </Route>
+
+          <Route path="/sign-in" element={<SignIn />} />
+          <Route path="/sign-up" element={<SignUp />} />
+          <Route path="/reset-password" element={<ResetPasswordModal />} />
         </Route>
       </Routes>
     </ThemeProvider>

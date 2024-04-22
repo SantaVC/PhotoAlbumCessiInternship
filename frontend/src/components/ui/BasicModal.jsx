@@ -1,29 +1,13 @@
-import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
+import { createPortal } from "react-dom";
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  borderRadius: "10px",
-  boxShadow: 24,
-  p: 4,
-};
-
-const BasicModal = ({ isOpen, handleClose, children }) => {
-  return (
-    <Modal
-      open={isOpen}
-      onClose={handleClose}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-    >
-      <Box sx={style}>{children}</Box>
-    </Modal>
+const Modal = ({ children, ...rest }) => {
+  return createPortal(
+    <>
+      <div {...rest} className="fixed inset-0 bg-[rgba(0,0,0,0.4)]"></div>
+      {children}
+    </>,
+    document.getElementById("modals")
   );
 };
 
-export default BasicModal;
+export default Modal;

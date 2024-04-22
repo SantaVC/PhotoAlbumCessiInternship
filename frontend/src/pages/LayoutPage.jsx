@@ -1,11 +1,12 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Outlet } from "react-router-dom";
+import { Container } from "@mui/material";
 import { resetAuth } from "../redux/slices/authSlice";
 import { getUser } from "../redux/thunks/authThunks";
 import useUserAuth from "../hooks/useUserAuth";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import { Container } from "@mui/material";
+import { Appbar } from "../components";
 
 const LayoutPage = () => {
   const dispatch = useDispatch();
@@ -36,9 +37,13 @@ const LayoutPage = () => {
   }, [axiosPrivate, dispatch, user]);
 
   return (
-    <Container maxWidth="xl">
-      <Outlet />
-    </Container>
+    <>
+      <Appbar />
+
+      <Container maxWidth="xl">
+        <Outlet />
+      </Container>
+    </>
   );
 };
 

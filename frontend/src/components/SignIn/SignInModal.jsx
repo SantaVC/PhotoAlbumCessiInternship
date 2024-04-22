@@ -34,14 +34,12 @@ const SignInModal = () => {
             </Link>
           </div>
 
-          {token && (
-            <Link
-              to="/"
-              className="absolute top-[-32px] right-[-32px] p-1 opacity-60 hover:opacity-100 hover:rotate-90 transition-[transform] duration-300"
-            >
-              <CgCloseR size={30} />
-            </Link>
-          )}
+          <Link
+            to="/"
+            className="absolute top-[-32px] right-[-32px] p-1 opacity-60 hover:opacity-100 hover:rotate-90 transition-[transform] duration-300"
+          >
+            <CgCloseR size={30} />
+          </Link>
         </div>
       </div>
     </BasicModal>
