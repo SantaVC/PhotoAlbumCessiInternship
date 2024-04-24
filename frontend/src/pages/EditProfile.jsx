@@ -2,7 +2,7 @@ import { Section, SectionHeading, EditProfileForm } from "../components";
 
 const EditProfile = () => {
   return (
-    <Section primary>
+    <Section>
       <SectionHeading>EditProfile</SectionHeading>
       <EditProfileForm />
     </Section>

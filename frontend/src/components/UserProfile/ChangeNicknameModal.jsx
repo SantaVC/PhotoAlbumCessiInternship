@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   Box,
   CircularProgress,
@@ -12,14 +12,14 @@ import {
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { BasicModal } from "../index";
 import { changeNickname } from "../../redux/thunks/userThunks";
-import { selectLoading } from "../../redux/slices/authSlice";
 import { nicknameRegex } from "../../constants";
-import useUserAuth from "../../hooks/useUserAuth";
+import useSelectUserAuth from "../../hooks/useSelectUserAuth";
+import useSelectLoading from "../../hooks/useSelectLoading";
 
 const ChangeNicknameModal = ({ isOpen, handleClose }) => {
-  const { user } = useUserAuth();
+  const { user } = useSelectUserAuth();
   const dispatch = useDispatch();
-  const loading = useSelector(selectLoading);
+  const loading = useSelectLoading();
 
   const [error, setError] = useState("");
   const nickname = useRef(null);

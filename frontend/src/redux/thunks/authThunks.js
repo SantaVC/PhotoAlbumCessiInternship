@@ -4,11 +4,11 @@ import authService from "../../services/authService";
 
 export const getUser = createAsyncThunk(
   "auth/getUser",
-  async (config, { dispatch }) => {
+  async (_, { dispatch }) => {
     try {
       dispatch(setLoading(true));
 
-      const user = await authService.getUser(config);
+      const { user } = await authService.getUser();
 
       dispatch(setUser(user));
 

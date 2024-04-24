@@ -10,16 +10,8 @@ use App\Models\UserInfo;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 
-
 class ProfileController extends Controller
 {
-    public function show()
-    {
-        $user = Auth::user();
-        $profile = $user->profile;
-        return response()->json(['user' => $user, 'profile' => $profile]);
-    }
-
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
@@ -32,9 +24,9 @@ class ProfileController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'gender' => 'required|in:male,female,other',
+            'first_name' => 'nullable|string|max:255',
+            'last_name' => 'nullable|string|max:255',
+            'gender' => 'in:Male,Female,Other',
             'avatar' => 'nullable|image|max:2048',
         ]);
 

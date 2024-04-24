@@ -1,18 +1,17 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
 import EditIcon from "@mui/icons-material/Edit";
 import { List, ListItem, IconButton } from "@mui/material";
-import { selectLoading } from "../../redux/slices/authSlice";
 import { ChangeNicknameModal, UserInfoListSkeleton } from "../index";
-import useUserAuth from "../../hooks/useUserAuth";
+import useSelectUserAuth from "../../hooks/useSelectUserAuth";
+import useSelectLoading from "../../hooks/useSelectLoading";
 
 const UserInfoList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleOpen = () => setIsModalOpen(true);
   const handleClose = () => setIsModalOpen(false);
 
-  const { user } = useUserAuth();
-  const loading = useSelector(selectLoading);
+  const { user } = useSelectUserAuth();
+  const loading = useSelectLoading();
 
   return (
     <>

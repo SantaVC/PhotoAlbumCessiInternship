@@ -1,16 +1,16 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { logoutUser } from "../redux/thunks/authThunks";
 import { AiOutlineLoading } from "react-icons/ai";
-import { selectLoading } from "../redux/slices/authSlice";
 import { Button } from "./index";
-import useUserAuth from "../hooks/useUserAuth";
+import useSelectUserAuth from "../hooks/useSelectUserAuth";
+import useSelectLoading from "../hooks/useSelectLoading";
 
 const Menu = ({ setIsMenuOpen, setIsModalOpen }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const loading = useSelector(selectLoading);
-  const { token } = useUserAuth();
+  const loading = useSelectLoading();
+  const { token } = useSelectUserAuth();
 
   const handleClickLogout = async () => {
     await dispatch(logoutUser()).unwrap();

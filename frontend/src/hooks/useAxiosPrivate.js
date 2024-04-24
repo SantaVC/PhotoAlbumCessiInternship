@@ -2,25 +2,23 @@ import { useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { axiosPrivateClient } from "../axios";
 import useRefreshToken from "./useRefreshToken";
-import useUserAuth from "./useUserAuth";
+import useSelectUserAuth from "./useSelectUserAuth";
 
 const threshold = 30; //seconds before the token expires;
 
 const useAxiosPrivate = () => {
-  const { token } = useUserAuth();
+  const { token } = useSelectUserAuth();
   const refresh = useRefreshToken();
 
   useEffect(() => {
     const requestIntercept = axiosPrivateClient.interceptors.request.use(
-      // race condition
-      // Remember me переделать +
-      // убрать отправку токена из конфига при login & sign up +
-
       async (config) => {
         const isAuthRequired =
           !["/sign-in", "/sign-up", "/refresh", "/email/resend"].includes(
             config.url
           ) && !config.headers["Authorization"];
+
+        console.log(config.url, isAuthRequired);
 
         if (isAuthRequired && token) {
           // if auth is required && have the token,

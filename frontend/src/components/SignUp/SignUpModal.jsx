@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { CgCloseR } from "react-icons/cg";
 import { BasicModal, SignUpForm } from "../index";
-import useUserAuth from "../../hooks/useUserAuth";
+import useSelectUserAuth from "../../hooks/useSelectUserAuth";
 
 const SignUpModal = () => {
   return (

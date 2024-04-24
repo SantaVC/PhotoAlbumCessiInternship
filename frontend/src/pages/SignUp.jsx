@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Navigate } from "react-router-dom";
 import { SignLayout, SignUpForm } from "../components";
-import useUserAuth from "../hooks/useUserAuth";
+import useSelectUserAuth from "../hooks/useSelectUserAuth";
 
 const SignIn = () => {
-  const { token } = useUserAuth();
+  const { token } = useSelectUserAuth();
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const { user } = useUserAuth();
+  const { user } = useSelectUserAuth();
 
   if (isSubmitted && user) {
     return <Navigate to={"/verify-email"} />;

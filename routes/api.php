@@ -12,11 +12,6 @@ use App\Http\Controllers\VerificationController;
 use App\Notifications\EmailVerificationNotification;
 use App\Http\Controllers\EmailVerificationResendController;
 
-
-Route::middleware('jwt.auth')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
 
 Route::get('/test', function () {
@@ -27,6 +22,7 @@ Route::middleware('jwt.auth')->get('/profile', function () {
   return response()->json(['message' => 'This route is protected by JWT']);
 });
 
+Route::get('/user', [AuthController::class, 'getUser']);
 Route::post('/refresh', [AuthController::class, 'refresh']);
 Route::post('/sign-up', [AuthController::class, 'signup']);
 Route::post('/sign-in', [AuthController::class, 'login']);

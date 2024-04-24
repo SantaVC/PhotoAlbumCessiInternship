@@ -1,8 +1,10 @@
 import { axiosPrivateClient } from "../axios";
 
 const authService = {
-  getUser: async (config) => {
-    const response = await axiosPrivateClient.get("/user", config);
+  getUser: async (_) => {
+    const response = await axiosPrivateClient.get("/user", {
+      withCredentials: true,
+    });
     return response.data;
   },
 

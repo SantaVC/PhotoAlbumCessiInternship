@@ -3,14 +3,15 @@ import { useDispatch } from "react-redux";
 import { Outlet } from "react-router-dom";
 import { Backdrop, CircularProgress } from "@mui/material";
 import useRefreshToken from "../hooks/useRefreshToken";
-import useUserAuth from "../hooks/useUserAuth";
+import useSelectUserAuth from "../hooks/useSelectUserAuth";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const PersistLogin = () => {
   const [isLoading, setIsLoading] = useState(true);
-
+  const axiosPrivate = useAxiosPrivate();
   const dispatch = useDispatch();
   const refresh = useRefreshToken();
-  const { token } = useUserAuth();
+  const { token } = useSelectUserAuth();
 
   useEffect(() => {
     let isMounted = true;
@@ -37,7 +38,7 @@ const PersistLogin = () => {
     return () => {
       isMounted = false;
     };
-  }, [dispatch, token, refresh]);
+  }, [axiosPrivate, dispatch, token, refresh]);
 
   return (
     <>

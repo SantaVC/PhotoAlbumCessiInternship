@@ -1,27 +1,29 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
-import Menu from "@mui/material/Menu";
-import Avatar from "@mui/material/Avatar";
-import Tooltip from "@mui/material/Tooltip";
-import MenuItem from "@mui/material/MenuItem";
-import Link from "@mui/material/Link";
-import Button from "@mui/material/Button";
-import useUserAuth from "../hooks/useUserAuth";
-import CircularProgress from "@mui/material/CircularProgress";
+import {
+  Box,
+  IconButton,
+  Menu,
+  Avatar,
+  Tooltip,
+  MenuItem,
+  Link,
+  CircularProgress,
+  Button,
+} from "@mui/material";
 import { logoutUser } from "../redux/thunks/authThunks";
-import { selectLoading } from "../redux/slices/authSlice";
+import useSelectUserAuth from "../hooks/useSelectUserAuth";
+import useSelectLoading from "../hooks/useSelectLoading";
 
 const Userbar = () => {
   const [anchorElUser, setAnchorElUser] = useState(null);
 
-  const { token } = useUserAuth();
+  const { token } = useSelectUserAuth();
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const loading = useSelector(selectLoading);
+  const loading = useSelectLoading();
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);

@@ -1,23 +1,39 @@
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { genderVariants, nameRegex } from "../../constants";
-import { Button } from "../index";
+import {
+  Box,
+  Stack,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Typography,
+  TextField,
+} from "@mui/material";
+
 import { updateProfile } from "../../redux/thunks/userThunks";
-import useUserAuth from "../../hooks/useUserAuth";
+import useSelectUserAuth from "../../hooks/useSelectUserAuth";
 
 const schema = z
   .object({
     first_name: z
       .string()
+      .regex(nameRegex, "First name must contain only english letters.")
       .max(255, "First name is too long")
-      .regex(nameRegex, "First name must contain only english letters."),
+      .optional()
+      .or(z.literal("")),
     last_name: z
       .string()
       .max(255, "Last name is too long")
-      .regex(nameRegex, "Last name must contain only english letters."),
-    gender: z.string(),
+      .regex(nameRegex, "Last name must contain only english letters.")
+      .optional()
+      .or(z.literal("")),
+    gender: z.string().optional(),
   })
   .refine((data) => genderVariants.includes(data.gender), {
     message: "kek",
@@ -25,8 +41,16 @@ const schema = z
   });
 
 const EditProfileForm = () => {
+  const [gender, setGender] = useState(
+    genderVariants[genderVariants.length - 1] || ""
+  );
+
+  const handleChange = (event) => {
+    setGender(event.target.value);
+  };
+
   const dispatch = useDispatch();
-  const { user } = useUserAuth();
+  const { user } = useSelectUserAuth();
 
   const {
     register,
@@ -37,6 +61,7 @@ const EditProfileForm = () => {
 
   const onSubmit = async (data) => {
     try {
+      console.log(data);
       await dispatch(updateProfile(data)).unwrap();
     } catch (error) {
       console.log("Update profile failed.");
@@ -45,62 +70,104 @@ const EditProfileForm = () => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col items-center gap-4 f-regular"
-      noValidate
+    <Box
+      sx={{
+        my: 3,
+      }}
     >
-      <div className="w-[300px]">
-        <input
-          {...register("first_name")}
-          type="text"
-          className="w-full py-2 px-3 border border-neutral-500 rounded-md"
-          placeholder="First name..."
-          defaultValue={user?.first_name}
-        />
-        {errors.first_name && (
-          <p className="px-1 text-red-500">{errors.first_name.message}</p>
-        )}
-      </div>
-
-      <div className="w-[300px]">
-        <input
-          {...register("last_name")}
-          className="w-full py-2 px-3 border border-neutral-500 rounded-md"
-          type="text"
-          defaultValue={user?.last_name}
-          placeholder="Last name..."
-        />
-        {errors.last_name && (
-          <p className="px-1 text-red-500">{errors.last_name.message}</p>
-        )}
-      </div>
-
-      <div className="w-[300px]">
-        <select {...register("gender")} defaultValue={user?.gender || "other"}>
-          {genderVariants.map((gender, index) => (
-            <option value={gender} key={index}>
-              {gender}
-            </option>
-          ))}
-        </select>
-        {errors.gender && (
-          <p className="px-1 text-red-500">{errors.gender.message}</p>
-        )}
-      </div>
-
-      <Button
-        type="submit"
-        className="border border-neutral-500 px-5 py-2 f-bold hover:bg-sky-300 disabled:cursor-not-allowed"
-        disabled={isSubmitting}
+      <Stack
+        direction="column"
+        sx={{ width: 1 }}
+        gap={2}
+        component="form"
+        noValidate
+        onSubmit={handleSubmit(onSubmit)}
       >
-        {isSubmitting ? "Loading..." : "Update Profile"}
-      </Button>
+        <Stack direction="row" justifyContent="space-between" gap={4}>
+          <Stack minWidth={300} direction="column" gap={3}>
+            <Box>
+              <TextField
+                {...register("first_name")}
+                fullWidth
+                id="first_name"
+                label="First name"
+                name="first_name"
+                autoFocus
+                error={Boolean(errors.first_name)}
+              />
 
-      {errors.root && (
-        <p className="self-start px-1 text-red-500">{errors.root.message}</p>
-      )}
-    </form>
+              {errors.first_name && (
+                <Typography variant="body1" color="error">
+                  {errors.first_name.message}
+                </Typography>
+              )}
+            </Box>
+
+            <Box>
+              <TextField
+                {...register("last_name")}
+                fullWidth
+                id="last_name"
+                label="Last name"
+                name="last_name"
+                error={Boolean(errors.last_name)}
+              />
+
+              {errors.last_name && (
+                <Typography variant="body1" color="error">
+                  {errors.last_name.message}
+                </Typography>
+              )}
+            </Box>
+
+            <Box sx={{ minWidth: 120, maxWidth: 300 }}>
+              <FormControl fullWidth size="small">
+                <InputLabel id="demo-simple-select-label">Gender</InputLabel>
+                <Select
+                  {...register("gender")}
+                  onChange={handleChange}
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  label="Gender"
+                  value={gender}
+                  error={Boolean(errors.gender)}
+                >
+                  {genderVariants.map((gender, index) => (
+                    <MenuItem value={gender} key={index}>
+                      {gender}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              {errors.gender && (
+                <p className="px-1 text-red-500">{errors.gender.message}</p>
+              )}
+            </Box>
+          </Stack>
+
+          <Stack flexGrow={1} direction="column" gap={3}>
+            <Box width={1} height={1} bgcolor={"primary.main"}></Box>
+          </Stack>
+        </Stack>
+
+        {errors.root && (
+          <Typography variant="body1" component="p" color="error">
+            {errors.root.message}
+          </Typography>
+        )}
+
+        <Button
+          sx={{ maxWidth: 300 }}
+          variant="contained"
+          type="submit"
+          className="border border-neutral-500 px-5 py-2 f-bold hover:bg-sky-300 disabled:cursor-not-allowed"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Loading..." : "Update Profile"}
+        </Button>
+      </Stack>
+    </Box>
   );
 };
 
