@@ -1,9 +1,9 @@
 import { Navigate } from "react-router-dom";
 import { SignLayout, SignInForm } from "../components";
-import useUserAuth from "../hooks/useUserAuth";
+import useSelectUserAuth from "../hooks/useSelectUserAuth";
 
 const SignIn = () => {
-  const { token } = useUserAuth();
+  const { token } = useSelectUserAuth();
 
   return token ? (
     <Navigate to={"/"} />

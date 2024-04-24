@@ -1,7 +1,5 @@
 import Header from "./Header";
 import Menu from "./Menu";
-import PersistLogin from "./PersistLogin.jsx";
-import RequireAuth from "./RequireAuth";
 import SignInForm from "./SignIn/SignInForm";
 import SignInModal from "./SignIn/SignInModal.jsx";
 import SignUpForm from "./SignUp/SignUpForm";
@@ -36,14 +34,12 @@ export {
   Logo,
   Header,
   Menu,
-  RequireAuth,
   SignInForm,
   SignUpForm,
   Button,
   BasicModal,
   SignUpModal,
   SignInModal,
-  PersistLogin,
   RememberMe,
   ResetPasswordForm,
   ResetPasswordModal,

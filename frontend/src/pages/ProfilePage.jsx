@@ -1,8 +1,10 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
-import { selectLoading } from "../redux/slices/authSlice";
+import { resetAuth } from "../redux/slices/authSlice";
 import { getUser } from "../redux/thunks/authThunks";
-import { Stack, Button, Link } from "@mui/material";
+import { Stack, Button, IconButton } from "@mui/material";
+import SettingsIcon from "@mui/icons-material/Settings";
 import {
   UserAvatar,
   UserInfoList,
@@ -10,13 +12,42 @@ import {
   Section,
   SectionHeading,
 } from "../components";
+import useSelectUserAuth from "../hooks/useSelectUserAuth";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import useSelectLoading from "../hooks/useSelectLoading";
 
 const ProfilePage = () => {
-  const loading = useSelector(selectLoading);
   const dispatch = useDispatch();
+  const axiosPrivate = useAxiosPrivate();
+  const loading = useSelectLoading();
+  const { user } = useSelectUserAuth();
 
-  const handleFetchUser = () => {
-    dispatch(getUser());
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchProfile = async () => {
+      try {
+        console.log("fetching user");
+        isMounted && (await dispatch(getUser()).unwrap());
+      } catch (error) {
+        console.log(error);
+        dispatch(resetAuth());
+      } finally {
+        console.log("finished fetching user");
+      }
+    };
+
+    if (!user) {
+      fetchProfile();
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [axiosPrivate, dispatch, user]);
+
+  const handleFetchUser = async () => {
+    await dispatch(getUser()).unwrap();
   };
 
   return (
@@ -36,9 +67,9 @@ const ProfilePage = () => {
           Fetch user
         </Button>
 
-        <Link component={RouterLink} to="/profile/edit">
-          Edit profile
-        </Link>
+        <IconButton component={RouterLink} to="/profile/edit">
+          <SettingsIcon />
+        </IconButton>
       </Stack>
       <UserPosts />
     </Section>

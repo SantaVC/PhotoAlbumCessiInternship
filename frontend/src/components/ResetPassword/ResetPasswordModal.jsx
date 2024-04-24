@@ -2,10 +2,10 @@ import "../../scss/LoginModal.scss";
 import { Link, Navigate } from "react-router-dom";
 import { RxDoubleArrowLeft } from "react-icons/rx";
 import { BasicModal, ResetPasswordForm } from "../index";
-import useUserAuth from "../../hooks/useUserAuth";
+import useSelectUserAuth from "../../hooks/useSelectUserAuth";
 
 const ResetPasswordModal = () => {
-  const { token } = useUserAuth();
+  const { token } = useSelectUserAuth();
 
   return token ? (
     <Navigate to={"/"} />

@@ -43,6 +43,17 @@ class AuthController extends Controller
     $this->secretKey = (string) config('jwt.secret');
   }
 
+  public function getUser()
+  {
+      $user = Auth::user();
+
+      if(!$user){
+        return response()->json(['error' => "Error auth user", 'user' => $user], 500);
+      }
+
+      return response()->json(['user' => $user]);
+  }
+
   public function signup(SignupRequest $request)
   {
      Log::info('Signup data: ', $request->all());
@@ -79,8 +90,6 @@ class AuthController extends Controller
 
        event(new Registered($user));
        $user->notify(new EmailVerificationNotification($user));
-
-
 
       return $response;
     } catch (\Illuminate\Validation\ValidationException $e) {

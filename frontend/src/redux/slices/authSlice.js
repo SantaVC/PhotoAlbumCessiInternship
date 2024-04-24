@@ -33,7 +33,4 @@ export const authSlice = createSlice({
 export const { setToken, setLoading, resetAuth, setUser, updateNickname } =
   authSlice.actions;
 
-export const selectAuth = (state) => state.auth.userAuth;
-export const selectLoading = (state) => state.auth.loading;
-
 export default authSlice.reducer;

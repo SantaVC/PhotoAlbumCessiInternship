@@ -2,10 +2,10 @@ import "../../scss/LoginModal.scss";
 import { Link, Navigate } from "react-router-dom";
 import { CgCloseR } from "react-icons/cg";
 import { BasicModal, SignInForm } from "../index";
-import useUserAuth from "../../hooks/useUserAuth";
+import useSelectUserAuth from "../../hooks/useSelectUserAuth";
 
 const SignInModal = () => {
-  const { token } = useUserAuth();
+  const { token } = useSelectUserAuth();
 
   return token ? (
     <Navigate to={"/"} />
