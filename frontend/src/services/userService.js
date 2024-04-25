@@ -1,6 +1,19 @@
 import { axiosPrivateClient } from "../axios";
 
 const userService = {
+  changeAvatar: async (data) => {
+    const response = await axiosPrivateClient.post(
+      "/profile/change-avatar",
+      data,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response.data;
+  },
+
   changeNickname: async (data) => {
     const response = await axiosPrivateClient.patch(
       "/profile/change-nickname",

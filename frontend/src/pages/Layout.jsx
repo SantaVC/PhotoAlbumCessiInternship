@@ -8,7 +8,7 @@ import useSelectUserAuth from "../hooks/useSelectUserAuth";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { Appbar } from "../components";
 
-const LayoutPage = () => {
+const Layout = () => {
   return (
     <>
       <Appbar />
@@ -20,4 +20,4 @@ const LayoutPage = () => {
   );
 };
 
-export default LayoutPage;
+export default Layout;

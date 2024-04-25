@@ -1,21 +1,23 @@
 import EditProfile from "./EditProfile";
-import HomePage from "./HomePage";
-import LayoutPage from "./LayoutPage";
+import Home from "./Home";
+import Layout from "./Layout";
 import PersistLogin from "./PersistLogin";
-import ProfilePage from "./ProfilePage";
+import Profile from "./Profile";
+import ProfileLayout from "./ProfileLayout";
 import RequireAuth from "./RequireAuth";
 import RequireVerifyEmail from "./RequireVerifyEmail";
 import SignIn from "./SignIn";
 import SignUp from "./SignUp";
 
 export {
-  HomePage,
-  ProfilePage,
-  LayoutPage,
+  Home,
+  Profile,
+  Layout,
   EditProfile,
   SignIn,
   SignUp,
   RequireVerifyEmail,
   RequireAuth,
+  ProfileLayout,
   PersistLogin,
 };

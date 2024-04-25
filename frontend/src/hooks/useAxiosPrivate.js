@@ -18,8 +18,6 @@ const useAxiosPrivate = () => {
             config.url
           ) && !config.headers["Authorization"];
 
-        console.log(config.url, isAuthRequired);
-
         if (isAuthRequired && token) {
           // if auth is required && have the token,
           // check if the token is about to expire ->

@@ -5,6 +5,7 @@ export const authSlice = createSlice({
   initialState: {
     userAuth: {
       user: null,
+      profile: null,
       token: null,
     },
     canVerify: false,
@@ -12,7 +13,12 @@ export const authSlice = createSlice({
   },
   reducers: {
     setUser: (state, action) => {
-      state.userAuth.user = action.payload;
+      const { user, profile } = action.payload;
+      state.userAuth.user = user;
+
+      if (profile) {
+        state.userAuth.profile = profile;
+      }
     },
     setToken: (state, action) => {
       state.userAuth.token = action.payload;
@@ -27,10 +33,19 @@ export const authSlice = createSlice({
     updateNickname: (state, action) => {
       state.userAuth.user.nickname = action.payload;
     },
+    updateAvatar: (state, action) => {
+      state.userAuth.profile.avatar = action.payload;
+    },
   },
 });
 
-export const { setToken, setLoading, resetAuth, setUser, updateNickname } =
-  authSlice.actions;
+export const {
+  setToken,
+  setLoading,
+  resetAuth,
+  setUser,
+  updateNickname,
+  updateAvatar,
+} = authSlice.actions;
 
 export default authSlice.reducer;

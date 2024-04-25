@@ -1,7 +1,5 @@
-import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
-import { resetAuth } from "../redux/slices/authSlice";
 import { getUser } from "../redux/thunks/authThunks";
 import { Stack, Button, IconButton } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -12,39 +10,12 @@ import {
   Section,
   SectionHeading,
 } from "../components";
-import useSelectUserAuth from "../hooks/useSelectUserAuth";
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
+
 import useSelectLoading from "../hooks/useSelectLoading";
 
-const ProfilePage = () => {
+const Profile = () => {
   const dispatch = useDispatch();
-  const axiosPrivate = useAxiosPrivate();
   const loading = useSelectLoading();
-  const { user } = useSelectUserAuth();
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchProfile = async () => {
-      try {
-        console.log("fetching user");
-        isMounted && (await dispatch(getUser()).unwrap());
-      } catch (error) {
-        console.log(error);
-        dispatch(resetAuth());
-      } finally {
-        console.log("finished fetching user");
-      }
-    };
-
-    if (!user) {
-      fetchProfile();
-    }
-
-    return () => {
-      isMounted = false;
-    };
-  }, [axiosPrivate, dispatch, user]);
 
   const handleFetchUser = async () => {
     await dispatch(getUser()).unwrap();
@@ -52,7 +23,7 @@ const ProfilePage = () => {
 
   return (
     <Section>
-      <SectionHeading>ProfilePage</SectionHeading>
+      <SectionHeading>Profile</SectionHeading>
 
       <Stack direction="row" alignItems="flex-start" gap={3} my={4}>
         <UserAvatar />
@@ -76,4 +47,4 @@ const ProfilePage = () => {
   );
 };
 
-export default ProfilePage;
+export default Profile;

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -15,47 +15,46 @@ import {
   Typography,
   TextField,
 } from "@mui/material";
-
 import { updateProfile } from "../../redux/thunks/userThunks";
+import { capitalize } from "../../utils";
 import useSelectUserAuth from "../../hooks/useSelectUserAuth";
+import { UploadAvatar } from "../index";
 
-const schema = z
-  .object({
-    first_name: z
-      .string()
-      .regex(nameRegex, "First name must contain only english letters.")
-      .max(255, "First name is too long")
-      .optional()
-      .or(z.literal("")),
-    last_name: z
-      .string()
-      .max(255, "Last name is too long")
-      .regex(nameRegex, "Last name must contain only english letters.")
-      .optional()
-      .or(z.literal("")),
-    gender: z.string().optional(),
-  })
-  .refine((data) => genderVariants.includes(data.gender), {
-    message: "kek",
-    path: ["gender"],
-  });
+const schema = z.object({
+  first_name: z
+    .string()
+    .regex(nameRegex, "First name must contain only english letters.")
+    .max(255, "First name is too long")
+    .optional()
+    .or(z.literal("")),
+  last_name: z
+    .string()
+    .max(255, "Last name is too long")
+    .regex(nameRegex, "Last name must contain only english letters.")
+    .optional()
+    .or(z.literal("")),
+  gender: z.string().optional(),
+});
 
 const EditProfileForm = () => {
-  const [gender, setGender] = useState(
-    genderVariants[genderVariants.length - 1] || ""
-  );
-
-  const handleChange = (event) => {
-    setGender(event.target.value);
-  };
-
+  const { profile } = useSelectUserAuth();
   const dispatch = useDispatch();
-  const { user } = useSelectUserAuth();
+
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [gender, setGender] = useState("");
+
+  useEffect(() => {
+    setFirstName(profile?.first_name);
+    setLastName(profile?.last_name);
+    setGender(profile?.gender);
+  }, [profile]);
 
   const {
     register,
     handleSubmit,
     setError,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm({ resolver: zodResolver(schema) });
 
@@ -63,6 +62,7 @@ const EditProfileForm = () => {
     try {
       console.log(data);
       await dispatch(updateProfile(data)).unwrap();
+      reset();
     } catch (error) {
       console.log("Update profile failed.");
       setError("root", { message: error.message });
@@ -71,10 +71,14 @@ const EditProfileForm = () => {
 
   return (
     <Box
+      display={"flex"}
+      gap={4}
       sx={{
         my: 3,
       }}
     >
+      <UploadAvatar />
+
       <Stack
         direction="column"
         sx={{ width: 1 }}
@@ -83,72 +87,74 @@ const EditProfileForm = () => {
         noValidate
         onSubmit={handleSubmit(onSubmit)}
       >
-        <Stack direction="row" justifyContent="space-between" gap={4}>
-          <Stack minWidth={300} direction="column" gap={3}>
-            <Box>
-              <TextField
-                {...register("first_name")}
-                fullWidth
-                id="first_name"
-                label="First name"
-                name="first_name"
-                autoFocus
-                error={Boolean(errors.first_name)}
-              />
+        <Stack direction="column" gap={3}>
+          <Box>
+            <TextField
+              {...register("first_name")}
+              fullWidth
+              id="first_name"
+              label="First name"
+              name="first_name"
+              defaultValue={firstName}
+              error={Boolean(errors.first_name)}
+            />
 
-              {errors.first_name && (
-                <Typography variant="body1" color="error">
-                  {errors.first_name.message}
-                </Typography>
-              )}
-            </Box>
+            {errors.first_name && (
+              <Typography variant="body1" color="error">
+                {errors.first_name.message}
+              </Typography>
+            )}
+          </Box>
 
-            <Box>
-              <TextField
-                {...register("last_name")}
-                fullWidth
-                id="last_name"
-                label="Last name"
-                name="last_name"
-                error={Boolean(errors.last_name)}
-              />
+          <Box>
+            <TextField
+              {...register("last_name")}
+              fullWidth
+              id="last_name"
+              label="Last name"
+              name="last_name"
+              defaultValue={lastName}
+              error={Boolean(errors.last_name)}
+            />
 
-              {errors.last_name && (
-                <Typography variant="body1" color="error">
-                  {errors.last_name.message}
-                </Typography>
-              )}
-            </Box>
+            {errors.last_name && (
+              <Typography variant="body1" color="error">
+                {errors.last_name.message}
+              </Typography>
+            )}
+          </Box>
 
-            <Box sx={{ minWidth: 120, maxWidth: 300 }}>
-              <FormControl fullWidth size="small">
-                <InputLabel id="demo-simple-select-label">Gender</InputLabel>
-                <Select
-                  {...register("gender")}
-                  onChange={handleChange}
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  label="Gender"
-                  value={gender}
-                  error={Boolean(errors.gender)}
-                >
-                  {genderVariants.map((gender, index) => (
-                    <MenuItem value={gender} key={index}>
-                      {gender}
+          <Box sx={{ minWidth: 120, maxWidth: 300 }}>
+            <FormControl fullWidth size="small">
+              <InputLabel id="demo-simple-select-label">Gender</InputLabel>
+
+              <Select
+                {...register("gender")}
+                onChange={(event) => setGender(event.target.value)}
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Gender"
+                value={capitalize(gender)}
+                error={Boolean(errors.gender)}
+              >
+                {genderVariants.map((gender, index) => {
+                  const capitalized = capitalize(gender);
+
+                  return (
+                    <MenuItem value={capitalized} key={index}>
+                      {capitalized}
                     </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+                  );
+                })}
+              </Select>
+            </FormControl>
 
-              {errors.gender && (
-                <p className="px-1 text-red-500">{errors.gender.message}</p>
-              )}
-            </Box>
-          </Stack>
-
-          <Stack flexGrow={1} direction="column" gap={3}>
-            <Box width={1} height={1} bgcolor={"primary.main"}></Box>
-          </Stack>
+            {errors.gender && (
+              <Typography variant="body1" color="error">
+                {errors.gender.message}
+              </Typography>
+            )}
+          </Box>
         </Stack>
 
         {errors.root && (
@@ -158,7 +164,7 @@ const EditProfileForm = () => {
         )}
 
         <Button
-          sx={{ maxWidth: 300 }}
+          sx={{ maxWidth: 300, alignSelf: "flex-end" }}
           variant="contained"
           type="submit"
           className="border border-neutral-500 px-5 py-2 f-bold hover:bg-sky-300 disabled:cursor-not-allowed"

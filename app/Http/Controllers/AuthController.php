@@ -6,6 +6,7 @@ use App\Http\Controllers\TokenController;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\SignupRequest;
 use App\Models\User;
+use App\Models\UserInfo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -51,7 +52,9 @@ class AuthController extends Controller
         return response()->json(['error' => "Error auth user", 'user' => $user], 500);
       }
 
-      return response()->json(['user' => $user]);
+      $profile = $user->profile;
+
+      return response()->json(['user' => $user, 'profile' => $profile]);
   }
 
   public function signup(SignupRequest $request)
