@@ -1,6 +1,27 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { setLoading, updateNickname } from "../slices/authSlice";
+import { setLoading, updateNickname, updateAvatar } from "../slices/authSlice";
 import userService from "../../services/userService";
+
+export const changeAvatar = createAsyncThunk(
+  "user/changeAvatar",
+  async (userData, { dispatch }) => {
+    try {
+      dispatch(setLoading(true));
+      console.log(userData);
+
+      const response = await userService.changeAvatar(userData);
+
+      dispatch(updateAvatar(response.avatar));
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+
+      throw new Error("Internal server error.");
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }
+);
 
 export const changeNickname = createAsyncThunk(
   "user/changeNickname",

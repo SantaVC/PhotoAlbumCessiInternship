@@ -8,11 +8,11 @@ export const getUser = createAsyncThunk(
     try {
       dispatch(setLoading(true));
 
-      const { user } = await authService.getUser();
+      const data = await authService.getUser();
 
-      dispatch(setUser(user));
+      dispatch(setUser(data));
 
-      return user;
+      return data;
     } catch (error) {
       console.log(error);
       throw new Error("Internal server error.");

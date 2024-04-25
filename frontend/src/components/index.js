@@ -26,8 +26,10 @@ import Navbar from "./Navbar.jsx";
 import Userbar from "./Userbar.jsx";
 import BasicModal from "./ui/BasicModal.jsx";
 import SignLayout from "./SignLayout.jsx";
+import UploadAvatar from "./UploadAvatar.jsx";
 
 export {
+  UploadAvatar,
   SignLayout,
   Userbar,
   Navbar,

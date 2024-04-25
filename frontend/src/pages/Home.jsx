@@ -1,13 +1,13 @@
 import { Outlet } from "react-router-dom";
 import { Section, SectionHeading } from "../components";
 
-const HomePage = () => {
+const Home = () => {
   return (
     <Section>
-      <SectionHeading>HomePage</SectionHeading>
+      <SectionHeading>Home</SectionHeading>
       <Outlet />
     </Section>
   );
 };
 
-export default HomePage;
+export default Home;

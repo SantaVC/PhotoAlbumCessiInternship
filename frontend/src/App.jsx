@@ -3,15 +3,16 @@ import { ThemeProvider } from "@emotion/react";
 import { CssBaseline } from "@mui/material";
 import { ResetPasswordModal, SignUpVerifyEmail } from "./components/index";
 import {
-  ProfilePage,
-  LayoutPage,
-  HomePage,
+  Profile,
+  Layout,
+  Home,
   EditProfile,
   SignIn,
   SignUp,
   RequireAuth,
   PersistLogin,
   RequireVerifyEmail,
+  ProfileLayout,
 } from "./pages/index";
 import { useThemeContext } from "./theme/useThemeContext";
 
@@ -24,14 +25,16 @@ const App = () => {
 
       <Routes>
         <Route element={<PersistLogin />}>
-          <Route path="/" element={<LayoutPage />}>
-            <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<Layout />}>
+            <Route path="/" element={<Home />} />
 
             {/* Protected routes */}
             <Route element={<RequireAuth />}>
               <Route element={<RequireVerifyEmail />}>
-                <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/profile/edit" element={<EditProfile />} />
+                <Route path="/profile" element={<ProfileLayout />}>
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/profile/edit" element={<EditProfile />} />
+                </Route>
               </Route>
             </Route>
           </Route>

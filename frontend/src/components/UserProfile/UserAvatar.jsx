@@ -5,30 +5,31 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 const style = {
   flexShrink: 0,
   display: "flex",
+  flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
-  width: 128,
-  height: 128,
   border: "2px solid",
   borderRadius: "50%",
   overflow: "hidden",
 };
 
-const UserAvatar = () => {
+const UserAvatar = ({ width = 128, height = 128 }) => {
   const [url, setUrl] = useState();
 
   const handleUpload = (event) => {
-    const blob = new Blob([event.target.files[0]], { type: "profilePicture" });
-
-    if (blob?.size < 10) {
+    const file = new File([event.target.files[0]], "avatar", {
+      type: "image/png",
+    });
+    console.log(file);
+    if (file?.size < 10) {
       return;
     }
 
-    setUrl(URL.createObjectURL(blob));
+    setUrl(URL.createObjectURL(file));
   };
 
   return (
-    <Box flexShrink={0} sx={{ ...style }}>
+    <Box component="form" flexShrink={0} sx={{ ...style, width, height }}>
       <label
         className="w-full h-full flex items-center justify-center cursor-pointer"
         htmlFor="userAvatar"
