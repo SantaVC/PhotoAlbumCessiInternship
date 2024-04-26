@@ -83,7 +83,7 @@ class ProfileController extends Controller
           ['avatar' => $profile->avatar]
         );
 
-        return response()->json(['message' => 'Avatar changed successfully', 'avatar' => $profile->avatar]);
+        return response()->json(['message' => 'Avatar changed successfully', 'profile' => $profile]);
     }
 
     public function changePassword(Request $request)

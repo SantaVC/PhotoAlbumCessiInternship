@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Box, Button, Stack } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { changeAvatar } from "../redux/thunks/userThunks";
 import { BASE_URL } from "../constants";
@@ -19,22 +19,30 @@ const style = {
 
 const UploadAvatar = () => {
   const { profile } = useSelectUserAuth();
-
+  const [error, setError] = useState("");
   const [image, setImage] = useState(null);
-  const [url, setUrl] = useState(profile?.avatar || null);
-
-  console.log(url);
+  const [url, setUrl] = useState(null);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setUrl(profile?.avatar);
+    if (profile?.avatar) {
+      setUrl(`${BASE_URL}/${profile?.avatar}`);
+    }
   }, [profile?.avatar]);
 
   const handleFileChange = (event) => {
-    if (event.target.files && event.target.files.length === 1) {
-      setImage(event.target.files[0]);
+    const file = event.target.files[0];
+
+    console.log(file, image);
+
+    if (!file || file.size === image?.size) {
+      return;
     }
+
+    setError("");
+    setImage(file);
+    setUrl(URL.createObjectURL(file));
   };
 
   const handleUpload = async (event) => {
@@ -44,15 +52,27 @@ const UploadAvatar = () => {
       return;
     }
 
-    console.log(image);
     const formData = new FormData();
     formData.append("avatar", image);
 
-    await dispatch(changeAvatar(formData)).unwrap();
+    try {
+      setError("");
+      await dispatch(changeAvatar(formData)).unwrap();
+    } catch (error) {
+      setError(error.message);
+    }
+
+    setImage(null);
   };
 
   return (
-    <Stack component="form" direction="column" gap={2}>
+    <Stack
+      component="form"
+      direction="column"
+      alignItems={"center"}
+      maxWidth={200}
+      gap={2}
+    >
       <Box flexShrink={0} sx={{ ...style, width: 200, height: 200 }}>
         <Box
           component={"label"}
@@ -78,13 +98,24 @@ const UploadAvatar = () => {
           ) : (
             <Box
               component="img"
-              src={`${BASE_URL}/${url}`}
+              src={url}
               sx={{ objectFit: "cover", height: 1 }}
               alt="Profile picture"
             ></Box>
           )}
         </Box>
       </Box>
+
+      {error && (
+        <Typography
+          textAlign={"center"}
+          variant="body1"
+          component="p"
+          color="error"
+        >
+          {error}
+        </Typography>
+      )}
 
       {image && (
         <Button onClick={handleUpload} type="submit" variant="outlined">

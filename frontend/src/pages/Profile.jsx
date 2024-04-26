@@ -10,7 +10,6 @@ import {
   Section,
   SectionHeading,
 } from "../components";
-
 import useSelectLoading from "../hooks/useSelectLoading";
 
 const Profile = () => {
@@ -23,7 +22,7 @@ const Profile = () => {
 
   return (
     <Section>
-      <SectionHeading>Profile</SectionHeading>
+      <SectionHeading>Profile </SectionHeading>
 
       <Stack direction="row" alignItems="flex-start" gap={3} my={4}>
         <UserAvatar />

@@ -15,10 +15,10 @@ export const authSlice = createSlice({
     setUser: (state, action) => {
       const { user, profile } = action.payload;
       state.userAuth.user = user;
-
-      if (profile) {
-        state.userAuth.profile = profile;
-      }
+      state.userAuth.profile = profile;
+    },
+    setProfile: (state, action) => {
+      state.userAuth.profile = action.payload;
     },
     setToken: (state, action) => {
       state.userAuth.token = action.payload;
@@ -46,6 +46,7 @@ export const {
   setUser,
   updateNickname,
   updateAvatar,
+  setProfile,
 } = authSlice.actions;
 
 export default authSlice.reducer;
