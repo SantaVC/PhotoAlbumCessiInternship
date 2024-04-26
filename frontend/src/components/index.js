@@ -19,7 +19,7 @@ import UserInfoList from "./UserProfile/UserInfoList.jsx";
 import UserPosts from "./UserProfile/UserPosts.jsx";
 import UserPostSkeleton from "./UserProfile/UserPostSkeleton.jsx";
 import UserInfoListSkeleton from "./UserProfile/UserInfoListSkeleton.jsx";
-import EditProfileForm from "./UserProfile/EditProfileForm.jsx";
+import EditProfileForm from "./EditProfile/EditProfileForm.jsx";
 import Appbar from "./Appbar.jsx";
 import Logo from "./ui/Logo.jsx";
 import Navbar from "./Navbar.jsx";

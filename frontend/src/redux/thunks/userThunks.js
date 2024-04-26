@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { setLoading, updateNickname, updateAvatar } from "../slices/authSlice";
+import { setLoading, updateNickname, setProfile } from "../slices/authSlice";
 import userService from "../../services/userService";
 
 export const changeAvatar = createAsyncThunk(
@@ -9,12 +9,15 @@ export const changeAvatar = createAsyncThunk(
       dispatch(setLoading(true));
       console.log(userData);
 
-      const response = await userService.changeAvatar(userData);
+      const { profile } = await userService.changeAvatar(userData);
 
-      dispatch(updateAvatar(response.avatar));
-      console.log(response);
+      dispatch(setProfile(profile));
     } catch (error) {
       console.log(error);
+
+      if (error?.response?.status === 422) {
+        throw new Error("Image size must not be greater than 2 MB");
+      }
 
       throw new Error("Internal server error.");
     } finally {
@@ -92,8 +95,10 @@ export const updateProfile = createAsyncThunk(
     try {
       dispatch(setLoading(true));
 
-      const response = await userService.updateProfile(userData);
-      console.log(response);
+      const { profile } = await userService.updateProfile(userData);
+
+      dispatch(setProfile(profile));
+      console.log(profile);
     } catch (error) {
       console.log(error);
 

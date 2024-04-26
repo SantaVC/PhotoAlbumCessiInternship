@@ -29,7 +29,7 @@ const App = () => {
             <Route path="/" element={<Home />} />
 
             {/* Protected routes */}
-            <Route element={<RequireAuth />}>
+            <Route path="/" element={<RequireAuth />}>
               <Route element={<RequireVerifyEmail />}>
                 <Route path="/profile" element={<ProfileLayout />}>
                   <Route path="/profile" element={<Profile />} />
