@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { Box, Button, Card, CardContent, CardMedia } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { BASE_URL } from "../../constants";
 import { deletePost } from "../../redux/thunks/postsThunks";
@@ -16,36 +16,30 @@ const PostCard = ({ item }) => {
   };
 
   return (
-    <Card
-      elevation={0}
-      sx={{ width: 220, height: 300, position: "relative", borderRadius: 5 }}
+    <Box
+      sx={{
+        width: 220,
+        height: 300,
+        position: "relative",
+        borderRadius: 2,
+        overflow: "hidden",
+      }}
       component="li"
     >
-      <CardContent
-        sx={{ display: "flex", flexDirection: "column", gap: 2, height: 1 }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            position: "relative",
-          }}
-        >
-          <CardMedia
-            sx={{ height: 120, width: 130, backgroundSize: "contain" }}
-            image={`${BASE_URL}/${item.image_path}`}
-          />
+      <Box height={1}>
+        <img
+          style={{ height: "100%", objectFit: "cover" }}
+          src={`${BASE_URL}/${item.id}/${item.image_path}`}
+        />
 
-          <Button
-            className="absolute top-2 right-2"
-            onClick={() => handleDeleteItem(item)}
-          >
-            <DeleteIcon />
-          </Button>
-        </Box>
-      </CardContent>
-    </Card>
+        <IconButton
+          sx={{ position: "absolute", top: 0, right: 0 }}
+          onClick={() => handleDeleteItem(item)}
+        >
+          <DeleteIcon />
+        </IconButton>
+      </Box>
+    </Box>
   );
 };
 

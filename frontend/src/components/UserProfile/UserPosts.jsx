@@ -35,7 +35,7 @@ const UserPosts = () => {
   if (isLoading) {
     return (
       <List sx={{ ...style }}>
-        {[...Array(5)].map((_, index) => (
+        {[...Array(3)].map((_, index) => (
           <li key={index}>
             <UserPostSkeleton speed={0.75} />
           </li>
