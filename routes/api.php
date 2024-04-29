@@ -12,6 +12,7 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\VerificationController;
 use App\Notifications\EmailVerificationNotification;
 use App\Http\Controllers\EmailVerificationResendController;
+use App\Http\Controllers\PostController;
 
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
 
@@ -35,9 +36,14 @@ Route::patch('/profile/change-nickname', [ProfileController::class, 'changeNickn
 Route::patch('/profile/change-password', [ProfileController::class, 'changePassword']);
 Route::post('/profile/change-avatar', [ProfileController::class, 'changeAvatar']);
 Route::patch('/profile/update', [ProfileController::class, 'updateProfile']);
+Route::post('/posts', [PostController::class, 'createPost']);
+Route::get('/posts/{postId}/image', [PostController::class, 'getPostImage']);
+Route::delete('/posts/{postId}', [PostController::class, 'deletePost']);
+
 
 Route::post('/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->middleware('throttle:1,1');
 Route::get('/email/verify', [VerificationController::class, 'verifyEmail']);
 Route::post('/email/resend', [EmailVerificationResendController::class, 'resend'])->middleware('throttle:1,1');
+
 
 Route::get('/avatars/{avatarName}', [ImageController::class, 'getImage']);

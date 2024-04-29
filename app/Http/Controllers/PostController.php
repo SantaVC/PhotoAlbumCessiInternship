@@ -7,6 +7,7 @@ use App\Models\Post;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 
 class PostController extends Controller
@@ -47,5 +48,49 @@ class PostController extends Controller
     $post->save();
 
     return response()->json(['message' => 'Пост успешно создан'], 200);
+}
+public function getPostImage(Request $request, $postId)
+{
+    $post = Post::find($postId);
+
+    // Проверяем, найден ли пост
+    if (!$post) {
+        return response()->json(['error' => 'Пост не найден'], 404);
+    }
+
+    // Получаем путь к изображению поста
+    $imagePath = $post->image_path;
+
+    // Проверяем, существует ли файл
+    if (!Storage::disk('public')->exists($imagePath)) {
+        return response()->json(['error' => 'Файл изображения не найден'], 404);
+    }
+
+    // Читаем файл из хранилища
+    $image = Storage::disk('public')->get($imagePath);
+
+    // Возвращаем изображение как ответ
+    return response($image)->header('Content-Type', 'image/jpeg');
+}
+public function deletePost($postId)
+{
+    // Находим пост по его ID
+    $post = Post::find($postId);
+
+    // Проверяем, найден ли пост
+    if (!$post) {
+        return response()->json(['error' => 'Пост не найден'], 404);
+    }
+
+    // Проверяем, принадлежит ли пост текущему пользователю
+    if ($post->user_id !== Auth::id()) {
+        return response()->json(['error' => 'Вы не авторизованы для удаления этого поста'], 403);
+    }
+
+    // Удаляем пост
+    $post->delete();
+
+    // Возвращаем успешный ответ
+    return response()->json(['message' => 'Пост успешно удален'], 200);
 }
 }
