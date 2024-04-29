@@ -4,11 +4,11 @@ import { getUser } from "../redux/thunks/authThunks";
 import { Stack, Button, IconButton } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import {
-  UserAvatar,
   UserInfoList,
   UserPosts,
   Section,
   SectionHeading,
+  UploadAvatar,
 } from "../components";
 import useSelectLoading from "../hooks/useSelectLoading";
 
@@ -25,7 +25,7 @@ const Profile = () => {
       <SectionHeading>Profile </SectionHeading>
 
       <Stack direction="row" alignItems="flex-start" gap={3} my={4}>
-        <UserAvatar />
+        <UploadAvatar width={128} height={128} />
 
         <UserInfoList />
 
@@ -41,6 +41,7 @@ const Profile = () => {
           <SettingsIcon />
         </IconButton>
       </Stack>
+
       <UserPosts />
     </Section>
   );

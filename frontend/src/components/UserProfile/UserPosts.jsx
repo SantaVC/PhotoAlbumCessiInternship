@@ -1,17 +1,11 @@
-import { useEffect, useState } from "react";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
-import { TiDelete } from "react-icons/ti";
-import { Button, UserPostSkeleton } from "../index";
-import { IconButton, List, ListItem, Paper } from "@mui/material";
-
-const cards = [
-  {
-    id: 0,
-  },
-  {
-    id: 1,
-  },
-];
+import { useEffect } from "react";
+import { PostCard, UserPostSkeleton } from "../index";
+import { Box, List, ListItem } from "@mui/material";
+import useSelectPosts from "../../hooks/useSelectPosts";
+import { useDispatch } from "react-redux";
+import { getPosts } from "../../redux/thunks/postsThunks";
+import CreatePostItem from "../Posts/CreatePostItem";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const style = {
   display: "grid",
@@ -21,32 +15,22 @@ const style = {
 };
 
 const UserPosts = () => {
-  const [items, setItems] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const { items, isLoading } = useSelectPosts();
+
+  const axiosPrivate = useAxiosPrivate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        setIsLoading(true);
-        await new Promise((res) => setTimeout(res, 2000));
-        setItems(cards);
+        await dispatch(getPosts());
       } catch (error) {
         console.log(error);
-      } finally {
-        setIsLoading(false);
       }
     };
 
     fetchPosts();
-  }, []);
-
-  const handleAddItem = (item) => {
-    setItems((current) => [item, ...current]);
-  };
-
-  const handleDeleteItem = (item) => {
-    setItems((current) => current.filter((card) => card.id !== item.id));
-  };
+  }, [dispatch, axiosPrivate]);
 
   if (isLoading) {
     return (
@@ -61,53 +45,15 @@ const UserPosts = () => {
   }
 
   return (
-    <List sx={{ ...style }}>
-      {items.map((item, index) => (
-        <ListItem key={index} disablePadding>
-          <Paper
-            variant="outlined"
-            sx={{
-              width: 220,
-              height: 300,
-              position: "relative",
-              p: 2,
-            }}
-          >
-            {item.id}
-            <Button
-              className="absolute top-2 right-2"
-              onClick={() => handleDeleteItem(item)}
-            >
-              <TiDelete size={22} />
-            </Button>
-          </Paper>
-        </ListItem>
+    <Box component={"ul"} sx={{ ...style }}>
+      {items.map((item) => (
+        <PostCard key={item.id} item={item} />
       ))}
 
       <ListItem disablePadding>
-        <Paper
-          variant="outlined"
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            p: 2,
-            width: 220,
-            height: 300,
-            position: "relative",
-          }}
-        >
-          <IconButton
-            sx={{ p: 2 }}
-            onClick={() =>
-              handleAddItem({ id: Math.round(Math.random() * 999) })
-            }
-          >
-            <AddCircleIcon fontSize="large" />
-          </IconButton>
-        </Paper>
+        <CreatePostItem />
       </ListItem>
-    </List>
+    </Box>
   );
 };
 

@@ -17,7 +17,7 @@ const style = {
   overflow: "hidden",
 };
 
-const UploadAvatar = () => {
+const UploadAvatar = ({ width = 200, height = 200 }) => {
   const { profile } = useSelectUserAuth();
   const [error, setError] = useState("");
   const [image, setImage] = useState(null);
@@ -73,7 +73,7 @@ const UploadAvatar = () => {
       maxWidth={200}
       gap={2}
     >
-      <Box flexShrink={0} sx={{ ...style, width: 200, height: 200 }}>
+      <Box flexShrink={0} sx={{ ...style, width, height }}>
         <Box
           component={"label"}
           htmlFor="userAvatar"
