@@ -27,8 +27,10 @@ import Userbar from "./Userbar.jsx";
 import BasicModal from "./ui/BasicModal.jsx";
 import SignLayout from "./SignLayout.jsx";
 import UploadAvatar from "./UploadAvatar.jsx";
+import PostCard from "./Posts/PostCard.jsx";
 
 export {
+  PostCard,
   UploadAvatar,
   SignLayout,
   Userbar,

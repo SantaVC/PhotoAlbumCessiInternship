@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\UserInfo;
+use App\Models\Post;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -66,7 +67,7 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
     }
     public function setPasswordAttribute($value)
     {
-        $this->attributes['password'] = Hash::make($value);
+      $this->attributes['password'] = Hash::make($value);
     }
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
@@ -75,7 +76,7 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
      */
     public function getJWTIdentifier()
     {
-        return $this->getKey();
+      return $this->getKey();
     }
 
     /**
@@ -85,11 +86,16 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
      */
     public function getJWTCustomClaims()
     {
-        return [];
+      return [];
     }
 
     public function profile()
     {
-        return $this->hasOne(UserInfo::class);
+      return $this->hasOne(UserInfo::class);
+    }
+
+    public function posts()
+    {
+      return $this->hasMany(Post::class);
     }
 }

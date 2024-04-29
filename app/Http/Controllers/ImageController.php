@@ -24,7 +24,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\Models\User; 
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Models\UserInfo;
 use Firebase\JWT\JWT;
@@ -33,7 +33,7 @@ use Exception;
 
 class ImageController extends Controller
 {
-    public function getImage(Request $request, $imageName)
+    public function getImage(Request $request)
     {
         $refreshToken = $request->cookie('refresh_token');
 
@@ -41,24 +41,24 @@ class ImageController extends Controller
         if (!$refreshToken) {
           throw new \Exception('Refresh token is required', 400);
         }
-    
+
         // Получаем секретный ключ из переменных среды
         $secretKey = (string) config('jwt.secret');
-    
+
         // Расшифровываем refresh token
         try {
           $refreshTokenData = JWT::decode($refreshToken, new Key($secretKey, 'HS256'));
         } catch (Exception $e) {
           throw new Exception($e);
         }
-    
+
         $userId = $refreshTokenData->sub;
         $user = User::find($userId);
-    
+
         if (!$user) {
           throw new \Exception('User not found', 404);
         }
-    
+
         Auth::login($user);
         $profile = $user->profile;
         // Получаем путь к сохраненному изображению

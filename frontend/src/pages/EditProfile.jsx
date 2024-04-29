@@ -17,8 +17,6 @@ const EditProfile = () => {
   const { profile } = useSelectUserAuth();
   const loading = useSelectLoading();
 
-  console.log("profile in EditProfile:", profile, "loading:", loading);
-
   return (
     <Section>
       <SectionHeading>EditProfile</SectionHeading>
