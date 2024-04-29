@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
@@ -74,7 +75,7 @@ class PostController extends Controller
       return response()->json(['message' => 'Пост успешно удален'], 200);
     }
 
-    public function getPostImage(Request $request)
+    public function getPostImage(Request $request, $id)
     {
       $refreshToken = $request->cookie('refresh_token');
 
@@ -102,7 +103,9 @@ class PostController extends Controller
 
         Auth::login($user);
 
-        $imagePath = $user->posts->$userId->image_path;
+        $post = Post::find($id);
+
+        $imagePath = $post->image_path;
 
       // Проверяем, найден ли пост
       if (!$imagePath) {
@@ -110,8 +113,6 @@ class PostController extends Controller
       }
 
       $image = Storage::get($imagePath);
-
-      Log::info('$image: ', $image);
 
       // Проверяем, существует ли файл
       if (!$image) {
