@@ -1,6 +1,6 @@
-import { useEffect } from "react";
-import { PostCard, UserPostSkeleton } from "../index";
-import { Box, List, ListItem } from "@mui/material";
+import { useEffect, useState } from "react";
+import { PostCard, PostCardModal } from "../index";
+import { Box } from "@mui/material";
 import useSelectPosts from "../../hooks/useSelectPosts";
 import { useDispatch } from "react-redux";
 import { getPosts } from "../../redux/thunks/postsThunks";
@@ -15,9 +15,15 @@ const style = {
 };
 
 const UserPosts = () => {
-  const { items, isLoading } = useSelectPosts();
+  const [isOpen, setIsOpen] = useState(false);
+  const [currentItem, setCurrentItem] = useState(null);
 
+  const handleOpen = () => setIsOpen(true);
+  const handleClose = () => setIsOpen(false);
+
+  const { items } = useSelectPosts();
   const axiosPrivate = useAxiosPrivate();
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -32,27 +38,38 @@ const UserPosts = () => {
     fetchPosts();
   }, [dispatch, axiosPrivate]);
 
-  if (isLoading) {
-    return (
-      <List sx={{ ...style }}>
-        {[...Array(3)].map((_, index) => (
-          <li key={index}>
-            <UserPostSkeleton speed={0.75} />
-          </li>
-        ))}
-      </List>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <List sx={{ ...style }}>
+  //       {[...Array(3)].map((_, index) => (
+  //         <li key={index}>
+  //           <UserPostSkeleton speed={0.75} />
+  //         </li>
+  //       ))}
+  //     </List>
+  //   );
+  // }
 
   return (
     <Box component={"ul"} sx={{ ...style }}>
       {items.map((item) => (
-        <PostCard key={item.id} item={item} />
+        <PostCard
+          key={item.id}
+          item={item}
+          handleOpen={handleOpen}
+          setCurrentItem={setCurrentItem}
+        />
       ))}
 
-      <ListItem disablePadding>
+      <Box component={"li"}>
         <CreatePostItem />
-      </ListItem>
+      </Box>
+
+      <PostCardModal
+        item={currentItem}
+        open={isOpen}
+        handleClose={handleClose}
+      />
     </Box>
   );
 };

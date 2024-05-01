@@ -12,8 +12,6 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Storage;
-
 
 class PostController extends Controller
 {
@@ -75,37 +73,67 @@ class PostController extends Controller
       return response()->json(['message' => 'Пост успешно удален'], 200);
     }
 
+    public function updatePost(Request $request, $postId)
+    {
+      // Находим пост по его ID
+      $post = Post::find($postId);
+
+      // Проверяем, найден ли пост
+      if (!$post) {
+          return response()->json(['error' => 'Пост не найден'], 404);
+      }
+
+      // Проверяем, принадлежит ли пост текущему пользователю
+      if ($post->user_id !== Auth::id()) {
+          return response()->json(['error' => 'Вы не авторизованы для обновления этого поста'], 403);
+      }
+
+      // Проверяем данные запроса (например, только разрешенные поля)
+      $validatedData = $request->validate([
+        'description' => 'nullable|string|max:255',
+      ]);
+
+      // Обновляем пост новыми данными
+      $post->update($validatedData);
+
+      // Возвращаем успешный ответ с обновленным постом
+      return response()->json([
+        'message' => 'Пост успешно обновлен',
+        'post' => $post,
+      ], 200);
+    }
+
     public function getPostImage(Request $request, $id)
     {
       $refreshToken = $request->cookie('refresh_token');
 
-        // Проверяем, что передан refresh token
-        if (!$refreshToken) {
-          throw new \Exception('Refresh token is required', 400);
-        }
+      // Проверяем, что передан refresh token
+      if (!$refreshToken) {
+        throw new \Exception('Refresh token is required', 400);
+      }
 
-        // Получаем секретный ключ из переменных среды
-        $secretKey = (string) config('jwt.secret');
+      // Получаем секретный ключ из переменных среды
+      $secretKey = (string) config('jwt.secret');
 
-        // Расшифровываем refresh token
-        try {
-          $refreshTokenData = JWT::decode($refreshToken, new Key($secretKey, 'HS256'));
-        } catch (Exception $e) {
-          throw new Exception($e);
-        }
+      // Расшифровываем refresh token
+      try {
+        $refreshTokenData = JWT::decode($refreshToken, new Key($secretKey, 'HS256'));
+      } catch (Exception $e) {
+        throw new Exception($e);
+      }
 
-        $userId = $refreshTokenData->sub;
-        $user = User::find($userId);
+      $userId = $refreshTokenData->sub;
+      $user = User::find($userId);
 
-        if (!$user) {
-          throw new \Exception('User not found', 404);
-        }
+      if (!$user) {
+        throw new \Exception('User not found', 404);
+      }
 
-        Auth::login($user);
+      Auth::login($user);
 
-        $post = Post::find($id);
+      $post = Post::find($id);
 
-        $imagePath = $post->image_path;
+      $imagePath = $post->image_path;
 
       // Проверяем, найден ли пост
       if (!$imagePath) {
