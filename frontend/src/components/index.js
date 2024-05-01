@@ -28,8 +28,14 @@ import BasicModal from "./ui/BasicModal.jsx";
 import SignLayout from "./SignLayout.jsx";
 import UploadAvatar from "./UploadAvatar.jsx";
 import PostCard from "./Posts/PostCard.jsx";
+import CreatePostItemModal from "./Posts/CreatePostItemModal.jsx";
+import CreatePostItem from "./Posts/CreatePostItem.jsx";
+import PostCardModal from "./Posts/PostCardModal.jsx";
 
 export {
+  PostCardModal,
+  CreatePostItem,
+  CreatePostItemModal,
   PostCard,
   UploadAvatar,
   SignLayout,

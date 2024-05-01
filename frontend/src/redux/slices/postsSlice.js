@@ -11,7 +11,7 @@ export const postsSlice = createSlice({
       state.items = action.payload;
     },
     addItem: (state, action) => {
-      state.items.push(action.payload);
+      state.items.unshift(action.payload);
     },
     deleteItem: (state, action) => {
       state.items = state.items.filter((item) => item.id !== action.payload.id);
@@ -19,10 +19,21 @@ export const postsSlice = createSlice({
     setIsLoading: (state, action) => {
       state.isLoading = action.payload;
     },
+    updateItem: (state, action) => {
+      const updatedItem = action.payload;
+
+      const index = state.items.findIndex((item) => item.id === updatedItem.id);
+
+      if (index !== -1) {
+        state.items[index] = {
+          ...updatedItem,
+        };
+      }
+    },
   },
 });
 
-export const { setItems, addItem, deleteItem, setIsLoading } =
+export const { setItems, addItem, deleteItem, setIsLoading, updateItem } =
   postsSlice.actions;
 
 export default postsSlice.reducer;
