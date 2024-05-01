@@ -1,44 +1,67 @@
-import { useDispatch } from "react-redux";
-import { Box, IconButton } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { useState } from "react";
+import { Box, Typography } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
 import { BASE_URL } from "../../constants";
-import { deletePost } from "../../redux/thunks/postsThunks";
 
-const PostCard = ({ item }) => {
-  const dispatch = useDispatch();
+const PostCard = ({ item, setCurrentItem, handleOpen }) => {
+  const [isHovered, setIsHovered] = useState(false);
 
-  const handleDeleteItem = async (item) => {
-    try {
-      await dispatch(deletePost(item)).unwrap();
-    } catch (error) {
-      console.log(error);
-    }
+  const onOpen = () => {
+    handleOpen();
+    setCurrentItem(item);
   };
 
   return (
     <Box
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={onOpen}
       sx={{
         width: 220,
         height: 300,
         position: "relative",
         borderRadius: 2,
         overflow: "hidden",
+        cursor: "pointer",
       }}
       component="li"
     >
-      <Box height={1}>
+      <Box
+        display={"flex"}
+        alignItems={"center"}
+        justifyContent={"center"}
+        height={1}
+      >
         <img
+          loading="lazy"
           style={{ height: "100%", objectFit: "cover" }}
           src={`${BASE_URL}/${item.id}/${item.image_path}`}
+          alt="Post picture"
         />
-
-        <IconButton
-          sx={{ position: "absolute", top: 0, right: 0 }}
-          onClick={() => handleDeleteItem(item)}
-        >
-          <DeleteIcon />
-        </IconButton>
       </Box>
+      {isHovered && (
+        <Box
+          sx={{
+            width: "max-content",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            translate: "-50% -50%",
+            display: "flex",
+            alignItems: " center",
+            justifyContent: "center",
+            gap: 1,
+            padding: 1,
+            bgcolor: "white",
+            borderRadius: "10px",
+          }}
+        >
+          <EditIcon sx={{ fontSize: "30px", color: "grey.900" }} />
+          <Typography color={"black"} fontSize={20}>
+            Edit post
+          </Typography>
+        </Box>
+      )}
     </Box>
   );
 };

@@ -44,4 +44,5 @@ Route::get('/avatars/{image_path}', [ImageController::class, 'getImage']);
 Route::get('/posts', [PostController::class, 'getPosts']);
 Route::post('/posts/create', [PostController::class, 'createPost']);
 Route::delete('/posts/delete/{postId}', [PostController::class, 'deletePost']);
+Route::put('/posts/update/{postId}', [PostController::class, 'updatePost']);
 Route::get('/{id}/uploads/{image_path}', [PostController::class, 'getPostImage']);

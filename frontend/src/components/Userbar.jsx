@@ -13,17 +13,17 @@ import {
   Button,
 } from "@mui/material";
 import { logoutUser } from "../redux/thunks/authThunks";
+import { BASE_URL } from "../constants";
 import useSelectUserAuth from "../hooks/useSelectUserAuth";
 import useSelectLoading from "../hooks/useSelectLoading";
 
 const Userbar = () => {
   const [anchorElUser, setAnchorElUser] = useState(null);
-
-  const { token } = useSelectUserAuth();
+  const { token, profile } = useSelectUserAuth();
+  const loading = useSelectLoading();
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const loading = useSelectLoading();
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -57,7 +57,10 @@ const Userbar = () => {
         <>
           <Tooltip title="Open settings">
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+              <Avatar
+                alt="profile picture"
+                src={`${BASE_URL}/${profile?.avatar}`}
+              />
             </IconButton>
           </Tooltip>
 

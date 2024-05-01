@@ -5,6 +5,7 @@ import {
   deleteItem,
   setItems,
   setIsLoading,
+  updateItem,
 } from "../slices/postsSlice";
 
 export const getPosts = createAsyncThunk(
@@ -15,7 +16,6 @@ export const getPosts = createAsyncThunk(
 
       const { data } = await axiosPrivateClient.get("/posts");
 
-      console.log(data);
       dispatch(setItems(data));
     } catch (error) {
       console.log(error);
@@ -47,6 +47,16 @@ export const createPost = createAsyncThunk(
       dispatch(addItem(data.post));
     } catch (error) {
       console.log(error);
+      const errorData = error?.response?.data;
+
+      if (errorData?.errors?.image) {
+        throw new Error(errorData.errors.image);
+      }
+
+      if (errorData?.errors?.description) {
+        throw new Error(errorData.errors.description);
+      }
+
       throw new Error("Internal server error.");
     } finally {
       dispatch(setIsLoading(false));
@@ -65,6 +75,24 @@ export const deletePost = createAsyncThunk(
       });
 
       dispatch(deleteItem(item));
+    } catch (error) {
+      console.log(error);
+      throw new Error("Internal server error.");
+    } finally {
+      dispatch(setIsLoading(false));
+    }
+  }
+);
+
+export const updatePost = createAsyncThunk(
+  "posts/updatePost",
+  async (item, { dispatch }) => {
+    try {
+      dispatch(setIsLoading(true));
+
+      await axiosPrivateClient.put(`/posts/update/${item.id}`, item);
+
+      dispatch(updateItem(item));
     } catch (error) {
       console.log(error);
       throw new Error("Internal server error.");
