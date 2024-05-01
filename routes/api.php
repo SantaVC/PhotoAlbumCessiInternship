@@ -31,12 +31,12 @@ Route::patch('/profile/change-nickname', [ProfileController::class, 'changeNickn
 Route::patch('/profile/change-password', [ProfileController::class, 'changePassword']);
 Route::post('/profile/change-avatar', [ProfileController::class, 'changeAvatar']);
 Route::patch('/profile/update', [ProfileController::class, 'updateProfile']);
-Route::post('/posts', [PostController::class, 'createPost']);
-Route::get('/posts/{postId}/image', [PostController::class, 'getPostImage']);
-Route::delete('/posts/{postId}', [PostController::class, 'deletePost']);
+// Route::post('/posts', [PostController::class, 'createPost']);
+// Route::get('/posts/{postId}/image', [PostController::class, 'getPostImage']);
+// Route::delete('/posts/{postId}', [PostController::class, 'deletePost']);
 
 Route::post('/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->middleware('throttle:1,1');
-Route::get('/email/verify', [VerificationController::class, 'verifyEmail']);
+Route::get('/email/verify', [VerificationController::class, 'verifyEmail'])->name('verification.verify')->middleware('throttle:1,1');
 Route::post('/email/resend', [EmailVerificationResendController::class, 'resend'])->middleware('throttle:1,1');
 
 Route::get('/avatars/{image_path}', [ImageController::class, 'getImage']);
