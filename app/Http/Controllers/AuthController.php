@@ -80,6 +80,10 @@ class AuthController extends Controller
 
       $user->save();
 
+      // Отправка письма для подтверждения email
+      event(new Registered($user));
+
+            
       $generatedTokens = $this->tokenController->generateTokens($user->id, $this->secretKey);
       $refreshToken = $generatedTokens['refresh_token'];
 
@@ -89,10 +93,7 @@ class AuthController extends Controller
 
       $response = $response->withCookie(Cookie::make('refresh_token', $refreshToken, $this->expirationTime, $this->path, $this->domain, $this->secure, $this->httpOnly));
 
-       // Отправка письма для подтверждения email
-
-       event(new Registered($user));
-       $user->notify(new EmailVerificationNotification($user));
+            
 
       return $response;
     } catch (\Illuminate\Validation\ValidationException $e) {
