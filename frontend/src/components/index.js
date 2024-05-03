@@ -30,10 +30,10 @@ import UploadAvatar from "./UploadAvatar.jsx";
 import PostCard from "./Posts/PostCard.jsx";
 import CreatePostItemModal from "./Posts/CreatePostItemModal.jsx";
 import CreatePostItem from "./Posts/CreatePostItem.jsx";
-import PostCardModal from "./Posts/PostCardModal.jsx";
+import EditPostCardModal from "./Posts/EditPostCardModal.jsx";
 
 export {
-  PostCardModal,
+  EditPostCardModal,
   CreatePostItem,
   CreatePostItemModal,
   PostCard,

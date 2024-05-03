@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { PostCard, PostCardModal } from "../index";
-import { Box } from "@mui/material";
-import useSelectPosts from "../../hooks/useSelectPosts";
 import { useDispatch } from "react-redux";
+import { Box, List } from "@mui/material";
 import { getPosts } from "../../redux/thunks/postsThunks";
+import useSelectPosts from "../../hooks/useSelectPosts";
 import CreatePostItem from "../Posts/CreatePostItem";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import { PostCard, EditPostCardModal, UserPostSkeleton } from "../index";
 
 const style = {
   display: "grid",
@@ -21,7 +21,7 @@ const UserPosts = () => {
   const handleOpen = () => setIsOpen(true);
   const handleClose = () => setIsOpen(false);
 
-  const { items } = useSelectPosts();
+  const { items, isLoading } = useSelectPosts();
   const axiosPrivate = useAxiosPrivate();
 
   const dispatch = useDispatch();
@@ -38,21 +38,21 @@ const UserPosts = () => {
     fetchPosts();
   }, [dispatch, axiosPrivate]);
 
-  // if (isLoading) {
-  //   return (
-  //     <List sx={{ ...style }}>
-  //       {[...Array(3)].map((_, index) => (
-  //         <li key={index}>
-  //           <UserPostSkeleton speed={0.75} />
-  //         </li>
-  //       ))}
-  //     </List>
-  //   );
-  // }
+  if (!items && isLoading) {
+    return (
+      <List sx={{ ...style }}>
+        {[...Array(3)].map((_, index) => (
+          <li key={index}>
+            <UserPostSkeleton speed={0.75} />
+          </li>
+        ))}
+      </List>
+    );
+  }
 
   return (
     <Box component={"ul"} sx={{ ...style }}>
-      {items.map((item) => (
+      {items?.map((item) => (
         <PostCard
           key={item.id}
           item={item}
@@ -65,7 +65,7 @@ const UserPosts = () => {
         <CreatePostItem />
       </Box>
 
-      <PostCardModal
+      <EditPostCardModal
         item={currentItem}
         open={isOpen}
         handleClose={handleClose}
