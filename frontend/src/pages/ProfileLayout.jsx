@@ -40,7 +40,7 @@ const ProfileLayout = () => {
     return () => {
       isMounted = false;
     };
-  }, [axiosPrivate, dispatch, user, profile]);
+  }, [axiosPrivate, dispatch, user]);
 
   return (
     <>

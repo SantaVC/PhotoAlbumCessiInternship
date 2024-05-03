@@ -54,6 +54,7 @@ const PostCard = ({ item, setCurrentItem, handleOpen }) => {
             padding: 1,
             bgcolor: "white",
             borderRadius: "10px",
+            boxShadow: 10,
           }}
         >
           <EditIcon sx={{ fontSize: "30px", color: "grey.900" }} />

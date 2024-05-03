@@ -36,7 +36,6 @@ const EditProfileForm = ({ profile }) => {
   } = methods;
 
   const onSubmit = async (data) => {
-    console.log(data);
     try {
       await dispatch(updateProfile(data)).unwrap();
     } catch (error) {
@@ -48,12 +47,12 @@ const EditProfileForm = ({ profile }) => {
   return (
     <FormProvider {...methods}>
       <Box
+        onSubmit={handleSubmit(onSubmit)}
+        component="form"
         display="flex"
         flexDirection="column"
         sx={{ width: 1 }}
         gap={2}
-        component="form"
-        onSubmit={handleSubmit(onSubmit)}
       >
         <Stack direction="column" gap={3}>
           <FirstNameInput profile={profile} />

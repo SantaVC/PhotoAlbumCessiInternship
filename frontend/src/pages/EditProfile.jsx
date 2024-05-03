@@ -30,7 +30,7 @@ const EditProfile = () => {
       >
         <UploadAvatar {...style} profile={profile} />
 
-        {loading ? (
+        {!profile && loading ? (
           <Stack direction="column" width={1} gap={2}>
             {[...Array(3)].map((_, index) => (
               <Skeleton

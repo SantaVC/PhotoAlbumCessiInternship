@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Outlet } from "react-router-dom";
 import { Backdrop, CircularProgress } from "@mui/material";
+import { getUser } from "../redux/thunks/authThunks";
 import useRefreshToken from "../hooks/useRefreshToken";
 import useSelectUserAuth from "../hooks/useSelectUserAuth";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
@@ -15,15 +16,20 @@ const PersistLogin = () => {
 
   useEffect(() => {
     let isMounted = true;
+
     const verifyRefreshToken = async () => {
       try {
-        console.log("refreshing the token");
+        console.log("refreshing the token & getting user");
         setIsLoading(true);
-        await refresh();
+
+        if (isMounted) {
+          await refresh();
+          await dispatch(getUser());
+        }
       } catch (error) {
         console.log(error);
       } finally {
-        console.log("finished refreshing the token");
+        console.log("finished refreshing the token & getting user");
         isMounted && setIsLoading(false);
       }
     };

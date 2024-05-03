@@ -9,7 +9,7 @@ const UserInfoList = () => {
 
   return (
     <>
-      {loading ? (
+      {!user && loading ? (
         <UserInfoListSkeleton />
       ) : (
         <List disablePadding className="flex flex-col h-full gap-1">

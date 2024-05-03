@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
+import { FormProvider, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Box,
   Button,
@@ -7,7 +9,6 @@ import {
   IconButton,
   Modal,
   Paper,
-  TextField,
   Typography,
 } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
@@ -15,6 +16,8 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import EditIcon from "@mui/icons-material/Edit";
 import { createPost } from "../../redux/thunks/postsThunks";
 import useSelectPosts from "../../hooks/useSelectPosts";
+import PostDescriptionInput from "./PostDescriptionInput";
+import { postValidationSchema } from "../../constants";
 
 const style = {
   position: "absolute",
@@ -29,8 +32,11 @@ const CreatePostItemModal = ({ open, handleClose }) => {
   const [image, setImage] = useState(null);
   const [url, setUrl] = useState(null);
   const [value, setValue] = useState("");
-  const [error, setError] = useState("");
+  const [imageError, setImageError] = useState("");
   const [isHovered, setIsHovered] = useState(false);
+
+  const methods = useForm({ resolver: zodResolver(postValidationSchema) });
+  const { handleSubmit } = methods;
 
   const { isLoading } = useSelectPosts();
 
@@ -44,31 +50,31 @@ const CreatePostItemModal = ({ open, handleClose }) => {
     }
 
     setIsHovered(false);
-    setError("");
+    setImageError("");
     setImage(file);
     setUrl(URL.createObjectURL(file));
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
+  const onSubmit = async (data) => {
     const formData = new FormData();
+
     formData.append("image", image);
-    formData.append("description", value);
+    formData.append("description", data.description);
 
     try {
-      setError("");
+      setImageError("");
 
-      await dispatch(createPost(formData)).unwrap();
+      await dispatch(createPost(formData));
 
       setUrl(null);
       setImage(null);
+      setValue("");
       setIsHovered(false);
-      setError("");
+      setImageError("");
       handleClose();
     } catch (error) {
       console.log(error);
-      setError(error.message);
+      setImageError(error.message);
     }
   };
 
@@ -92,7 +98,7 @@ const CreatePostItemModal = ({ open, handleClose }) => {
         </Typography>
 
         <Box
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmit(onSubmit)}
           component={"form"}
           display={"flex"}
           justifyContent={"space-between"}
@@ -150,7 +156,7 @@ const CreatePostItemModal = ({ open, handleClose }) => {
                     src={url}
                     style={{ objectFit: "cover", height: "100%" }}
                     alt="Post picture"
-                  ></img>
+                  />
                   {isHovered && (
                     <Box
                       sx={{
@@ -166,6 +172,7 @@ const CreatePostItemModal = ({ open, handleClose }) => {
                         padding: 1,
                         bgcolor: "white",
                         borderRadius: "10px",
+                        boxShadow: 10,
                       }}
                     >
                       <EditIcon sx={{ fontSize: "30px", color: "grey.900" }} />
@@ -179,42 +186,38 @@ const CreatePostItemModal = ({ open, handleClose }) => {
             </Box>
           </Box>
 
-          <Box
-            flexGrow={1}
-            display={"flex"}
-            flexDirection={"column"}
-            justifyContent={"space-between"}
-          >
-            <TextField
-              onChange={(e) => setValue(e.target.value)}
-              value={value}
-              fullWidth
-              placeholder="Description..."
-              id="outlined-multiline-static"
-              label="Description"
-              multiline
-              minRows={4}
-              maxRows={10}
-            />
-
-            {isLoading && <CircularProgress />}
-
-            {error && (
-              <Typography variant="body1" component="p" color="error">
-                {error}
-              </Typography>
-            )}
-
-            <Button
-              disabled={!url || isLoading}
-              size="large"
-              sx={{ alignSelf: "flex-end" }}
-              variant="contained"
-              type="submit"
+          <FormProvider {...methods}>
+            <Box
+              flexGrow={1}
+              display={"flex"}
+              flexDirection={"column"}
+              justifyContent={"space-between"}
             >
-              Submit
-            </Button>
-          </Box>
+              <PostDescriptionInput
+                value={value}
+                setValue={setValue}
+                id={"postDescription"}
+              />
+
+              {isLoading && <CircularProgress sx={{ alignSelf: "center" }} />}
+
+              {imageError && (
+                <Typography variant="body1" component="p" color="error">
+                  {imageError}
+                </Typography>
+              )}
+
+              <Button
+                disabled={!url || isLoading}
+                size="large"
+                sx={{ alignSelf: "flex-end" }}
+                variant="contained"
+                type="submit"
+              >
+                Submit
+              </Button>
+            </Box>
+          </FormProvider>
         </Box>
 
         <IconButton

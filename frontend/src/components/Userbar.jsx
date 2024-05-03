@@ -6,7 +6,6 @@ import {
   IconButton,
   Menu,
   Avatar,
-  Tooltip,
   MenuItem,
   Link,
   CircularProgress,
@@ -38,71 +37,71 @@ const Userbar = () => {
     navigate("/sign-in");
   };
 
+  if (!token) {
+    return loading ? (
+      <CircularProgress color="inherit" />
+    ) : (
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <Button to="/sign-in" component={RouterLink} variant="contained">
+          Sign In
+        </Button>
+        <Button to="/sign-up" component={RouterLink} variant="contained">
+          Sign Up
+        </Button>
+      </Box>
+    );
+  }
+
+  const avatarSrc = profile?.avatar ? `${BASE_URL}/${profile?.avatar}` : "";
+
   return (
     <Box sx={{ flexGrow: 0 }}>
-      {!token ? (
-        loading ? (
+      <IconButton
+        disableRipple
+        title="Open menu"
+        onClick={handleOpenUserMenu}
+        sx={{ p: 0 }}
+      >
+        {loading ? (
           <CircularProgress color="inherit" />
         ) : (
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Button to="/sign-in" component={RouterLink} variant="contained">
-              Sign In
-            </Button>
-            <Button to="/sign-up" component={RouterLink} variant="contained">
-              Sign Up
-            </Button>
-          </Box>
-        )
-      ) : (
-        <>
-          <Tooltip title="Open settings">
-            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <Avatar
-                alt="profile picture"
-                src={`${BASE_URL}/${profile?.avatar}`}
-              />
-            </IconButton>
-          </Tooltip>
+          <Avatar src={avatarSrc} alt="profile picture" />
+        )}
+      </IconButton>
 
-          <Menu
-            sx={{ mt: "45px" }}
-            id="menu-appbar"
-            anchorEl={anchorElUser}
-            anchorOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            keepMounted
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            open={Boolean(anchorElUser)}
-            onClose={handleCloseUserMenu}
+      <Menu
+        sx={{ mt: "45px" }}
+        id="menu-appbar"
+        anchorEl={anchorElUser}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        keepMounted
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        open={Boolean(anchorElUser)}
+        onClose={handleCloseUserMenu}
+      >
+        <MenuItem onClick={handleCloseUserMenu}>
+          <Link to="/profile" component={RouterLink} sx={{ color: "inherit" }}>
+            Profile
+          </Link>
+        </MenuItem>
+
+        <MenuItem sx={{ mt: 1 }} onClick={handleCloseUserMenu}>
+          <Link
+            onClick={handleLogout}
+            disabled={loading}
+            component="button"
+            sx={{ color: "inherit" }}
           >
-            <MenuItem onClick={handleCloseUserMenu}>
-              <Link
-                to="/profile"
-                component={RouterLink}
-                sx={{ color: "inherit" }}
-              >
-                Profile
-              </Link>
-            </MenuItem>
-
-            <MenuItem sx={{ mt: 1 }} onClick={handleCloseUserMenu}>
-              <Link
-                onClick={handleLogout}
-                disabled={loading}
-                component="button"
-                sx={{ color: "inherit" }}
-              >
-                Logout
-              </Link>
-            </MenuItem>
-          </Menu>
-        </>
-      )}
+            Logout
+          </Link>
+        </MenuItem>
+      </Menu>
     </Box>
   );
 };

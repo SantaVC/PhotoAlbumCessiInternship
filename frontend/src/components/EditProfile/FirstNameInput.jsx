@@ -3,7 +3,7 @@ import { useFormContext } from "react-hook-form";
 import { TextField } from "@mui/material";
 
 const FirstNameInput = ({ profile }) => {
-  const [firstName, setFirstName] = useState(profile?.first_name);
+  const [value, setValue] = useState(profile?.first_name);
 
   const {
     register,
@@ -11,7 +11,7 @@ const FirstNameInput = ({ profile }) => {
   } = useFormContext();
 
   useEffect(() => {
-    setFirstName(profile?.first_name);
+    setValue(profile?.first_name);
   }, [profile?.first_name]);
 
   return (
@@ -19,10 +19,10 @@ const FirstNameInput = ({ profile }) => {
       {...register("first_name")}
       type="text"
       id="first_name"
-      onChange={(event) => setFirstName(event.target.value)}
+      onChange={(e) => setValue(e.target.value)}
       fullWidth
       label="First name"
-      value={firstName || ""}
+      value={value || ""}
       error={Boolean(errors.first_name)}
       helperText={errors.first_name && errors.first_name.message}
     />
