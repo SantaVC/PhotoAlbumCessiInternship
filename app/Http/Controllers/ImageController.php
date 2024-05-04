@@ -22,6 +22,7 @@
 // }
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Log;
+use App\Services\TokenAuthService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\User;
@@ -35,39 +36,16 @@ class ImageController extends Controller
 {
     public function getImage(Request $request)
     {
-        $refreshToken = $request->cookie('refresh_token');
+        
+      $user = TokenAuthService::authenticateUserFromToken($request);
+      $profile = $user->profile;
+      // Получаем путь к сохраненному изображению
+      $imagePath = $profile->avatar;
 
-        // Проверяем, что передан refresh token
-        if (!$refreshToken) {
-          throw new \Exception('Refresh token is required', 400);
-        }
+      // Чтение файла из директории проекта
+      $image = Storage::get($imagePath);
 
-        // Получаем секретный ключ из переменных среды
-        $secretKey = (string) config('jwt.secret');
-
-        // Расшифровываем refresh token
-        try {
-          $refreshTokenData = JWT::decode($refreshToken, new Key($secretKey, 'HS256'));
-        } catch (Exception $e) {
-          throw new Exception($e);
-        }
-
-        $userId = $refreshTokenData->sub;
-        $user = User::find($userId);
-
-        if (!$user) {
-          throw new \Exception('User not found', 404);
-        }
-
-        Auth::login($user);
-        $profile = $user->profile;
-        // Получаем путь к сохраненному изображению
-        $imagePath = $profile->avatar;
-
-        // Чтение файла из директории проекта
-        $image = Storage::get($imagePath);
-
-        // Возвращаем изображение как ответ
-        return response($image)->header('Content-Type', 'image/jpeg');
+      // Возвращаем изображение как ответ
+      return response($image)->header('Content-Type', 'image/jpeg');
     }
 }

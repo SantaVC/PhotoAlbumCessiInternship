@@ -9,12 +9,14 @@ use App\Models\User;
 use App\Models\UserInfo;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use App\Services\TokenAuthService;
 
 class ProfileController extends Controller
 {
     public function updateProfile(Request $request)
     {
-        $user = Auth::user();
+      $user = TokenAuthService::authenticateUserFromToken($request);
+
         $profile = $user->profile;
 
         $validator = Validator::make($request->all(), [
@@ -55,7 +57,8 @@ class ProfileController extends Controller
 
     public function changeAvatar(Request $request)
     {
-        $user = Auth::user();
+      $user = TokenAuthService::authenticateUserFromToken($request);
+
         $profile = $user->profile;
 
         Log::info('file: ', $request->all());
@@ -97,7 +100,8 @@ class ProfileController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $user = Auth::user();
+        $user = TokenAuthService::authenticateUserFromToken($request);
+
 
         // Проверяем, совпадает ли введенный старый пароль с текущим паролем пользователя
         if (!Hash::check($request->oldPassword, $user->password)) {
@@ -119,8 +123,7 @@ class ProfileController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-
-        $user = Auth::user();
+        $user = TokenAuthService::authenticateUserFromToken($request);
         $user->update(['nickname' => $request->nickname]);
 
         return response()->json(['message' => 'Nickname changed successfully']);
