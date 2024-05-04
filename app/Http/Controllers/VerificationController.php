@@ -11,28 +11,14 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Verified;
+use App\Services\TokenAuthService;
 
 class VerificationController extends Controller
 {
     public function verifyEmail(Request $request)
     {
-      $secretKey = (string) config('jwt.secret');
-      $refreshToken = $request->cookie('refresh_token');
-    
-      if (!$refreshToken) {
-          return response()->json(['message' => 'Refresh token not found in cookie'], 401);
-      }
-    
-      // Извлекаем идентификатор пользователя из cookie
-      $payload = JWT::decode($refreshToken, new Key($secretKey, 'HS256'));
-            
-            // Извлекаем идентификатор пользователя из декодированного токена
-            $userId = $payload->sub;
-    
-      // Находим пользователя в базе данных по его ID
-      $user = User::find($userId);
-    
-    
+        $user = TokenAuthService::authenticateUserFromToken($request);
+  
       if (!$user) {
           return response()->json(['message' => 'Invalid refresh token or user ID'], 401);
       }

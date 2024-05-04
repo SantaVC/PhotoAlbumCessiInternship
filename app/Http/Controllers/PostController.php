@@ -12,6 +12,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use App\Services\TokenAuthService;
 
 class PostController extends Controller
 {
@@ -105,25 +106,7 @@ class PostController extends Controller
 
     public function getPostImage(Request $request, $id)
     {
-      $refreshToken = $request->cookie('refresh_token');
-
-      // Проверяем, что передан refresh token
-      if (!$refreshToken) {
-        throw new \Exception('Refresh token is required', 400);
-      }
-
-      // Получаем секретный ключ из переменных среды
-      $secretKey = (string) config('jwt.secret');
-
-      // Расшифровываем refresh token
-      try {
-        $refreshTokenData = JWT::decode($refreshToken, new Key($secretKey, 'HS256'));
-      } catch (Exception $e) {
-        throw new Exception($e);
-      }
-
-      $userId = $refreshTokenData->sub;
-      $user = User::find($userId);
+      $user = TokenAuthService::authenticateUserFromToken($request);
 
       if (!$user) {
         throw new \Exception('User not found', 404);
