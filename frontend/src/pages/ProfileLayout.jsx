@@ -12,7 +12,7 @@ const ProfileLayout = () => {
 
   const dispatch = useDispatch();
   const axiosPrivate = useAxiosPrivate();
-  const { user, profile } = useSelectUserAuth();
+  const { user } = useSelectUserAuth();
 
   useEffect(() => {
     let isMounted = true;
@@ -21,7 +21,7 @@ const ProfileLayout = () => {
       try {
         setIsLoading(true);
         console.log("fetching user");
-        isMounted && (await dispatch(getUser()).unwrap());
+        isMounted && (await dispatch(getUser()));
       } catch (error) {
         console.log(error);
         dispatch(resetAuth());

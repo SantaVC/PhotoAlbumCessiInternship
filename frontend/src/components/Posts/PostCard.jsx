@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Box, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { BASE_URL } from "../../constants";
+import LazyImage from "../LazyImage";
 
 const PostCard = ({ item, setCurrentItem, handleOpen }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -32,11 +33,9 @@ const PostCard = ({ item, setCurrentItem, handleOpen }) => {
         justifyContent={"center"}
         height={1}
       >
-        <img
-          loading="lazy"
-          style={{ height: "100%", objectFit: "cover" }}
+        <LazyImage
           src={`${BASE_URL}/${item.id}/${item.image_path}`}
-          alt="Post picture"
+          alt={"Post picture"}
         />
       </Box>
       {isHovered && (
