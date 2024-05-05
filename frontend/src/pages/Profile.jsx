@@ -17,7 +17,7 @@ const Profile = () => {
   const loading = useSelectLoading();
 
   const handleFetchUser = async () => {
-    await dispatch(getUser()).unwrap();
+    await dispatch(getUser());
   };
 
   return (
